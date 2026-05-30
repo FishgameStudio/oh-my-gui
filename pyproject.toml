@@ -1,0 +1,24 @@
+# pyproject.toml - 现代 Python 项目配置文件
+[build-system]
+# 核心构建依赖（必须配置，用于打包/安装项目）
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# --------------------------
+
+[project]
+name = "oh-my-gui"  # Project name
+version = "0.0.1"           # project ver
+authors = [
+  { name="FishgameStudio", email="popxhxh@outlook.com" }
+]
+description = "A lightweight GUI library wrapping PySide6 for Python"  # Short description
+readme = "README.md"         # Project doc
+license = { file="LICENSE" } # License file
+requires-python = ">=3.8"   # minimum python ver.
+keywords = ["python", "gui", "oh-my-gui"]  # Project keyword
+
+# Dependencies
+dependencies = [
+  "pyside6>=6.11.1"
+]
