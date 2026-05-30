@@ -12,6 +12,7 @@ class Window:
         self.central = QWidget() # Central Widget for binding UI.
         self._win.setCentralWidget(self.central)
         self.stack: list[BaseWidget] = [] # UI Stack
+
     @property
     def x(self) -> int: return self._win.x()
     @property
@@ -24,27 +25,34 @@ class Window:
     def set_position(self, x: int, y: int) -> None:
         """Set the position of the window on the screen."""
         self._win.setGeometry(x, y, self.w, self.h)
+
     @property
-    def get_size(self) -> int:
+    def get_size(self) -> tuple:
         """Returns the window size."""
-        return self.w * self.h
+        return (self.w, self.h)
+
     def fix_size(self) -> None:
         """Fix the size."""
         self._win.setFixedSize(self.w, self.h)
+
     def unfix_size(self) -> None:
         """Unfix the size."""
         # Unlock the size scope.
         self._win.setMinimumSize(0, 0)
         self._win.setMaximumSize(QSize(16777215, 16777215))
+
     def bind_widget(self, widget: BaseWidget, x: int = 0, y: int = 0) -> None:
         """Bind a widget to the window."""
         # All the widgets are on the central widget.
         self.stack.append(widget)
-        self.top_widget._widget.setParent(self.central)
-        self.top_widget.set_pos(x, y)
+        widget._widget.setParent(self.central)
+        widget.set_pos(x, y)
+        widget.show()
+
     @property
     def top_widget(self) -> BaseWidget:
-        return self[-1]
+        return self.stack[-1]
+
     def __getitem__(self, idx: int):
         return self.stack[idx]
 

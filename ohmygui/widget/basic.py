@@ -31,25 +31,33 @@ class BaseWidget:
 class Text(BaseWidget):
     """Label text."""
     def __init__(self, text: str = "", fg: str = "#000000", bg: str = "#ffffff"):
+        super().__init__()
         self._widget = QLabel(text)
+        self._widget.setAutoFillBackground(True)
         self.set_color(fg, bg)
+        
     @property
     def text(self) -> str: return self._widget.text()
+    
     @property
     def fg(self) -> str: return self._widget.palette().color(QPalette.ColorRole.WindowText).name()
+    
     @property
     def bg(self) -> str: return self._widget.palette().color(QPalette.ColorRole.Window).name()
+
     def set_text(self, text: str) -> None:
         """Set the text of the label."""
         self._widget.setText(text)
+
     def set_foreground(self, fg: str) -> None:
         """Set the foreground of the text."""
-        self._widget.setStyleSheet(f"color: {fg};")
+        self.set_color(fg, self.bg)  # Don't cover the foreground
+
     def set_background(self, bg: str) -> None:
         """Set the background of the text."""
-        self._widget.setStyleSheet(f"background-color: {bg};")
+        self.set_color(self.fg, bg) 
+
     def set_color(self, fg: str, bg: str) -> None:
         """Set both the background & foreground"""
-        self.set_foreground(fg)
-        self.set_background(bg)
-    
+        # Set together
+        self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")

@@ -1,5 +1,6 @@
 # Main application class.
 
+from sys import argv
 from PySide6.QtWidgets import QApplication
 
 def singleton(cls):
@@ -8,14 +9,15 @@ def singleton(cls):
         if cls not in instances:
             instances[cls] = cls(*args, **kwargs)
         return instances[cls]
-    return get_instance()
+    return get_instance
 
 @singleton
 class Application:
     def __init__(self) -> None:
-        self._app = QApplication()
+        self._app = QApplication(argv)
     def run(self) -> int:
         """Run the application & return error code."""
         return self._app.exec()
 
+# Alias
 App = Application
