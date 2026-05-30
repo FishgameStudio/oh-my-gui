@@ -20,6 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__author__  = "Fishgame Studio"
 __version__ = "0.1.0"
 
+from . import core
+from . import widget
 
+__all__ = [
+    "core", "widget"
+]

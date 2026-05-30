@@ -2,7 +2,7 @@
 
 from PySide6.QtWidgets import QMainWindow, QWidget
 from PySide6.QtCore import QSize
-from ..widget.basic import *
+from .base import BaseWidget
 
 class Window:
     def __init__(self, title: str = "", size: tuple = (800, 500)) -> None:

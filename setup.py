@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="oh-my-gui",
+    name="ohmygui",
     version="0.1.0",
     author="FishgameStudio",
     description="A lightweight GUI library wrapping PySide6 for Python",
