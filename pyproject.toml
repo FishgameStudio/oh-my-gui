@@ -1,6 +1,6 @@
-# pyproject.toml - 现代 Python 项目配置文件
+
 [build-system]
-# 核心构建依赖（必须配置，用于打包/安装项目）
+# Core dependencies
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oh-my-gui"  # Project name
-version = "0.0.1"           # project ver
+version = "0.1.0"           # project ver
 authors = [
   { name="FishgameStudio", email="popxhxh@outlook.com" }
 ]
