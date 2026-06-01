@@ -1,7 +1,6 @@
 # Main events class for binding button.
 
 from typing import Callable
-from base import BaseWidget
 
 class Event:
     def __init__(self, func: Callable):
