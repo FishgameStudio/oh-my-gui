@@ -1,6 +1,7 @@
 from ohmygui.core.application import App
 from ohmygui.core.window import Window
 from ohmygui.widget.basic import *
+from ohmygui.dialog import *
 
 # Create application.
 app = App()
