@@ -39,6 +39,11 @@ class Text(BaseWidget):
         """Set both the background & foreground"""
         # Set together
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
+    
+    def set_font(self, font: str) -> None:
+        """Set the font of the text."""
+        self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")
+
 
 class Button(BaseWidget):
     def __init__(self, text: str, fg: str = "#ffffff", bg: str = "#000000"):
@@ -74,6 +79,9 @@ class Button(BaseWidget):
     def on_click(self, callback: Event | Callable[[Any], None]) -> None:
         """Set the callback for when the button is clicked."""
         self._widget.clicked.connect(callback)
+    def set_font(self, font: str) -> None:
+        """Set the font of the text."""
+        self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")  
 
 class InputEntry(BaseWidget):
     def __init__(self, default_prompt: str = "", default_value: str = "") -> None:
@@ -91,6 +99,15 @@ class InputEntry(BaseWidget):
     def on_enter(self, callback: Event | Callable[[], None]) -> None:
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(callback)
+    def set_font(self, font: str) -> None:
+        """Set the font of the text."""
+        self._widget.setStyleSheet(
+            f"""font-family: {font}; color: {
+                self._widget.palette().color(QPalette.ColorRole.WindowText).name()
+                }; background-color: {
+                    self._widget.palette().color(QPalette.ColorRole.Window).name()
+                };"""
+        )
 
 class PasswordEntry(BaseWidget):
     def __init__(self, default_prompt: str = "Password: ", default_value: str = "") -> None:
@@ -98,7 +115,7 @@ class PasswordEntry(BaseWidget):
         self._widget = QLineEdit()
         self._widget.setPlaceholderText(default_prompt)
         self._widget.setText(default_value)
-        self._widget.setEchoMode(QLineEdit.EchoMode.Password)
+        self._widget.setEchoMode(QLineEdit.EchoMode.Password) # Hide the password by default
     @property
     def value(self) -> str:
         """Get the value of the input."""
@@ -109,6 +126,15 @@ class PasswordEntry(BaseWidget):
     def on_enter(self, callback: Event | Callable[[], None]) -> None:
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(callback)
+    def set_font(self, font: str) -> None:
+        """Set the font of the text."""
+        self._widget.setStyleSheet(
+            f"""font-family: {font}; color: {
+                self._widget.palette().color(QPalette.ColorRole.WindowText).name()
+                }; background-color: {
+                    self._widget.palette().color(QPalette.ColorRole.Window).name()
+                };"""
+        )
     def hide_password(self) -> None:
         """Hide the password."""
         self._widget.setEchoMode(QLineEdit.EchoMode.Password)
