@@ -2,7 +2,7 @@
 
 from .base import BaseDialog
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QColorDialog
-from enums import Icon, Button
+from .enums import Icon, Button
 
 class MessageBox(BaseDialog):
     def __init__(self, title: str, content: str, icon: Icon = Icon.NoIcon, buttons: Button = Button.Ok) -> None:
