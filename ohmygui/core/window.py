@@ -2,10 +2,10 @@
 
 from PySide6.QtWidgets import QMainWindow, QWidget
 from PySide6.QtCore import QSize
-from .base import BaseWidget
+from ..widget.base import BaseWidget
 
 class Window:
-    def __init__(self, title: str = "", size: tuple = (800, 500)) -> None:
+    def __init__(self, title: str = "", size: tuple[int, int] = (800, 500)) -> None:
         self._win = QMainWindow()
         self._win.setWindowTitle(title)
         self._win.resize(*size)
@@ -21,6 +21,10 @@ class Window:
     def w(self) -> int: return self._win.width()
     @property
     def h(self) -> int: return self._win.height()
+
+    def set_size(self, x: int, y: int) -> None:
+        """Set the size of the window."""
+        self._win.resize(x, y)
 
     def set_position(self, x: int, y: int) -> None:
         """Set the position of the window on the screen."""
@@ -44,11 +48,28 @@ class Window:
     def bind_widget(self, widget: BaseWidget, x: int = 0, y: int = 0) -> None:
         """Bind a widget to the window."""
         # All the widgets are on the central widget.
+        
         self.stack.append(widget)
         widget._widget.setParent(self.central)
         widget.set_pos(x, y)
         widget.show()
+    def show(self) -> None:
+        """Show the window."""
+        self._win.show()
 
+    def hide(self) -> None:
+        """Hide the window."""
+        self._win.hide()
+    def close(self) -> None:
+        """Close the window."""
+        self._win.close()
+    def set_bg(self, color: str) -> None:
+        """Set the background color of the window."""
+        self._win.setStyleSheet(f"background-color: {color};")
+    @property
+    def bg_color(self) -> str:
+        """Get the background color of the window."""
+        return self._win.palette().color(self._win.backgroundRole()).name()
     @property
     def top_widget(self) -> BaseWidget:
         return self.stack[-1]
