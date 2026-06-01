@@ -160,7 +160,7 @@ This project uses **`PySide6`** as the GUI core dependency. Please ensure **`PyS
 
 ## Roadmap
 - [x] **v0.1.0**: Core framework, basic widget, 1 exmaple
-- [ ] **v0.2.0**: Basic layout, 3~5 examples, dialog module
+- [x] **v0.2.0**: Basic layout, 3~5 examples, dialog module
 - [ ] **v0.3.0**: Basic style control, QML support
 - [ ] **v0.4.0**: Optimize layout, complex widgets
 - [ ] **v0.5.0**: Fix most bugs, optimize performence, improve docs

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 __author__  = "Fishgame Studio"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 from . import core
 from . import widget
