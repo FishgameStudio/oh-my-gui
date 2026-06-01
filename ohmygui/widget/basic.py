@@ -2,8 +2,8 @@
 
 from PySide6.QtWidgets import QLabel, QWidget, QPushButton, QLineEdit
 from PySide6.QtGui import QPalette
-from base import BaseWidget
-from event import Event
+from .base import BaseWidget
+from .event import Event
 from typing import Callable, Any
 
 class Text(BaseWidget):
