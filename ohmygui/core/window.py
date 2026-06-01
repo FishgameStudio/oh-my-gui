@@ -5,7 +5,7 @@ from PySide6.QtCore import QSize
 from PySide6.QtGui import QCloseEvent
 from ..widget.base import BaseWidget
 from ..widget.event import Event
-from typing import Callable
+from typing import Callable, Any
 
 class Window:
     def __init__(self, title: str = "", size: tuple[int, int] = (800, 500)) -> None:
@@ -66,9 +66,9 @@ class Window:
     def close(self) -> None:
         """Close the window."""
         self._win.close()
-    def on_close(self, event: Event) -> None:
+    def on_close(self, event: Event | Callable[[Any], None]) -> None:
         """Set the callback for when the window is closed."""
-        self._win.closeEvent = event.get_func
+        self._win.closeEvent = event.get_func if isinstance(event, Event) else event
     def set_bg(self, color: str) -> None:
         """Set the background color of the window."""
         self._win.setStyleSheet(f"background-color: {color};")
