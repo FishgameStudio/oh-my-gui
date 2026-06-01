@@ -26,7 +26,8 @@ __version__ = "0.1.0"
 from . import core
 from . import widget
 from . import dialog
+from . import utils
 
 __all__ = [
-    "core", "widget", "dialog"
+    "core", "widget", "dialog", "utils"
 ]
