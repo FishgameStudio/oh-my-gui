@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QMainWindow, QWidget
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QCloseEvent
 from ..widget.base import BaseWidget
+from ..layout.base import BaseLayout
 from ..widget.event import Event
 from typing import Callable, Any
 
@@ -56,6 +57,11 @@ class Window:
         widget._widget.setParent(self.central)
         widget.set_pos(x, y)
         widget.show()
+
+    def set_layout(self, layout: BaseLayout) -> None:
+        """Set a layout on the window's central widget."""
+        self.central.setLayout(layout.native)
+
     def show(self) -> None:
         """Show the window."""
         self._win.show()

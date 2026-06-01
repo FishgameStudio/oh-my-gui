@@ -27,7 +27,8 @@ from . import core
 from . import widget
 from . import dialog
 from . import utils
+from . import layout
 
 __all__ = [
-    "core", "widget", "dialog", "utils"
+    "core", "widget", "dialog", "utils", "layout"
 ]
