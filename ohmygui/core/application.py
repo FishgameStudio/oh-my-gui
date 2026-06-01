@@ -2,6 +2,7 @@
 
 from sys import argv
 from PySide6.QtWidgets import QApplication
+from ..widget.event import Event
 
 def singleton(cls):
     instances = {}
@@ -18,6 +19,9 @@ class Application:
     def run(self) -> int:
         """Run the application & return error code."""
         return self._app.exec()
+    def on_quit(self, event: Event) -> None:
+        """Set the callback for when the application is quitting."""
+        self._app.aboutToQuit.connect(event.get_func)
 
 # Alias
 App = Application
