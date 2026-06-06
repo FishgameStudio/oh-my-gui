@@ -76,9 +76,9 @@ class Button(BaseWidget):
         """Set both the background & foreground"""
         # Set together
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
-    def on_click(self, callback: Event | Callable[[Any], None]) -> None:
+    def on_click(self, event: Callable[[Any], None]) -> None:
         """Set the callback for when the button is clicked."""
-        self._widget.clicked.connect(callback)
+        self._widget.clicked.connect(event)
     def set_font(self, font: str) -> None:
         """Set the font of the text."""
         self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")  
@@ -96,9 +96,9 @@ class InputEntry(BaseWidget):
     def set_value(self, value: str) -> None:
         """Set the value of the input."""
         self._widget.setText(value)
-    def on_enter(self, callback: Event | Callable[[], None]) -> None:
+    def on_enter(self, event: Callable[[Any], None]) -> None:
         """Set the callback for when the input is entered."""
-        self._widget.returnPressed.connect(callback)
+        self._widget.returnPressed.connect(event)
     def set_font(self, font: str) -> None:
         """Set the font of the text."""
         self._widget.setStyleSheet(
@@ -123,9 +123,9 @@ class PasswordEntry(BaseWidget):
     def show_password(self) -> None:
         """Show the password."""
         self._widget.setEchoMode(QLineEdit.EchoMode.Normal)
-    def on_enter(self, callback: Event | Callable[[], None]) -> None:
+    def on_enter(self, event: Callable[[Any], None]) -> None:
         """Set the callback for when the input is entered."""
-        self._widget.returnPressed.connect(callback)
+        self._widget.returnPressed.connect(event)
     def set_font(self, font: str) -> None:
         """Set the font of the text."""
         self._widget.setStyleSheet(

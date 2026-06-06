@@ -11,10 +11,10 @@ win = Window("Event Example", (800, 600))
 
 # Create a button.
 button = Button("Click me!", "#ffffff", "#000000")
-button.set_size(100, 50)
+button.set_size((100, 50))
 # Create a text widget to display the event result.
 text = Text("Button not clicked yet.", "#000000", "#ffffff")
-text.set_size(300, 50)
+text.set_size((300, 50))
 
 # Simple event functions for binding.
 def on_button_click(_) -> None: # must accept an event argument, even if it's not used.

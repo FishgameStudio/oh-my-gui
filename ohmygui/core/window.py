@@ -8,8 +8,10 @@ from ..layout.base import BaseLayout
 from ..widget.event import Event
 from typing import Callable, Any
 
+Size_Type = tuple[int, int]
+
 class Window:
-    def __init__(self, title: str = "", size: tuple[int, int] = (800, 500)) -> None:
+    def __init__(self, title: str = "", size: Size_Type = (800, 500)) -> None:
         self._win = QMainWindow()
         self._win.setWindowTitle(title)
         self._win.resize(*size)
@@ -26,16 +28,16 @@ class Window:
     @property
     def h(self) -> int: return self._win.height()
 
-    def set_size(self, x: int, y: int) -> None:
+    def set_size(self, size: Size_Type) -> None:
         """Set the size of the window."""
-        self._win.resize(x, y)
+        self._win.resize(*size)
 
     def set_position(self, x: int, y: int) -> None:
         """Set the position of the window on the screen."""
         self._win.setGeometry(x, y, self.w, self.h)
 
     @property
-    def get_size(self) -> tuple:
+    def get_size(self) -> Size_Type:
         """Returns the window size."""
         return (self.w, self.h)
 
@@ -72,9 +74,10 @@ class Window:
     def close(self) -> None:
         """Close the window."""
         self._win.close()
-    def on_close(self, event: Event | Callable[[Any], None]) -> None:
+    def on_close(self, event: Callable[[Any], None]) -> None:
         """Set the callback for when the window is closed."""
-        self._win.closeEvent = event.get_func if isinstance(event, Event) else event
+        e: Event = Event(event)
+        self._win.closeEvent = e.get_func
     def set_bg(self, color: str) -> None:
         """Set the background color of the window."""
         self._win.setStyleSheet(f"background-color: {color};")

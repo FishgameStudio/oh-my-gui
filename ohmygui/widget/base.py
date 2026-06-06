@@ -2,6 +2,8 @@
 
 from PySide6.QtWidgets import QWidget
 
+Size_Type = tuple[int, int]
+
 class BaseWidget:
     def __init__(self):
         self._widget = QWidget() # Store Qt native widget. 
@@ -22,9 +24,13 @@ class BaseWidget:
             x, y, w if w != None else self.width, 
             h if h != None else self.height
         )
-    def set_size(self, width: int, height: int) -> None:
+    def set_size(self, size: Size_Type) -> None:
         """Set the size."""
-        self.set_pos(self.x_pos, self.y_pos, width, height)
+        self.set_pos(self.x_pos, self.y_pos, *size)
+    @property
+    def get_size(self) -> Size_Type:
+        """Get the size."""
+        return (self.width, self.height)
     @property
     def native(self):
         """Native escape port."""

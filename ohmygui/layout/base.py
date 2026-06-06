@@ -17,11 +17,22 @@ class BaseLayout:
         if widget in self.stack:
             self.stack.remove(widget)
             self._layout.removeWidget(widget._widget)
+        else:
+            raise ValueError("Widget not found in the layout.")
     def clear(self) -> None:
         """Clear the layout."""
         for widget in self.stack:
             self._layout.removeWidget(widget._widget)
         self.stack.clear()
+    def add_layout(self, layout: 'BaseLayout') -> None:
+        """Add a layout to the layout."""
+        self._layout.addChildLayout(layout.native)
+    def __len__(self) -> int:
+        return len(self.stack)
+    def __iter__(self):
+        return iter(self.stack)
+    def __contains__(self, widget: BaseWidget) -> bool:
+        return widget in self.stack
     def __getitem__(self, idx: int) -> BaseWidget:
         return self.stack[idx]
     @property

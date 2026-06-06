@@ -12,16 +12,16 @@ layout.add_margin(14)
 layout.set_common_spacing(12)
 
 header = Text("Login Form", "#ffffff", "#2257a8")
-header.set_size(320, 50)
+header.set_size((320, 50))
 
 username = InputEntry("Username")
-username.set_size(320, 45)
+username.set_size((320, 45))
 
 password = InputEntry("Password")
-password.set_size(320, 45)
+password.set_size((320, 45))
 
 submit = Button("Submit", "#ffffff", "#2257a8")
-submit.set_size(320, 45)
+submit.set_size((320, 45))
 
 layout.add_widget(header)
 layout.add_widget(username)
