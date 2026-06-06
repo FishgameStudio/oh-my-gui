@@ -60,9 +60,32 @@ class Window:
         widget.set_pos(x, y)
         widget.show()
 
+    @property
+    def top_widgets(self) -> QWidget:
+        """Returns the top window & widgets."""
+        return self._win.topLevelWidget()
+
     def set_layout(self, layout: BaseLayout) -> None:
         """Set a layout on the window's central widget."""
         self.central.setLayout(layout.native)
+    def load_style_from(self, path: str) -> None:
+        """Load style sheet from a QSS file."""
+        qss: str
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                qss = f.read()
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"QSS file not found: {e.filename}")
+        self._win.setStyleSheet(qss)
+    def load_style_string(self, qss: str) -> None:
+        """Load style sheet from a string."""
+        self._win.setStyleSheet(qss)
+    @property
+    def export_QSS(self) -> str:
+        """Export the current QStyleSheet."""
+        return self._win.styleSheet()
+    
+
 
     def show(self) -> None:
         """Show the window."""
@@ -76,11 +99,11 @@ class Window:
         self._win.close()
     def on_close(self, event: Callable[[Any], None]) -> None:
         """Set the callback for when the window is closed."""
-        e: Event = Event(event)
-        self._win.closeEvent = e.get_func
+        self._win.closeEvent = event
     def set_bg(self, color: str) -> None:
         """Set the background color of the window."""
         self._win.setStyleSheet(f"background-color: {color};")
+
     @property
     def bg_color(self) -> str:
         """Get the background color of the window."""
