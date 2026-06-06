@@ -1,6 +1,7 @@
 # Base widget class
 
 from PySide6.QtWidgets import QWidget
+from typing import Annotated
 
 Size_Type = tuple[int, int]
 
@@ -27,6 +28,15 @@ class BaseWidget:
     def set_size(self, size: Size_Type) -> None:
         """Set the size."""
         self.set_pos(self.x_pos, self.y_pos, *size)
+    def set_transparency(self, val: Annotated[float, "0.0 ~ 1.0"]) -> None:
+        """
+        Set the transparency(Not opacity!) of the widget.
+        0.0 -> Transparent
+        1.0 -> Opaque
+        """
+        if val > 1 or val < 0:
+            raise ValueError("Value must between 1 and 0")
+        self._widget.setWindowOpacity(1.0 - val)
     @property
     def get_size(self) -> Size_Type:
         """Get the size."""
