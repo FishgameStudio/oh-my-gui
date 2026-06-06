@@ -1,10 +1,11 @@
 # Basic Widgets
 
 from PySide6.QtWidgets import QLabel, QWidget, QPushButton, QLineEdit
-from PySide6.QtGui import QPalette
+from PySide6.QtGui import QPalette, QKeyEvent
+from PySide6.QtCore import QObject, QEvent
 from .base import BaseWidget
 from .event import Event
-from typing import Callable, Any
+from typing import Callable, Any, Optional, cast
 
 class Text(BaseWidget):
     """Label text."""
@@ -96,9 +97,29 @@ class InputEntry(BaseWidget):
     def set_value(self, value: str) -> None:
         """Set the value of the input."""
         self._widget.setText(value)
-    def on_enter(self, event: Callable[[Any], None]) -> None:
+    def on_submit(self, event: Callable[[Any], None]) -> None:
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
+    def on_keypress(self, callback: Callable[[str], None]) -> None:
+        """
+        Set the callback for when a key pressed.
+        The `str` param is for current pressed key.
+        """
+        class KeyWatcher(QObject):
+            def __init__(self, cb: Callable[[str], None], parent: Optional[QObject]):
+                super().__init__(parent)
+                self.callback = cb
+            def eventFilter(self, obj: QObject, e: QEvent) -> bool:
+                if e.type() == QEvent.Type.KeyPress:
+                    if isinstance(e, QKeyEvent):
+                        ke = cast(QKeyEvent, e)
+                        key_text = ke.text()
+                        if key_text:
+                            self.callback(key_text)
+                return False
+
+        self._widget.installEventFilter(KeyWatcher(callback, cast(QObject, self)))
+        
     def set_font(self, font: str) -> None:
         """Set the font of the text."""
         self._widget.setStyleSheet(
@@ -123,7 +144,7 @@ class PasswordEntry(BaseWidget):
     def show_password(self) -> None:
         """Show the password."""
         self._widget.setEchoMode(QLineEdit.EchoMode.Normal)
-    def on_enter(self, event: Callable[[Any], None]) -> None:
+    def on_submit(self, event: Callable[[Any], None]) -> None:
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
     def set_font(self, font: str) -> None:
