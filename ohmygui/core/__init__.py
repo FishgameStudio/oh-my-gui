@@ -1,3 +1,3 @@
-from . import application, window
+from . import application, window, mouse
 
-__all__ = ['application', 'window']
+__all__ = ['application', 'window', 'mouse']
