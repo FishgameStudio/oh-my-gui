@@ -3,6 +3,7 @@
 from .base import BaseDialog
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QColorDialog
 from .enums import Icon, Button
+from typing import Callable
 
 class MessageBox(BaseDialog):
     def __init__(self, title: str, content: str, icon: Icon = Icon.NoIcon, buttons: Button = Button.Ok) -> None:
@@ -15,6 +16,19 @@ class MessageBox(BaseDialog):
     def set_icon(self, icon: QMessageBox.Icon) -> None:
         """Set the icon of the message box."""
         self._win.setIcon(icon)
+    def set_content(self, content: str) -> None:
+        return self._win.setText(content)
+    def set_info(self, info: str) -> None:
+        return self._win.setInformativeText(info)
+    def set_detail(self, detail: str) -> None:
+        return self._win.setDetailedText(detail)
+    def on_click(self, event: Callable[[int], None]):
+        """
+        Bind callback on button clicked.
+        The `int` parameter is the enumerate value of the button.
+        """
+        event(self._win.question(None, self.title, self.get_content)) # Ask & call
+
     def set_buttons(self, buttons: Button) -> None:
         """Set the buttons of the message box."""
         self._win.setStandardButtons(buttons)
