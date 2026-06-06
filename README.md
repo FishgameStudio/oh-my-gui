@@ -1,5 +1,7 @@
 <div align="center">
 
+![Logo](assets/logo.png)
+
 
 # OnMyGUI
 > A lightweight GUI library wrapping PySide6 for Python!
