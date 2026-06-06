@@ -1,7 +1,7 @@
 # Main window class
 
 from PySide6.QtWidgets import QMainWindow, QWidget
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, QObject
 from PySide6.QtGui import QCloseEvent
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
@@ -59,6 +59,14 @@ class Window:
         widget._widget.setParent(self.central)
         widget.set_pos(x, y)
         widget.show()
+    def set_parent(self, parent: 'Window') -> None:
+        self._win.setParent(parent.native)
+    @property
+    def parent(self) -> QObject | None:
+        return self._win.parent()
+    @property
+    def children(self) -> list[QObject]:
+        return self._win.children()
 
     @property
     def top_widgets(self) -> QWidget:
