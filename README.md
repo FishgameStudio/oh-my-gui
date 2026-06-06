@@ -4,7 +4,6 @@
 # OnMyGUI
 > A lightweight GUI library wrapping PySide6 for Python!
 
-[**Explore the docs >>>**](docs)
 
 ![Stars](https://img.shields.io/github/stars/FishgameStudio/oh-my-gui?style=social)
 ![Forks](https://img.shields.io/github/forks/FishgameStudio/oh-my-gui?style=social)
@@ -12,9 +11,16 @@
 ![Issues](https://img.shields.io/github/issues/FishgameStudio/oh-my-gui)
 ![PRs](https://img.shields.io/github/issues-pr/FishgameStudio/oh-my-gui)
 
-![Version](https://img.shields.io/badge/version-0.1.0-orange)
+![LastCommit](https://img.shields.io/github/last-commit/FishgameStudio/oh-my-gui)
+![Size](https://img.shields.io/github/repo-size/FishgameStudio/oh-my-gui)
+![Contributors](https://img.shields.io/github/contributors/FishgameStudio/oh-my-gui)
+![Welcome](https://img.shields.io/badge/PRs%20%26%20Issues-welcome-bluevoilet)
+
+![Version](https://img.shields.io/badge/version-0.2.0-orange)
+![Qt](https://img.shields.io/badge/Framework-PySide6-52C141)
 [![Python](https://img.shields.io/badge/python-3.14-blue)](https://python.org)
-![License](https://img.shields.io/github/license/FishgameStudio/oh-my-gui)
+![QtVer](https://img.shields.io/badge/Qt-6.11.0-2392DD)
+[![License](https://img.shields.io/github/license/FishgameStudio/oh-my-gui)](LICENSE)
 
 </div>
 
@@ -105,7 +111,9 @@ Certainly, this basic tool library is mainly oriented to conventional lightweigh
 ## Getting Started
 [**Explore the docs >>>**](docs)
 
-Here is an example to build.
+[**Explore the examples >>>**](example)
+
+Here is an example to run.
 
 At first, please clone the repository on your local computer:
 ```bash
@@ -201,8 +209,8 @@ Project Link: [https://github.com/FishgameStudio/oh-my-gui](https://github.com/F
 
 ## Acknowledgments
 
-* [othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template)
-* [pybind/pybind11](https://github.com/pybind/pybind11)
+* [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+* [PySide6](https://github.com/pyside/pyside-setup)
 
 
 ## Conclusion
