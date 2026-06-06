@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QLayout
 
 class BaseLayout:
     def __init__(self) -> None:
-        self._layout = QLayout()
+        self._layout: 'QLayout' # Native layout object
         self.stack: list[BaseWidget] = [] # UI Stack
 
     def add_widget(self, widget: BaseWidget) -> None:
