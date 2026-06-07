@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ohmygui",
-    version="0.3.0",
+    version="0.4.0",
     author="FishgameStudio",
     description="A lightweight GUI library wrapping PySide6 for Python",
     long_description=open("README.md", "r", encoding="utf-8").read(),
