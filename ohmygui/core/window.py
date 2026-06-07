@@ -51,13 +51,13 @@ class Window:
         self._win.setMinimumSize(0, 0)
         self._win.setMaximumSize(QSize(16777215, 16777215))
 
-    def bind_widget(self, widget: BaseWidget, x: int = 0, y: int = 0) -> None:
+    def bind_widget(self, widget: BaseWidget, dir: Size_Type) -> None:
         """Bind a widget to the window."""
         # All the widgets are on the central widget.
         
         self.stack.append(widget)
         widget._widget.setParent(self.central)
-        widget.set_pos(x, y)
+        widget.set_pos(*dir)
         widget.show()
     def set_parent(self, parent: 'Window') -> None:
         self._win.setParent(parent.native)
@@ -93,6 +93,9 @@ class Window:
         """Export the current QStyleSheet."""
         return self._win.styleSheet()
     
+    def relative_bind(self): ...
+    def set_snap_layout(self): ...
+    def on_resize(self): ...
 
 
     def show(self) -> None:

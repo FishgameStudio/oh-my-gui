@@ -24,8 +24,8 @@ button.on_click(on_button_click) # Don't add parentheses, we want to pass the fu
 win.on_close(on_window_close)
 
 # Bind widgets on the window.
-win.bind_widget(button, 50, 50)
-win.bind_widget(text, 50, 100)
+win.bind_widget(button, (50, 50))
+win.bind_widget(text, (50, 100))
 
 # Run
 win.show()

@@ -17,8 +17,8 @@ button = omg.widget.Button("Click me!", "#ffffff", "#000000")
 # Set size.
 button.set_size((100, 50))
 # Bind the label and button to the window.
-win.bind_widget(label, 50, 50)
-win.bind_widget(button, 50, 200)
+win.bind_widget(label, (50, 50))
+win.bind_widget(button, (50, 200))
 # Show the window.
 win.show()
 # Run the application.
