@@ -283,7 +283,7 @@ class Table(BaseWidget):
         """Set both foreground and background colors."""
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
 
-    def on_cell_click(self, event: Callable[[Any], None]) -> None:
+    def on_cell_click(self, event: Callable[[Any, Any], None]) -> None:
         """Set callback for when a table cell is clicked."""
         self._widget.cellClicked.connect(event)
 
