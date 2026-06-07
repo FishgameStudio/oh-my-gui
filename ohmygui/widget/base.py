@@ -57,6 +57,9 @@ class BaseWidget:
                     self.move()
                 return False
         self._widget.installEventFilter(HoverWatcher(enter, leave, move, cast(QObject,self)))
+    def load_stylesheet(self, qss: str) -> None:
+        self._widget.setStyleSheet(qss)
+
     @property
     def get_size(self) -> Size_Type:
         """Get the size."""

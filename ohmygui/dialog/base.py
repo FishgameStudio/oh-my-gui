@@ -19,6 +19,8 @@ class BaseDialog:
         self._win.setWindowTitle(self.title)
     def set_content(self, content: str) -> None:
         self.content = content
+    def load_stylesheet(self, qss: str) -> None:
+        self._win.setStyleSheet(qss)
     @property
     def get_title(self) -> str:
         return self.title
