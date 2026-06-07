@@ -6,9 +6,12 @@ from PySide6.QtWidgets import (
     QRadioButton, QComboBox, 
     QListWidget, QTableWidget, 
     QTableWidgetItem, QSlider, 
-    QProgressBar, QTextEdit
+    QProgressBar, QTextEdit, 
+    QGraphicsView, QGraphicsScene, 
+    QGraphicsEllipseItem, QGraphicsLineItem, 
+    QGraphicsRectItem
 )
-from PySide6.QtGui import QPalette
+from PySide6.QtGui import QPalette, QColor, QPen, QBrush
 
 class RadioButton(BaseWidget):
     def __init__(self, text: str, fg: str = "#ffffff", bg: str = "#000000"):
@@ -470,3 +473,72 @@ class TextEdit(BaseWidget):
     def set_font(self, font: str) -> None:
         """Set the font family of the text."""
         self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")
+
+class Canvas(BaseWidget):
+    def __init__(self, fg: str = "#ffffff", bg: str = "#222222"):
+        super().__init__()
+        self._widget = QGraphicsView()
+        self._scene = QGraphicsScene()
+        self._widget.setScene(self._scene)
+        self.set_color(fg, bg)
+
+        self.pen = QPen(QColor(fg))
+        self.brush = QBrush(QColor(fg))
+
+    @property
+    def fg(self) -> str:
+        """Get the foreground color of the canvas."""
+        return self.pen.color().name()
+
+    @property
+    def bg(self) -> str:
+        """Get the background color of the canvas."""
+        color = self._widget.backgroundBrush().color()
+        return color.name() if color.isValid() else "#000000"
+
+    def set_foreground(self, fg: str) -> None:
+        """Set the foreground drawing color."""
+        self.pen.setColor(QColor(fg))
+        self.brush.setColor(QColor(fg))
+
+    def set_background(self, bg: str) -> None:
+        """Set the canvas background color."""
+        self._widget.setBackgroundBrush(QBrush(QColor(bg)))
+
+    def set_color(self, fg: str, bg: str) -> None:
+        """Set both drawing color and background color."""
+        self.set_foreground(fg)
+        self.set_background(bg)
+
+    def make_dot(self, x: float, y: float, size: float = 4) -> None:
+        """Draw a dot at the given (x, y) position."""
+        dot = QGraphicsEllipseItem(x - size/2, y - size/2, size, size)
+        dot.setPen(self.pen)
+        dot.setBrush(self.brush)
+        self._scene.addItem(dot)
+
+    def make_line(self, x1: float, y1: float, x2: float, y2: float) -> None:
+        """Draw a line from (x1,y1) to (x2,y2)."""
+        line = QGraphicsLineItem(x1, y1, x2, y2)
+        line.setPen(self.pen)
+        self._scene.addItem(line)
+
+    def make_rect(self, x: float, y: float, w: float, h: float) -> None:
+        """Draw a rectangle with top-left (x,y), width w, height h."""
+        rect = QGraphicsRectItem(x, y, w, h)
+        rect.setPen(self.pen)
+        self._scene.addItem(rect)
+
+    def make_circle(self, x: float, y: float, radius: float) -> None:
+        """Draw a circle centered at (x,y) with given radius."""
+        circle = QGraphicsEllipseItem(x - radius, y - radius, radius*2, radius*2)
+        circle.setPen(self.pen)
+        self._scene.addItem(circle)
+
+    def clear(self) -> None:
+        """Clear all drawings from the canvas."""
+        self._scene.clear()
+
+    def set_font(self, font: str) -> None:
+        """Set font for text items (reserved for future use)."""
+        pass
