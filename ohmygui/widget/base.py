@@ -59,7 +59,13 @@ class BaseWidget:
         self._widget.installEventFilter(HoverWatcher(enter, leave, move, cast(QObject,self)))
     def load_stylesheet(self, qss: str) -> None:
         self._widget.setStyleSheet(qss)
-
+    def lock(self) -> None:
+        self._widget.setEnabled(False)
+    def unlock(self) -> None:
+        self._widget.setEnabled(True)
+    @property
+    def is_locked(self) -> bool:
+        return self._widget.isEnabled()
     @property
     def get_size(self) -> Size_Type:
         """Get the size."""

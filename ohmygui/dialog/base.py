@@ -21,6 +21,13 @@ class BaseDialog:
         self.content = content
     def load_stylesheet(self, qss: str) -> None:
         self._win.setStyleSheet(qss)
+    def lock(self) -> None:
+        self._win.setEnabled(False)
+    def unlock(self) -> None:
+        self._win.setEnabled(True)
+    @property
+    def is_locked(self) -> bool:
+        return self._win.isEnabled()
     @property
     def get_title(self) -> str:
         return self.title

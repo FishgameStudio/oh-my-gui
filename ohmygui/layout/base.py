@@ -27,6 +27,13 @@ class BaseLayout:
     def add_layout(self, layout: 'BaseLayout') -> None:
         """Add a layout to the layout."""
         self._layout.addChildLayout(layout.native)
+    def lock(self) -> None:
+        self._layout.setEnabled(False)
+    def unlock(self) -> None:
+        self._layout.setEnabled(True)
+    @property
+    def is_locked(self) -> bool:
+        return self._layout.isEnabled()
     def __len__(self) -> int:
         return len(self.stack)
     def __iter__(self):
