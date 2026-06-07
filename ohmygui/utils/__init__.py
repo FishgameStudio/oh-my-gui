@@ -1,2 +1,3 @@
 from .constants import *
-__all__ = ["constants"]
+from .sound import *
+__all__ = ["constants", "sound"]
