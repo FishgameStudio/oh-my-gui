@@ -22,8 +22,8 @@ class Application:
         self._app: Optional[Union[QGuiApplication, QApplication]] = None
         self._engine: Optional[QQmlApplicationEngine] = None
         # Call init_widget_mode in default way.
-        self.init_widget_mode()
         self._isqml = False
+        self.init_widget_mode()
 
     def init_widget_mode(self) -> Self:
         """Initialize with Widget mode(QApplication)."""
