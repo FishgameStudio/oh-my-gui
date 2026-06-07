@@ -1,5 +1,5 @@
-from . import base
-from . import basic
-from . import enums
+from .base import *
+from .basic import *
+from .enums import *
 
 __all__ = ['base', 'basic', 'enums']
