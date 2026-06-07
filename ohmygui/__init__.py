@@ -28,7 +28,8 @@ from . import widget
 from . import dialog
 from . import utils
 from . import layout
+from . import terminal
 
 __all__ = [
-    "core", "widget", "dialog", "utils", "layout"
+    "core", "widget", "dialog", "utils", "layout", "terminal"
 ]
