@@ -27,7 +27,7 @@ class BaseDialog:
         self._win.setEnabled(True)
     @property
     def is_locked(self) -> bool:
-        return self._win.isEnabled()
+        return not self._win.isEnabled()
     @property
     def get_title(self) -> str:
         return self.title

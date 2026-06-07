@@ -33,7 +33,7 @@ class BaseLayout:
         self._layout.setEnabled(True)
     @property
     def is_locked(self) -> bool:
-        return self._layout.isEnabled()
+        return not self._layout.isEnabled()
     def __len__(self) -> int:
         return len(self.stack)
     def __iter__(self):

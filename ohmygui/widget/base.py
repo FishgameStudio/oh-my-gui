@@ -65,7 +65,7 @@ class BaseWidget:
         self._widget.setEnabled(True)
     @property
     def is_locked(self) -> bool:
-        return self._widget.isEnabled()
+        return not self._widget.isEnabled()
     @property
     def get_size(self) -> Size_Type:
         """Get the size."""
