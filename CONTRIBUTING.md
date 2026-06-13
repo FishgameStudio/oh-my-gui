@@ -10,7 +10,7 @@ Please read this guide before contributing to keep the project consistent and ma
 
 ## How to Contribute
 ### 1. Report Bugs
-- Use [Issues](https://github.com/your-username/oh-my-gui/issues) to submit bug reports.
+- Use [Issues](https://github.com/FishgameStudio/oh-my-gui/issues) to submit bug reports.
 - Describe the bug clearly: reproduction steps, expected behavior, actual behavior, system & environment information.
 - Attach logs, screenshots or minimal demo code if helpful.
 
@@ -22,22 +22,22 @@ Please read this guide before contributing to keep the project consistent and ma
 ### 3. Submit Code Changes (Pull Request)
 1. **Fork** this repository to your own account.
 2. Clone your forked repo locally:
-   ```bash
-   git clone https://github.com/your-username/oh-my-gui.git
-   cd oh-my-gui
-   ```
+```bash
+git clone https://github.com/FishgameStudio/oh-my-gui.git
+cd oh-my-gui
+```
 3. Create a new branch for your work:
-   ```bash
-   git checkout -b feature/your-feature-name
-   # or for bug fix
-   git checkout -b fix/bug-description
-   ```
+```bash
+git checkout -b feature/AmazingFeatures
+# or for bug fix
+git checkout -b fix/BugFix
+```
 4. Make your changes, follow the code rules below.
 5. Commit your code (follow commit message rules).
 6. Push the branch to your fork:
-   ```bash
-   git push origin your-branch-name
-   ```
+```bash
+git push origin YourBeanchName
+```
 7. Create a **Pull Request** to the main repository.
 
 ## Development Setup
