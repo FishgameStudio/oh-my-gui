@@ -4,7 +4,6 @@ from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QGraphicsEffec
 from typing import Annotated, Callable, cast, Self
 from PySide6.QtCore import QObject, QEvent
 from PySide6.QtGui import QKeyEvent, QColor
-from ..core.context import active_layout
 
 Size_Type = tuple[int, int]
 
@@ -13,9 +12,6 @@ class BaseWidget:
         self._widget = QWidget() # Store Qt native widget. 
         self._key_callbacks: list[Callable[[int], None]] = []
         self._init_key_event_handler()
-
-        if hasattr(active_layout, 'current') and active_layout.current is not None:
-            active_layout.current.add_widget(self)
     
     def show(self) -> Self: self._widget.show(); return self
     def hide(self) -> Self: self._widget.hide(); return self
