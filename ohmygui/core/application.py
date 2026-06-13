@@ -3,9 +3,11 @@
 from sys import argv
 from PySide6.QtWidgets import QApplication
 from ..widget.event import Event
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 from os.path import exists
+from os import environ
 from typing import Optional, Union, Self
 
 def singleton(cls):
@@ -19,11 +21,19 @@ def singleton(cls):
 @singleton
 class Application:
     def __init__(self) -> None:
-        self._app: Optional[Union[QGuiApplication, QApplication]] = None
+        self._app: Union[QGuiApplication, QApplication] = QApplication(argv)
         self._engine: Optional[QQmlApplicationEngine] = None
         # Call init_widget_mode in default way.
         self._isqml = False
         self.init_widget_mode()
+
+        # Uniform style & enable 
+        self._app.setStyle("Fusion")
+        environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+        self._app.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+        )
 
     def init_widget_mode(self) -> Self:
         """Initialize with Widget mode(QApplication)."""
