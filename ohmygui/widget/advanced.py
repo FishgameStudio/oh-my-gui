@@ -324,6 +324,8 @@ class Table(BaseWidget):
         """Set the font family of the table text."""
         self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")
         return self
+    def __getitem__(self, dire: tuple[int, int]) -> QTableWidgetItem | None:
+        return self._widget.item(*dire)
 
 
 class Slider(BaseWidget):
@@ -535,13 +537,13 @@ class TextEdit(BaseWidget):
 class Canvas(BaseWidget):
     def __init__(self, fg: str = "#ffffff", bg: str = "#222222"):
         super().__init__()
+        self.brush = QBrush(QColor(fg))
+        self.pen = QPen(QColor(fg))
+        
         self._widget = QGraphicsView()
         self._scene = QGraphicsScene()
         self._widget.setScene(self._scene)
         self.set_color(fg, bg)
-
-        self.pen = QPen(QColor(fg))
-        self.brush = QBrush(QColor(fg))
 
     @property
     def fg(self) -> str:
