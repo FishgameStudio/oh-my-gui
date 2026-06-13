@@ -57,12 +57,6 @@ class BaseLayout:
     def __enter__(self) -> Self:
         return self
     def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
-
-        # Auto save to the parent window.
-        parent = self._layout.parent()
-        if (parent is not None) and (isinstance(parent, QMainWindow)):
-            parent.setLayout(self._layout)
-            
         return False
 
     @property
