@@ -38,8 +38,8 @@ class MessageBox(BaseDialog):
         self._win.setStandardButtons(buttons)
         return self
 class FileChooser(BaseDialog):
-    def __init__(self, title: str, content: str) -> None:
-        super().__init__(title, content)
+    def __init__(self, title: str) -> None:
+        super().__init__(title, "")
         self._win = QFileDialog()
         self._win.setWindowTitle(self.title)
     def get_selections(self) -> list[str]:
@@ -47,6 +47,9 @@ class FileChooser(BaseDialog):
         if self._win.exec():
             return self._win.selectedFiles()
         return []
+    def set_default_dir(self, dir: str) -> None:
+        """Set the default directory when opening."""
+        self._win.setDirectory(dir)
 class ColorPicker(BaseDialog):
     def __init__(self, title: str, content: str) -> None:
         super().__init__(title, content)
