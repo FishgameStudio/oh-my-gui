@@ -20,5 +20,8 @@ keywords = ["python", "gui", "oh-my-gui"]  # Project keyword
 
 # Dependencies
 dependencies = [
-  "pyside6>=6.11.1"
+  "pyside6>=6.11.1",
+  "pyperclip>=1.11.0", 
+  "plyer>=2.1.0", 
+  "requests>=2.32.5"
 ]
