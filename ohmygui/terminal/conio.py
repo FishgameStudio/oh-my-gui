@@ -1,6 +1,6 @@
 # Console i/o module.
 
-from typing import Callable
+from typing import Callable, Self
 
 class ConsoleIO:
     def __init__(self, fg: int = 0xffffff, bg: int = 0x000000): 
@@ -27,7 +27,7 @@ class ConsoleIO:
      
     RESET = "\033[0m"
 
-    def print(self, text: str, *, fg: int | None = None, bg: int | None = None, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False, end: str = "\n") -> None:
+    def print(self, text: str, *, fg: int | None = None, bg: int | None = None, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False, end: str = "\n") -> Self:
         """Output text."""
         self.fg = fg if fg is not None else self.fg
         self.bg = bg if bg is not None else self.bg
@@ -35,6 +35,7 @@ class ConsoleIO:
         bg_ansi = self.hex2ansi(bg if isinstance(bg, int) else self.bg, bg=True, highlight=highlight, bold=bold, italic=italic, underline=underline)
 
         print(f"{fg_ansi}{bg_ansi}{text}", end=f"{end}{self.RESET}")
+        return self
     def input(self, prompt: str, *, fg: int | None = None, bg: int | None = None, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False, callback: Callable[[str], None] | None = None) -> str:
         """Input."""
         # print the prompt
@@ -49,7 +50,7 @@ class ConsoleIO:
         if callback is not None: 
             callback(res)
         return res
-    def make_progress(self, prompt: str, total: int, curr: int) -> None:
+    def make_progress(self, prompt: str, total: int, curr: int) -> Self:
         percent = curr / total
         CHAR_DONE  = "█" # Block
         CHAR_REST  = "░" # White block
@@ -58,6 +59,7 @@ class ConsoleIO:
         done = CHAR_DONE * bar
         rest = CHAR_REST * (WIDTH - bar)
         print(f"{prompt} [{done}{rest}]", end=f"{percent * 100:.2f}%       {"\n" if percent >= 1 else "\r"}")
+        return self
 
 # Test
 if __name__ == '__main__':

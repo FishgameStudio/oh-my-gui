@@ -67,7 +67,7 @@ class Application:
         return self._isqml
 
     ###################### QML ######################
-    def load_qml_from(self, path: str) -> None:
+    def load_qml_from(self, path: str) -> Self:
         if not exists(path):
             raise FileNotFoundError(f"QML file not found: {path}")
         
@@ -78,6 +78,7 @@ class Application:
         self._engine.load(path)
         if self._engine is None or not self._engine.rootObjects():
             raise RuntimeError("Failed to load QML")
+        return self
         
 
 # Alias

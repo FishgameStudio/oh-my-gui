@@ -2,35 +2,42 @@
 
 from ..widget.base import BaseWidget
 from PySide6.QtWidgets import QLayout
+from typing import Self
+
 
 class BaseLayout:
     def __init__(self) -> None:
-        self._layout: 'QLayout' # Native layout object
+        self._layout: QLayout # Native layout object
         self.stack: list[BaseWidget] = [] # UI Stack
-
-    def add_widget(self, widget: BaseWidget) -> None:
+    def add_widget(self, widget: BaseWidget) -> Self:
         """Add a widget to the layout."""
         self.stack.append(widget)
         self._layout.addWidget(widget._widget)
-    def delete_widget(self, widget: BaseWidget) -> None:
+        return self
+    def delete_widget(self, widget: BaseWidget) -> Self:
         """Delete a widget from the layout."""
         if widget in self.stack:
             self.stack.remove(widget)
             self._layout.removeWidget(widget._widget)
         else:
             raise ValueError("Widget not found in the layout.")
-    def clear(self) -> None:
+        return self
+    def clear(self) -> Self:
         """Clear the layout."""
         for widget in self.stack:
             self._layout.removeWidget(widget._widget)
         self.stack.clear()
-    def add_layout(self, layout: 'BaseLayout') -> None:
+        return self
+    def add_layout(self, layout: 'BaseLayout') -> Self:
         """Add a layout to the layout."""
         self._layout.addChildLayout(layout.native)
-    def lock(self) -> None:
+        return self
+    def lock(self) -> Self:
         self._layout.setEnabled(False)
-    def unlock(self) -> None:
+        return self
+    def unlock(self) -> Self:
         self._layout.setEnabled(True)
+        return self
     @property
     def is_locked(self) -> bool:
         return not self._layout.isEnabled()

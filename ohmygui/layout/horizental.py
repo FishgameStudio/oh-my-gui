@@ -1,28 +1,37 @@
 # Horizontal Layout
 
-from .base import BaseLayout
+from .box import BoxLayout
 from PySide6.QtWidgets import QHBoxLayout
+from typing import Self
 
-class HorizentalLayout(BaseLayout):
+class HorizentalLayout(BoxLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._layout = QHBoxLayout()
-    def add_stretch(self) -> None:
+        self._box = QHBoxLayout()
+
+    def add_stretch(self, stretch: int = 0) -> Self:
         """Add a stretch to the layout."""
-        self._layout.addStretch()
-    def add_spacing(self, size: int) -> None:
+        self._box.addStretch()
+        return self
+    def add_spacing(self, size: int) -> Self:
         """Add spacing to the layout.   """
-        self._layout.addSpacing(size)
-    def add_margin(self, size: int) -> None:
+        self._box.addSpacing(size)
+        return self
+    def add_margin(self, size: int) -> Self:
         """Add margin to the layout."""
-        self._layout.setContentsMargins(size, size, size, size)
-    def set_common_spacing(self, size: int) -> None:
+        self._box.setContentsMargins(size, size, size, size)
+        return self
+    def set_common_spacing(self, size: int) -> Self:
         """Set the common spacing for the layout."""
-        self._layout.setSpacing(size)
-    def set_common_margin(self, size: int) -> None:
+        self._box.setSpacing(size)
+        return self
+    def set_common_margin(self, size: int) -> Self:
         """Set the common margin for the layout."""
-        self._layout.setContentsMargins(size, size, size, size)
-    def set_common_stretch(self, stretch: int) -> None:
+        self._box.setContentsMargins(size, size, size, size)
+        return self
+    def set_common_stretch(self, stretch: int) -> Self:
         """Set the common stretch for the layout."""
-        for i in range(self._layout.count()):
-            self._layout.setStretch(i, stretch)
+        for i in range(self._box.count()):
+            self._box.setStretch(i, stretch)
+        return self
+        

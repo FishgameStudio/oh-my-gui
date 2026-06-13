@@ -2,10 +2,10 @@
 
 from PySide6.QtWidgets import QMainWindow, QWidget
 from PySide6.QtCore import QSize, QObject
-from PySide6.QtGui import QResizeEvent
+from PySide6.QtGui import QResizeEvent, QCloseEvent
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
-from typing import Callable, Any, Annotated
+from typing import Callable, Any, Annotated, Self
 
 Size_Type = tuple[int, int]
 Dir = Size_Type
@@ -31,30 +31,34 @@ class Window:
     @property
     def h(self) -> int: return self._win.height()
 
-    def set_size(self, size: Size_Type) -> None:
+    def set_size(self, size: Size_Type) -> Self:
         """Set the size of the window."""
         self._win.resize(*size)
+        return self
 
-    def set_position(self, x: int, y: int) -> None:
+    def set_position(self, x: int, y: int) -> Self:
         """Set the position of the window on the screen."""
         self._win.setGeometry(x, y, self.w, self.h)
+        return self
 
     @property
     def get_size(self) -> Size_Type:
         """Returns the window size."""
         return (self.w, self.h)
 
-    def fix_size(self) -> None:
+    def fix_size(self) -> Self:
         """Fix the size."""
         self._win.setFixedSize(self.w, self.h)
+        return self
 
-    def unfix_size(self) -> None:
+    def unfix_size(self) -> Self:
         """Unfix the size."""
         # Unlock the size scope.
         self._win.setMinimumSize(0, 0)
         self._win.setMaximumSize(QSize(16777215, 16777215))
+        return self
 
-    def bind_widget(self, widget: BaseWidget, dir: Dir) -> None:
+    def bind_widget(self, widget: BaseWidget, dir: Dir) -> Self:
         """Bind a widget to the window."""
         # All the widgets are on the central widget.
         
@@ -62,8 +66,9 @@ class Window:
         widget._widget.setParent(self.central)
         widget.set_pos(*dir)
         widget.show()
+        return self
 
-    def relative_bind(self, widget: BaseWidget, reldir: RelDir): 
+    def relative_bind(self, widget: BaseWidget, reldir: RelDir) -> Self: 
         """Bind widgets by relative position."""
         self.stack.append((True, widget))
         widget._widget.setParent(self.central)
@@ -82,8 +87,10 @@ class Window:
 
         widget.set_pos(int(x), int(y))
         widget.show()
-    def set_parent(self, parent: 'Window') -> None:
+        return self
+    def set_parent(self, parent: 'Window') -> Self:
         self._win.setParent(parent.native)
+        return self
     @property
     def parent(self) -> QObject | None:
         return self._win.parent()
@@ -96,10 +103,11 @@ class Window:
         """Returns the top window & widgets."""
         return self._win.topLevelWidget()
 
-    def set_layout(self, layout: BaseLayout) -> None:
+    def set_layout(self, layout: BaseLayout) -> Self:
         """Set a layout on the window's central widget."""
         self.central.setLayout(layout.native)
-    def load_style_from(self, path: str) -> None:
+        return self
+    def load_style_from(self, path: str) -> Self:
         """Load style sheet from a QSS file."""
         qss: str
         try:
@@ -108,9 +116,11 @@ class Window:
         except FileNotFoundError as e:
             raise FileNotFoundError(f"QSS file not found: {e.filename}")
         self._win.setStyleSheet(qss)
-    def load_style_string(self, qss: str) -> None:
+        return self
+    def load_style_string(self, qss: str) -> Self:
         """Load style sheet from a string."""
         self._win.setStyleSheet(qss)
+        return self
     @property
     def export_QSS(self) -> str:
         """Export the current QStyleSheet."""
@@ -137,7 +147,7 @@ class Window:
             y = ph * rely - wh / 2
             widget.set_pos(int(x), int(y))
         
-    def on_resize(self, callback: Callable[[int, int], None]) -> None: 
+    def on_resize(self, callback: Callable[[int, int], None]) -> Self: 
         """
         Bind callback when resizing window.
         The `int, int` params are the width & height of the window.
@@ -151,23 +161,33 @@ class Window:
             self._update_relpos()
             callback(self.w, self.h)
         self._win.resizeEvent = wrapped
+        return self
 
-    def show(self) -> None:
+    def show(self) -> Self:
         """Show the window."""
         self._win.show()
+        return self
 
-    def hide(self) -> None:
+    def hide(self) -> Self:
         """Hide the window."""
         self._win.hide()
-    def close(self) -> None:
+        return self
+    def close(self) -> Self:
         """Close the window."""
         self._win.close()
-    def on_close(self, event: Callable[[Any], None]) -> None:
+        return self
+    def on_close(self, event: Callable[[Any], None]) -> Self:
         """Set the callback for when the window is closed."""
-        self._win.closeEvent = event
-    def set_bg(self, color: str) -> None:
+        original = self._win.closeEvent
+        def wrapped(evt: QCloseEvent):
+            event(None)
+            original(evt)
+        self._win.closeEvent = wrapped
+        return self
+    def set_bg(self, color: str) -> Self:
         """Set the background color of the window."""
         self._win.setStyleSheet(f"background-color: {color};")
+        return self
 
     @property
     def bg_color(self) -> str:
@@ -178,7 +198,7 @@ class Window:
         return self.stack[-1][1]
 
     def __getitem__(self, idx: int):
-        return self.stack[idx]
+        return self.stack[idx][1]
 
     @property
     def native(self):
