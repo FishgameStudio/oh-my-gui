@@ -28,4 +28,7 @@ class GridLayout(BaseLayout):
         self.stack.append(widget)
         self._grid.addWidget(widget._widget, row, column, row_span, column_span)
         return self
+    @property
+    def native(self):
+        return self._grid
     

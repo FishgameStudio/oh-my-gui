@@ -31,3 +31,6 @@ class BoxLayout(BaseLayout):
         for i in range(self._box.count()):
             self._box.setStretch(i, stretch)
         return self
+    @property
+    def native(self):
+        return self._box
