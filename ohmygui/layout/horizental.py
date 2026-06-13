@@ -7,7 +7,7 @@ from typing import Self, cast
 class HorizentalLayout(BoxLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._layout: QHBoxLayout = cast(QHBoxLayout, self._layout) # type: ignore
+        self._layout: QHBoxLayout = QHBoxLayout() # type: ignore
 
     def add_stretch(self, stretch: int = 0) -> Self:
         """Add a stretch to the layout."""

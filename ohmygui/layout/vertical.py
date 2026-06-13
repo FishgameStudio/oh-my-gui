@@ -6,7 +6,7 @@ from typing import Self, cast
 class VerticalLayout(BoxLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._layout: QVBoxLayout = cast(QVBoxLayout, self._layout) # type: ignore
+        self._layout: QVBoxLayout = QVBoxLayout() # type: ignore
     def add_stretch(self, stretch: int = 0) -> Self:
         """Add a stretch to the layout."""
         self._layout.addStretch()

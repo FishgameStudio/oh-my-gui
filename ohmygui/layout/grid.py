@@ -8,7 +8,7 @@ from typing import Self, cast
 class GridLayout(BaseLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._layout: QGridLayout = cast(QGridLayout, self._layout) # type: ignore
+        self._layout: QGridLayout = QGridLayout() # type: ignore
     def add_margin(self, size: int) -> Self:
         """Add margin to the layout."""
         self._layout.setContentsMargins(size, size, size, size)
