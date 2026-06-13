@@ -21,6 +21,9 @@ def singleton(cls):
 @singleton
 class Application:
     def __init__(self) -> None:
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+        )
         self._app: Union[QGuiApplication, QApplication] = QApplication(argv)
         self._engine: Optional[QQmlApplicationEngine] = None
         # Call init_widget_mode in default way.
@@ -31,9 +34,6 @@ class Application:
         self._app.setStyle("Fusion")
         environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
         self._app.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
-        QApplication.setHighDpiScaleFactorRoundingPolicy(
-            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
-        )
 
     def init_widget_mode(self) -> Self:
         """Initialize with Widget mode(QApplication)."""
