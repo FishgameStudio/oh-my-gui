@@ -37,47 +37,36 @@ Properties:
 
 - `is_qml_mode: bool` - true when in QML mode
 
-Alias:
-
-- `App = Application`
-
-### `Window`
-
-Main window container.
-
-Constructor:
-
-- `Window(title: str = "", size: tuple[int, int] = (800, 500))`
-
 Methods:
 
-- `set_size(size: tuple[int, int]) -> None`
-- `set_position(x: int, y: int) -> None`
-- `get_size -> tuple[int, int]`
-- `fix_size() -> None`
-- `unfix_size() -> None`
-- `bind_widget(widget: BaseWidget, dir: tuple[int, int]) -> None`
-- `relative_bind(widget: BaseWidget, reldir: tuple[float, float]) -> None`
-- `set_parent(parent: Window) -> None`
-- `set_layout(layout: BaseLayout) -> None`
-- `load_style_from(path: str) -> None`
-- `load_style_string(qss: str) -> None`
-- `export_QSS -> str`
-- `on_resize(callback: Callable[[int, int], None]) -> None`
-- `show() -> None`
-- `hide() -> None`
-- `close() -> None`
-- `on_close(event: Callable[[Any], None]) -> None`
-- `set_bg(color: str) -> None`
+`set_size(size: tuple[int, int]) -> Self`
+`set_position(x: int, y: int) -> Self`
+`get_size -> tuple[int, int]`
+`fix_size() -> Self`
+`unfix_size() -> Self`
+`bind_widget(widget: BaseWidget, dir: tuple[int, int]) -> Self`
+`relative_bind(widget: BaseWidget, reldir: tuple[float, float]) -> Self`
+`set_parent(parent: Window) -> Self`
+`set_layout(layout: BaseLayout) -> Self`
+`load_style_from(path: str) -> Self`
+`load_style_string(qss: str) -> Self`
+`export_QSS -> str`
+`on_resize(callback: Callable[[int, int], None]) -> Self`
+`show() -> Self`
+`hide() -> Self`
+`close() -> Self`
+`on_close(event: Callable[[Any], None]) -> Self`
+`set_bg(color: str) -> Self`
 
 Properties:
 
-- `x`, `y`, `w`, `h` - window geometry
-- `bg_color: str` - current background color
-- `top_widget` - most recently bound widget
-- `children` - Qt children objects
-- `parent` - window parent
-- `native` - underlying `QMainWindow`
+`x`, `y`, `w`, `h` - window geometry
+`bg_color: str` - current background color
+`top_widget` - most recently bound widget
+`top_widgets` - top-level native window/widget
+`children` - Qt children objects
+`parent` - window parent
+`native` - underlying `QMainWindow`
 
 ### Mouse helpers
 
@@ -94,17 +83,21 @@ Properties:
 Common widget base class.
 
 Methods:
-
-- `show()`, `hide()`
-- `set_pos(x: int, y: int, w: int | None = None, h: int | None = None) -> None`
-- `set_size(size: tuple[int, int]) -> None`
-- `set_transparency(val: float) -> None`
-- `on_hover(enter, leave=None, move=None) -> None`
-- `load_stylesheet(qss: str) -> None`
-- `lock() -> None`
-- `unlock() -> None`
-- `get_size -> tuple[int, int]`
-- `native` - underlying Qt widget
+`show()`, `hide()`
+`set_pos(x: int, y: int, w: int | None = None, h: int | None = None) -> Self`
+`set_size(size: tuple[int, int]) -> Self`
+`set_transparency(val: float) -> Self`
+`on_hover(enter, leave=None, move=None) -> Self`
+`load_stylesheet(qss: str) -> Self`
+`lock() -> Self`
+`unlock() -> Self`
+`set_rounded_corner(radius: int) -> Self`
+`on_any_keypressed(callback: Callable[[int], None]) -> Self`
+`on_keypress(ascii: int, callback: Callable[[], None]) -> Self`
+`set_shadow(blur_radius: int = 10, x_offset: int = 0, y_offset: int = 3, color: str = "#00000080") -> Self`
+`remove_shadow() -> Self`
+`get_size -> tuple[int, int]`
+`native` - underlying Qt widget
 
 Properties:
 
@@ -162,9 +155,9 @@ Constructor:
 
 Methods:
 
-- `set_value(value: str) -> None`
-- `on_submit(event) -> None`
-- `on_keypress(callback: Callable[[str], None]) -> None`
+- `set_value(value: str) -> Self`
+- `on_submit(event) -> Self`
+- `on_key_press(callback: Callable[[str], None]) -> Self`
 
 Property:
 
@@ -264,18 +257,17 @@ Constructor:
 
 Methods:
 
-- `set_headers(headers: list[str]) -> None`
-- `set_item(row: int, col: int, text: str) -> None`
-- `get_item(row: int, col: int) -> str`
-- `add_row() -> None`
-- `remove_row(row: int) -> None`
-- `clear() -> None`
-- `clear_all() -> None`
-- `set_row_count(rows: int) -> None`
-- `set_col_count(cols: int) -> None`
-- `on_cell_click(event) -> None`
-- `set_color(fg: str, bg: str) -> None`
-- `set_font(font: str) -> None`
+- `set_headers(headers: list[str]) -> Self`
+- `set_item(row: int, col: int, text: str) -> Self`
+- `add_row() -> Self`
+- `remove_row(row: int) -> Self`
+- `clear() -> Self`
+- `clear_all() -> Self`
+- `set_row_count(rows: int) -> Self`
+- `set_col_count(cols: int) -> Self`
+- `on_cell_click(event) -> Self`
+- `set_color(fg: str, bg: str) -> Self`
+- `set_font(font: str) -> Self`
 
 Properties:
 
@@ -291,13 +283,13 @@ Constructor:
 
 Methods:
 
-- `set_value(val: int) -> None`
-- `set_range(min_val: int, max_val: int) -> None`
-- `set_single_step(step: int) -> None`
-- `set_page_step(step: int) -> None`
-- `on_value_change(event) -> None`
-- `set_color(fg: str, bg: str) -> None`
-- `set_font(font: str) -> None`
+- `set_value(val: int) -> Self`
+- `set_range(min_val: int, max_val: int) -> Self`
+- `set_single_step(step: int) -> Self`
+- `set_page_step(step: int) -> Self`
+- `on_value_change(event) -> Self`
+- `set_color(fg: str, bg: str) -> Self`
+- `set_font(font: str) -> Self`
 
 Properties:
 
@@ -313,12 +305,12 @@ Constructor:
 
 Methods:
 
-- `set_value(value: int) -> None`
-- `set_range(min_val: int, max_val: int) -> None`
-- `reset() -> None`
-- `on_value_change(event) -> None`
-- `set_color(fg: str, bg: str) -> None`
-- `set_font(font: str) -> None`
+- `set_value(value: int) -> Self`
+- `set_range(min_val: int, max_val: int) -> Self`
+- `reset() -> Self`
+- `on_value_change(event) -> Self`
+- `set_color(fg: str, bg: str) -> Self`
+- `set_font(font: str) -> Self`
 
 Properties:
 
@@ -334,11 +326,11 @@ Constructor:
 
 Methods:
 
-- `set_text(text: str) -> None`
-- `append(text: str) -> None`
-- `clear() -> None`
-- `set_color(fg: str, bg: str) -> None`
-- `set_font(font: str) -> None`
+- `set_text(text: str) -> Self`
+- `append(text: str) -> Self`
+- `clear() -> Self`
+- `set_color(fg: str, bg: str) -> Self`
+- `set_font(font: str) -> Self`
 
 Properties:
 
@@ -529,9 +521,9 @@ Constructor:
 Methods:
 
 - `hex2ansi(rgb: int, *, bg: bool = False, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False) -> str`
-- `print(text: str, *, fg: int | None = None, bg: int | None = None, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False, end: str = "\n") -> None`
+- `print(text: str, *, fg: int | None = None, bg: int | None = None, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False, end: str = "\n") -> Self`
 - `input(prompt: str, *, fg: int | None = None, bg: int | None = None, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False, callback: Callable[[str], None] | None = None) -> str`
-- `make_progress(prompt: str, total: int, curr: int) -> None`
+- `make_progress(prompt: str, total: int, curr: int) -> Self`
 
 ---
 
