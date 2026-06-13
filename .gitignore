@@ -217,3 +217,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Qt compiling, UI cache, etc.
+*.ui.bak
+*.qrc.bak
+qrc_*.py
+ui_*.py
+
+# Qt temp file while running
+*.qmlc
+*.jsc
