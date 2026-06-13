@@ -1,9 +1,9 @@
 # Base widget class
 
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QGraphicsEffect
 from typing import Annotated, Callable, cast, Self
 from PySide6.QtCore import QObject, QEvent
-from PySide6.QtGui import QKeyEvent
+from PySide6.QtGui import QKeyEvent, QColor
 
 
 Size_Type = tuple[int, int]
@@ -38,8 +38,8 @@ class BaseWidget:
         return self
     def set_transparency(self, val: Annotated[float, "0.0 ~ 1.0"]) -> Self:
         """
-        Set the transparency(Not opacity!) of the widget.
-        0.0 -> Transparent
+        Set the transparency(Not opacity!) of the widget.\n
+        0.0 -> Transparent\n
         1.0 -> Opaque
         """
         if val > 1 or val < 0:
@@ -98,7 +98,7 @@ class BaseWidget:
 
     def on_any_keypressed(self, callback: Callable[[int], None]) -> Self:
         """
-        Bind event when pressed any key.
+        Bind event when pressed any key.\n
         The int param is the ASCII code of the current-pressed key.
         """
         self._key_callbacks.append(callback)
@@ -112,7 +112,25 @@ class BaseWidget:
 
         self._key_callbacks.append(_key_filter)
         return self
+    def set_shadow(self, blur_radius: int = 10, x_offset: int = 0, y_offset: int = 3, color: str = "#00000080") -> Self:
+        """
+        Add shadow effects.\n
+        :param blur_radius: Blur radius, the larger the radius, the softer the shadow
+        :param x_offset: horizontal offset: positive to the right, negative to the left
+        :param y_offset: Vertical offset: positive downward, negative upward
+        :param color: Shadow color, supports hexadecimal `#RRGGBBAA` with transparency
+        """
+        shadow_effect = QGraphicsDropShadowEffect()
+        shadow_effect.setBlurRadius(blur_radius)
+        shadow_effect.setXOffset(x_offset)
+        shadow_effect.setYOffset(y_offset)
+        shadow_effect.setColor(QColor(color))
         
+        self._widget.setGraphicsEffect(shadow_effect)
+        return self
+    def remove_shadow(self) -> Self:
+        self._widget.setGraphicsEffect(cast(QGraphicsEffect, None))
+        return self
 
     @property
     def is_locked(self) -> bool:
