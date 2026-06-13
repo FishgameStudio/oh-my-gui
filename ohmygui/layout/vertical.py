@@ -1,12 +1,14 @@
 from .box import BoxLayout
 from PySide6.QtWidgets import QVBoxLayout
-from typing import Self
+from typing import Self, cast
 
 
 class VerticalLayout(BoxLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._box = QVBoxLayout()
+    @property
+    def _box(self):
+        return cast(QVBoxLayout, self._box)
     def add_stretch(self, stretch: int = 0) -> Self:
         """Add a stretch to the layout."""
         self._box.addStretch()

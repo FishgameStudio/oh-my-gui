@@ -2,12 +2,14 @@
 
 from .box import BoxLayout
 from PySide6.QtWidgets import QHBoxLayout
-from typing import Self
+from typing import Self, cast
 
 class HorizentalLayout(BoxLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._box = QHBoxLayout()
+    @property
+    def _box(self):
+        return cast(QHBoxLayout, self._box)
 
     def add_stretch(self, stretch: int = 0) -> Self:
         """Add a stretch to the layout."""

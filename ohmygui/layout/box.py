@@ -7,7 +7,9 @@ from typing import cast, Self
 class BoxLayout(BaseLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._box: QBoxLayout = cast(QBoxLayout, self._layout)
+    @property
+    def _box(self):
+        return cast(QBoxLayout, self._layout)
 
     def add_stretch(self, stretch: int = 0) -> Self:
         self._box.addStretch(stretch)

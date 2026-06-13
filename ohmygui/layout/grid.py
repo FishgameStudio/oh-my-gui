@@ -3,12 +3,14 @@
 from .base import BaseLayout
 from PySide6.QtWidgets import QGridLayout
 from ..widget.base import BaseWidget
-from typing import Self
+from typing import Self, cast
 
 class GridLayout(BaseLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._grid: QGridLayout = QGridLayout()
+    @property
+    def _grid(self):
+        return cast(QGridLayout, self._layout)
     def add_margin(self, size: int) -> Self:
         """Add margin to the layout."""
         self._grid.setContentsMargins(size, size, size, size)
