@@ -109,7 +109,7 @@ class InputEntry(BaseWidget):
         """Set the value of the input."""
         self._widget.setText(value)
         return self
-    def on_submit(self, event: Callable[[Any], None]) -> Self:
+    def on_submit(self, event: Callable[[], None]) -> Self:
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
         return self
