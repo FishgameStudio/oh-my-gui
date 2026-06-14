@@ -45,9 +45,11 @@ class Text(BaseWidget):
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
         return self
     
-    def set_font(self, font: str, size: int = 10) -> Self:
+    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
         font_ = QFont(font, pointSize=size)
+        font_.setBold(bold)
+        font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
 
@@ -91,9 +93,11 @@ class Button(BaseWidget):
         """Set the callback for when the button is clicked."""
         self._widget.clicked.connect(event)
         return self
-    def set_font(self, font: str, size: int = 10) -> Self:
+    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
         font_ = QFont(font, pointSize=size)
+        font_.setBold(bold)
+        font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
 
@@ -139,9 +143,11 @@ class InputEntry(BaseWidget):
 
         self._widget.installEventFilter(KeyWatcher(callback, cast(QObject, self)))
         return self
-    def set_font(self, font: str, size: int = 10) -> Self:
+    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
         font_ = QFont(font, pointSize=size)
+        font_.setBold(bold)
+        font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
 
@@ -164,9 +170,11 @@ class PasswordEntry(BaseWidget):
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
         return self
-    def set_font(self, font: str, size: int = 10) -> Self:
+    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
         font_ = QFont(font, pointSize=size)
+        font_.setBold(bold)
+        font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
     def hide_password(self) -> Self:
