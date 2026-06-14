@@ -52,6 +52,9 @@ class Text(BaseWidget):
         font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
 
 
 class Button(BaseWidget):
@@ -100,6 +103,9 @@ class Button(BaseWidget):
         font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
 
 class InputEntry(BaseWidget):
     def __init__(self, default_prompt: str = "", default_value: str = "") -> None:
@@ -150,6 +156,9 @@ class InputEntry(BaseWidget):
         font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
 
 class PasswordEntry(BaseWidget):
     def __init__(self, default_prompt: str = "Password: ", default_value: str = "") -> None:
@@ -177,6 +186,9 @@ class PasswordEntry(BaseWidget):
         font_.setItalic(italic)
         self._widget.setFont(font_)
         return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
     def hide_password(self) -> Self:
         """Hide the password."""
         self._widget.setEchoMode(QLineEdit.EchoMode.Password)
