@@ -3,6 +3,9 @@
 from .box import BoxLayout
 from PySide6.QtWidgets import QHBoxLayout
 from typing import Self, cast
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class HorizentalLayout(BoxLayout):
     def __init__(self) -> None:

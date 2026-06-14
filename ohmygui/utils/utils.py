@@ -7,6 +7,9 @@ import pyperclip
 from pathlib import Path
 import requests
 from typing import Any
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 def get_environment_variable(key: str, default: str | None = None) -> str:
     """Get an environment variable or return a default value if not found."""

@@ -4,6 +4,9 @@ import os
 import sys
 import subprocess
 import threading
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 def play_audio(file_path: str, *, sync: bool = False) -> None:
     """Play mp3 or wav"""
@@ -33,7 +36,7 @@ def play_audio(file_path: str, *, sync: bool = False) -> None:
                 # Most versions of Linux has ffplay / play
                 try:
                     subprocess.run(["ffplay", "-nodisp", "-autoexit", file_path], capture_output=True)
-                except:
+                except FileNotFoundError:
                     subprocess.run(["play", file_path], capture_output=True)
             return
     if sync:

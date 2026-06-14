@@ -6,6 +6,9 @@ from PySide6.QtCore import QObject, QEvent
 from .base import BaseWidget
 from .event import Event
 from typing import Callable, Any, Optional, cast, Self
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class Text(BaseWidget):
     """Label text."""

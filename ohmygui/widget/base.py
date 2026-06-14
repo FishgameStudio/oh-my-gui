@@ -4,11 +4,31 @@ from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QGraphicsEffec
 from typing import Annotated, Callable, cast, Self
 from PySide6.QtCore import QObject, QEvent
 from PySide6.QtGui import QKeyEvent, QColor
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 Size_Type = tuple[int, int]
 
+class _HoverWatcher(QObject):
+    def __init__(self, e_cb, l_cb, m_cb, parent):
+        super().__init__(parent)
+        self.enter = e_cb
+        self.leave = l_cb
+        self.move = m_cb
+
+    def eventFilter(self, obj: QObject, evt: QEvent):
+        if evt.type() == QEvent.Type.HoverEnter and self.enter is not None:
+            self.enter()
+        elif evt.type() == QEvent.Type.HoverLeave and self.leave is not None:
+            self.leave()
+        elif evt.type() == QEvent.Type.HoverMove and self.move is not None:
+            self.move()
+        return False
+
 class BaseWidget:
     def __init__(self):
+        info("BaseWidget enter __init__")
         self._widget = QWidget() # Store Qt native widget. 
         self._key_callbacks: list[Callable[[int], None]] = []
         self._init_key_event_handler()
@@ -42,27 +62,13 @@ class BaseWidget:
         1.0 -> Opaque
         """
         if val > 1 or val < 0:
-            raise ValueError("Value must between 1 and 0")
+            raise ValueError("Value must between 0 and 1")
         self._widget.setWindowOpacity(1.0 - val)
         return self
     def on_hover(self, enter: Callable[[], None], leave: Callable[[], None] | None = None, move: Callable[[], None] | None = None) -> Self:
         """Set the callback when the mouse hovers on it."""
-        class HoverWatcher(QObject):
-            def __init__(self, e_cb, l_cb, m_cb, parent):
-                super().__init__(parent)
-                self.enter = e_cb
-                self.leave = l_cb
-                self.move = m_cb
-
-            def eventFilter(self, obj: QObject, evt: QEvent):
-                if evt.type() == QEvent.Type.HoverEnter and self.enter is not None:
-                    self.enter()
-                elif evt.type() == QEvent.Type.HoverLeave and self.leave is not None:
-                    self.leave()
-                elif evt.type() == QEvent.Type.HoverMove and self.move is not None:
-                    self.move()
-                return False
-        self._widget.installEventFilter(HoverWatcher(enter, leave, move, cast(QObject,self)))
+        
+        self._widget.installEventFilter(_HoverWatcher(enter, leave, move, cast(QObject,self)))
         return self
     def load_stylesheet(self, qss: str) -> Self:
         self._widget.setStyleSheet(qss)
@@ -90,7 +96,7 @@ class BaseWidget:
                 try:
                     callback(key_ascii)
                 except Exception as e:
-                    print(f"Error: {e}")
+                    raise RuntimeError(f"Error when executing callback: {e}")
             original_key_press(evt)
 
         self._widget.keyPressEvent = wrapped

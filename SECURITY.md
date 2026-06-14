@@ -6,8 +6,8 @@ Older versions are not maintained anymore, please upgrade to a supported release
 
 | Version          | Supported            |
 | ---------------- | -------------------- |
-| Latest Commit    | ✅                   |
-| < Latest Commmit | ❌                   |
+| Latest Commit    | Yes✅                |
+| < Latest Commmit | No❌                 |
 
 ## Reporting a Vulnerability
 To report a security vulnerability, **DO NOT create a public GitHub issue**.

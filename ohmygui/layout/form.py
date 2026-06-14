@@ -4,6 +4,9 @@ from .base import BaseLayout
 from PySide6.QtWidgets import QFormLayout
 from ..widget.base import BaseWidget
 from typing import cast, Self
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class FormLayout(BaseLayout):
     def __init__(self) -> None:

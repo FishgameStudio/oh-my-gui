@@ -2,6 +2,9 @@
 
 import threading
 import time
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 def sleep(second: float) -> None:
     """Sleep for seconds (NON-BLOCKING)"""

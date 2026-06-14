@@ -1,3 +1,13 @@
+import logging
+
+from .base import BaseWidget
+from PySide6.QtGui import QPixmap
+from PySide6.QtSvgWidgets import QSvgWidget
+from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtMultimediaWidgets import QVideoWidget
+from typing import Self
+
+logging.info(f"Module {__name__} loaded")
 # Widgets extension.
 
 from .base import BaseWidget

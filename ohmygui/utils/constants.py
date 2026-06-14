@@ -1,4 +1,7 @@
 from typing import Final
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 from ..dialog.enums import Icon as i, Button as b
 
 # Color constants
