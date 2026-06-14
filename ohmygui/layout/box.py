@@ -3,6 +3,9 @@
 from PySide6.QtWidgets import QBoxLayout
 from .base import BaseLayout
 from typing import cast, Self
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class BoxLayout(BaseLayout):
     def __init__(self) -> None:

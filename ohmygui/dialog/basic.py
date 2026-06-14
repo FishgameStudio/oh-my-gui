@@ -17,7 +17,9 @@ class MessageBox(BaseDialog):
         """Set the icon of the message box."""
         self._win.setIcon(icon)
         return self
+        from logging import info, warning, error, critical
     def set_content(self, content: str) -> Self:
+        info(f"Module {__name__} loaded")
         self._win.setText(content)
         return self
     def set_info(self, info: str) -> Self:

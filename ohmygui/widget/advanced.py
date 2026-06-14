@@ -1,4 +1,7 @@
 # Advanced widgets
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 from .base import BaseWidget
 from typing import Any, Callable, Self

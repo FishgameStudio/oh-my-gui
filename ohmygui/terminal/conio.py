@@ -1,6 +1,9 @@
 # Console i/o module.
 
 from typing import Callable, Self
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class ConsoleIO:
     def __init__(self, fg: int = 0xffffff, bg: int = 0x000000): 
@@ -10,8 +13,8 @@ class ConsoleIO:
     @staticmethod
     def hex2ansi(rgb: int, *, bg: bool = False, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False) -> str:
         """Returns the ANSI escape text from the hex digit `rgb`."""
-        r = (rgb >> 16) & 0xFF + 60 if highlight else 0
-        g = (rgb >> 8) & 0xFF + 60 if highlight else 0
+        r = ((rgb >> 16) & 0xFF) + (60 if highlight else 0)
+        g = ((rgb >> 8) & 0xFF) + (60 if highlight else 0)
         b = rgb & 0xFF + 60 if highlight else 0
         code = 48 if bg else 38
         styles = []
@@ -44,13 +47,14 @@ class ConsoleIO:
         res: str
         try:
             res = input("")
-        except EOFError or KeyboardInterrupt:
+        except (EOFError, KeyboardInterrupt):
             res = ""
         # Call callback
         if callback is not None: 
             callback(res)
         return res
     def make_progress(self, prompt: str, total: int, curr: int) -> Self:
+        assert total > 0, "total must be greater than 0"
         percent = curr / total
         CHAR_DONE  = "█" # Block
         CHAR_REST  = "░" # White block
@@ -58,7 +62,7 @@ class ConsoleIO:
         bar = int(percent * WIDTH)
         done = CHAR_DONE * bar
         rest = CHAR_REST * (WIDTH - bar)
-        print(f"{prompt} [{done}{rest}]", end=f"{percent * 100:.2f}%       {"\n" if percent >= 1 else "\r"}")
+        print(f"{prompt} [{done}{rest}]", end=f"{percent * 100:.2f}%       {'\n' if percent >= 1 else '\r'}")
         return self
 
 # Test
