@@ -45,9 +45,9 @@ class Text(BaseWidget):
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
         return self
     
-    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        font_ = QFont(font, pointSize=size)
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
         font_.setBold(bold)
         font_.setItalic(italic)
         self._widget.setFont(font_)
@@ -96,9 +96,9 @@ class Button(BaseWidget):
         """Set the callback for when the button is clicked."""
         self._widget.clicked.connect(event)
         return self
-    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        font_ = QFont(font, pointSize=size)
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
         font_.setBold(bold)
         font_.setItalic(italic)
         self._widget.setFont(font_)
@@ -149,9 +149,9 @@ class InputEntry(BaseWidget):
 
         self._widget.installEventFilter(KeyWatcher(callback, cast(QObject, self)))
         return self
-    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        font_ = QFont(font, pointSize=size)
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
         font_.setBold(bold)
         font_.setItalic(italic)
         self._widget.setFont(font_)
@@ -179,9 +179,9 @@ class PasswordEntry(BaseWidget):
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
         return self
-    def set_font(self, font: str, size: int = 10, bold: bool = False, italic: bool = False) -> Self:
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        font_ = QFont(font, pointSize=size)
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
         font_.setBold(bold)
         font_.setItalic(italic)
         self._widget.setFont(font_)
