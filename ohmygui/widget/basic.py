@@ -1,7 +1,7 @@
 # Basic Widgets
 
 from PySide6.QtWidgets import QLabel, QWidget, QPushButton, QLineEdit
-from PySide6.QtGui import QPalette, QKeyEvent
+from PySide6.QtGui import QPalette, QKeyEvent, QFont
 from PySide6.QtCore import QObject, QEvent
 from .base import BaseWidget
 from .event import Event
@@ -45,9 +45,10 @@ class Text(BaseWidget):
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
         return self
     
-    def set_font(self, font: str) -> Self:
+    def set_font(self, font: str, size: int = 10) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")
+        font_ = QFont(font, pointSize=size)
+        self._widget.setFont(font_)
         return self
 
 
@@ -90,9 +91,10 @@ class Button(BaseWidget):
         """Set the callback for when the button is clicked."""
         self._widget.clicked.connect(event)
         return self
-    def set_font(self, font: str) -> Self:
+    def set_font(self, font: str, size: int = 10) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")  
+        font_ = QFont(font, pointSize=size)
+        self._widget.setFont(font_)
         return self
 
 class InputEntry(BaseWidget):
@@ -133,15 +135,10 @@ class InputEntry(BaseWidget):
 
         self._widget.installEventFilter(KeyWatcher(callback, cast(QObject, self)))
         return self
-    def set_font(self, font: str) -> Self:
+    def set_font(self, font: str, size: int = 10) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(
-            f"""font-family: {font}; color: {
-                self._widget.palette().color(QPalette.ColorRole.WindowText).name()
-                }; background-color: {
-                    self._widget.palette().color(QPalette.ColorRole.Window).name()
-                };"""
-        )
+        font_ = QFont(font, pointSize=size)
+        self._widget.setFont(font_)
         return self
 
 class PasswordEntry(BaseWidget):
@@ -163,15 +160,10 @@ class PasswordEntry(BaseWidget):
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
         return self
-    def set_font(self, font: str) -> Self:
+    def set_font(self, font: str, size: int = 10) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(
-            f"""font-family: {font}; color: {
-                self._widget.palette().color(QPalette.ColorRole.WindowText).name()
-                }; background-color: {
-                    self._widget.palette().color(QPalette.ColorRole.Window).name()
-                };"""
-        )
+        font_ = QFont(font, pointSize=size)
+        self._widget.setFont(font_)
         return self
     def hide_password(self) -> Self:
         """Hide the password."""
