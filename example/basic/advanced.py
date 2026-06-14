@@ -77,7 +77,7 @@ table.set_item(1, 0, "Bob")
 table.set_item(1, 1, "88")
 
 def on_table(row, col):
-    val = table.get_item(row, col)
+    val = table[(row, col)]
     info_text.set_text(f"[Table] Cell ({row},{col}) = {val}\n{info_text.text}")
 
 table.on_cell_click(on_table)

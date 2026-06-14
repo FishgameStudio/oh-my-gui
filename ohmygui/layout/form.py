@@ -3,7 +3,7 @@
 from .base import BaseLayout
 from PySide6.QtWidgets import QFormLayout
 from ..widget.base import BaseWidget
-from typing import cast
+from typing import cast, Self
 
 class FormLayout(BaseLayout):
     def __init__(self) -> None:
@@ -22,7 +22,8 @@ class FormLayout(BaseLayout):
         """Set the common margin for the layout."""
         self._layout.setContentsMargins(size, size, size, size)
 
-    def add_widget(self, widget: BaseWidget, label: str = "") -> None:
+    def add_widget(self, widget: BaseWidget, label: str = "") -> Self:
         """Add a label<->widget pair to the form layout."""
         self.stack.append(widget)
         cast(QFormLayout, self._layout).addRow(label, widget._widget)
+        return self

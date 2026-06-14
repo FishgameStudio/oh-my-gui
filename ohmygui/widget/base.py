@@ -1,17 +1,20 @@
 # Base widget class
 
-from PySide6.QtWidgets import QWidget
-from typing import Annotated, Callable, cast
+from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QGraphicsEffect
+from typing import Annotated, Callable, cast, Self
 from PySide6.QtCore import QObject, QEvent
-
+from PySide6.QtGui import QKeyEvent, QColor
 
 Size_Type = tuple[int, int]
 
 class BaseWidget:
     def __init__(self):
         self._widget = QWidget() # Store Qt native widget. 
-    def show(self) -> None: self._widget.show()
-    def hide(self) -> None: self._widget.hide()
+        self._key_callbacks: list[Callable[[int], None]] = []
+        self._init_key_event_handler()
+    
+    def show(self) -> Self: self._widget.show(); return self
+    def hide(self) -> Self: self._widget.hide(); return self
     @property 
     def x_pos(self) -> int: return self._widget.x()
     @property 
@@ -21,25 +24,28 @@ class BaseWidget:
     @property 
     def height(self) -> int: return self._widget.height()
 
-    def set_pos(self, x: int, y: int, w: int | None = None, h: int | None = None) -> None:
+    def set_pos(self, x: int, y: int, w: int | None = None, h: int | None = None) -> Self:
         """Set the position.""" 
         self._widget.setGeometry(
             x, y, w if w != None else self.width, 
             h if h != None else self.height
         )
-    def set_size(self, size: Size_Type) -> None:
+        return self
+    def set_size(self, size: Size_Type) -> Self:
         """Set the size."""
         self.set_pos(self.x_pos, self.y_pos, *size)
-    def set_transparency(self, val: Annotated[float, "0.0 ~ 1.0"]) -> None:
+        return self
+    def set_transparency(self, val: Annotated[float, "0.0 ~ 1.0"]) -> Self:
         """
-        Set the transparency(Not opacity!) of the widget.
-        0.0 -> Transparent
+        Set the transparency(Not opacity!) of the widget.\n
+        0.0 -> Transparent\n
         1.0 -> Opaque
         """
         if val > 1 or val < 0:
             raise ValueError("Value must between 1 and 0")
         self._widget.setWindowOpacity(1.0 - val)
-    def on_hover(self, enter: Callable[[], None], leave: Callable[[], None] | None = None, move: Callable[[], None] | None = None) -> None:
+        return self
+    def on_hover(self, enter: Callable[[], None], leave: Callable[[], None] | None = None, move: Callable[[], None] | None = None) -> Self:
         """Set the callback when the mouse hovers on it."""
         class HoverWatcher(QObject):
             def __init__(self, e_cb, l_cb, m_cb, parent):
@@ -57,12 +63,74 @@ class BaseWidget:
                     self.move()
                 return False
         self._widget.installEventFilter(HoverWatcher(enter, leave, move, cast(QObject,self)))
-    def load_stylesheet(self, qss: str) -> None:
+        return self
+    def load_stylesheet(self, qss: str) -> Self:
         self._widget.setStyleSheet(qss)
-    def lock(self) -> None:
+        return self
+    def lock(self) -> Self:
         self._widget.setEnabled(False)
-    def unlock(self) -> None:
+        return self
+    def unlock(self) -> Self:
         self._widget.setEnabled(True)
+        return self
+    
+    def set_rounded_corner(self, radius: int) -> Self:
+        """Set the rounded corner radius of the widget."""
+        self._widget.setStyleSheet(f"QWidget {{ border-radius: {radius}px; }}")
+        return self
+    def _init_key_event_handler(self):
+        """Unified hijacking button event, executed only once, all bindings go here"""
+        original_key_press = self._widget.keyPressEvent
+
+        def wrapped(evt: QKeyEvent):
+            key_text = evt.text()
+            key_ascii = ord(key_text) if key_text else evt.key()
+
+            for callback in self._key_callbacks:
+                try:
+                    callback(key_ascii)
+                except Exception as e:
+                    print(f"Error: {e}")
+            original_key_press(evt)
+
+        self._widget.keyPressEvent = wrapped
+
+    def on_any_keypressed(self, callback: Callable[[int], None]) -> Self:
+        """
+        Bind event when pressed any key.\n
+        The int param is the ASCII code of the current-pressed key.
+        """
+        self._key_callbacks.append(callback)
+        return self
+
+    def on_keypress(self, ascii: int, callback: Callable[[], None]) -> Self:
+        """Bind event when a specified key (ASCII code) pressed."""
+        def _key_filter(current_key: int):
+            if current_key == ascii:
+                callback()
+
+        self._key_callbacks.append(_key_filter)
+        return self
+    def set_shadow(self, blur_radius: int = 10, x_offset: int = 0, y_offset: int = 3, color: str = "#00000080") -> Self:
+        """
+        Add shadow effects.\n
+        :param blur_radius: Blur radius, the larger the radius, the softer the shadow
+        :param x_offset: horizontal offset: positive to the right, negative to the left
+        :param y_offset: Vertical offset: positive downward, negative upward
+        :param color: Shadow color, supports hexadecimal `#RRGGBBAA` with transparency
+        """
+        shadow_effect = QGraphicsDropShadowEffect()
+        shadow_effect.setBlurRadius(blur_radius)
+        shadow_effect.setXOffset(x_offset)
+        shadow_effect.setYOffset(y_offset)
+        shadow_effect.setColor(QColor(color))
+        
+        self._widget.setGraphicsEffect(shadow_effect)
+        return self
+    def remove_shadow(self) -> Self:
+        self._widget.setGraphicsEffect(cast(QGraphicsEffect, None))
+        return self
+
     @property
     def is_locked(self) -> bool:
         return not self._widget.isEnabled()

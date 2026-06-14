@@ -1,11 +1,11 @@
 # Basic Widgets
 
 from PySide6.QtWidgets import QLabel, QWidget, QPushButton, QLineEdit
-from PySide6.QtGui import QPalette, QKeyEvent
+from PySide6.QtGui import QPalette, QKeyEvent, QFont
 from PySide6.QtCore import QObject, QEvent
 from .base import BaseWidget
 from .event import Event
-from typing import Callable, Any, Optional, cast
+from typing import Callable, Any, Optional, cast, Self
 
 class Text(BaseWidget):
     """Label text."""
@@ -24,26 +24,37 @@ class Text(BaseWidget):
     @property
     def bg(self) -> str: return self._widget.palette().color(QPalette.ColorRole.Window).name()
 
-    def set_text(self, text: str) -> None:
+    def set_text(self, text: str) -> Self:
         """Set the text of the label."""
         self._widget.setText(text)
+        return self
 
-    def set_foreground(self, fg: str) -> None:
+    def set_foreground(self, fg: str) -> Self:
         """Set the foreground of the text."""
         self.set_color(fg, self.bg)  # Don't cover the foreground
+        return self
 
-    def set_background(self, bg: str) -> None:
+    def set_background(self, bg: str) -> Self:
         """Set the background of the text."""
         self.set_color(self.fg, bg) 
+        return self
 
-    def set_color(self, fg: str, bg: str) -> None:
+    def set_color(self, fg: str, bg: str) -> Self:
         """Set both the background & foreground"""
         # Set together
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
+        return self
     
-    def set_font(self, font: str) -> None:
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
+        font_.setBold(bold)
+        font_.setItalic(italic)
+        self._widget.setFont(font_)
+        return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
 
 
 class Button(BaseWidget):
@@ -61,28 +72,40 @@ class Button(BaseWidget):
     @property
     def bg(self) -> str: return self._widget.palette().color(QPalette.ColorRole.Button).name()
 
-    def set_text(self, text: str) -> None:
+    def set_text(self, text: str) -> Self:
         """Set the text of the label."""
         self._widget.setText(text)
+        return self
 
-    def set_foreground(self, fg: str) -> None:
+    def set_foreground(self, fg: str) -> Self:
         """Set the foreground of the text."""
         self.set_color(fg, self.bg)
+        return self
 
-    def set_background(self, bg: str) -> None:
+    def set_background(self, bg: str) -> Self:
         """Set the background of the text."""
         self.set_color(self.fg, bg) 
+        return self
 
-    def set_color(self, fg: str, bg: str) -> None:
+    def set_color(self, fg: str, bg: str) -> Self:
         """Set both the background & foreground"""
         # Set together
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
-    def on_click(self, event: Callable[[Any], None]) -> None:
+        return self
+    def on_click(self, event: Callable[[Any], None]) -> Self:
         """Set the callback for when the button is clicked."""
         self._widget.clicked.connect(event)
-    def set_font(self, font: str) -> None:
+        return self
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")  
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
+        font_.setBold(bold)
+        font_.setItalic(italic)
+        self._widget.setFont(font_)
+        return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
 
 class InputEntry(BaseWidget):
     def __init__(self, default_prompt: str = "", default_value: str = "") -> None:
@@ -94,13 +117,19 @@ class InputEntry(BaseWidget):
     def value(self) -> str:
         """Get the value of the input."""
         return self._widget.text()
-    def set_value(self, value: str) -> None:
+    def set_value(self, value: str) -> Self:
         """Set the value of the input."""
         self._widget.setText(value)
-    def on_submit(self, event: Callable[[Any], None]) -> None:
+        return self
+    def clear_value(self) -> Self:
+        """Clear the value of the input."""
+        self.set_value("")
+        return self
+    def on_submit(self, event: Callable[[], None]) -> Self:
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
-    def on_keypress(self, callback: Callable[[str], None]) -> None:
+        return self
+    def on_key_press(self, callback: Callable[[str], None]) -> Self:
         """
         Set the callback for when a key pressed.
         The `str` param is for current pressed key.
@@ -119,16 +148,17 @@ class InputEntry(BaseWidget):
                 return False
 
         self._widget.installEventFilter(KeyWatcher(callback, cast(QObject, self)))
-        
-    def set_font(self, font: str) -> None:
+        return self
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(
-            f"""font-family: {font}; color: {
-                self._widget.palette().color(QPalette.ColorRole.WindowText).name()
-                }; background-color: {
-                    self._widget.palette().color(QPalette.ColorRole.Window).name()
-                };"""
-        )
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
+        font_.setBold(bold)
+        font_.setItalic(italic)
+        self._widget.setFont(font_)
+        return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
 
 class PasswordEntry(BaseWidget):
     def __init__(self, default_prompt: str = "Password: ", default_value: str = "") -> None:
@@ -141,24 +171,28 @@ class PasswordEntry(BaseWidget):
     def value(self) -> str:
         """Get the value of the input."""
         return self._widget.text()
-    def show_password(self) -> None:
+    def show_password(self) -> Self:
         """Show the password."""
         self._widget.setEchoMode(QLineEdit.EchoMode.Normal)
-    def on_submit(self, event: Callable[[Any], None]) -> None:
+        return self
+    def on_submit(self, event: Callable[[Any], None]) -> Self:
         """Set the callback for when the input is entered."""
         self._widget.returnPressed.connect(event)
-    def set_font(self, font: str) -> None:
+        return self
+    def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        self._widget.setStyleSheet(
-            f"""font-family: {font}; color: {
-                self._widget.palette().color(QPalette.ColorRole.WindowText).name()
-                }; background-color: {
-                    self._widget.palette().color(QPalette.ColorRole.Window).name()
-                };"""
-        )
-    def hide_password(self) -> None:
+        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
+        font_.setBold(bold)
+        font_.setItalic(italic)
+        self._widget.setFont(font_)
+        return self
+    @property
+    def font(self) -> str:
+        return str(self._widget.font())
+    def hide_password(self) -> Self:
         """Hide the password."""
         self._widget.setEchoMode(QLineEdit.EchoMode.Password)
+        return self
 
 
 

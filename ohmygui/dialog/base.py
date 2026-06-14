@@ -1,6 +1,7 @@
 # Base dialog window.
 
 from PySide6.QtWidgets import QDialog
+from typing import Self
 
 class BaseDialog:
     def __init__(self, title: str, content: str):
@@ -8,23 +9,31 @@ class BaseDialog:
         self.content = content
         self._win = QDialog()
         self._win.setWindowTitle(self.title)
-    def show(self) -> None:
-        self._win.exec_()
-    def hide(self) -> None:
+    def show(self) -> Self:
+        self._win.exec()
+        return self
+    def hide(self) -> Self:
         self._win.hide()
-    def close(self) -> None:
+        return self
+    def close(self) -> Self:
         self._win.close()
-    def set_title(self, title: str) -> None:
+        return self
+    def set_title(self, title: str) -> Self:
         self.title = title
         self._win.setWindowTitle(self.title)
-    def set_content(self, content: str) -> None:
+        return self
+    def set_content(self, content: str) -> Self:
         self.content = content
-    def load_stylesheet(self, qss: str) -> None:
+        return self
+    def load_stylesheet(self, qss: str) -> Self:
         self._win.setStyleSheet(qss)
-    def lock(self) -> None:
+        return self
+    def lock(self) -> Self:
         self._win.setEnabled(False)
-    def unlock(self) -> None:
+        return self
+    def unlock(self) -> Self:
         self._win.setEnabled(True)
+        return self
     @property
     def is_locked(self) -> bool:
         return not self._win.isEnabled()

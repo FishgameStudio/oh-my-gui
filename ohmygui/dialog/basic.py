@@ -3,7 +3,7 @@
 from .base import BaseDialog
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QColorDialog
 from .enums import Icon, Button
-from typing import Callable
+from typing import Callable, Self
 
 class MessageBox(BaseDialog):
     def __init__(self, title: str, content: str, icon: Icon = Icon.NoIcon, buttons: Button = Button.Ok) -> None:
@@ -13,15 +13,19 @@ class MessageBox(BaseDialog):
         self._win.setText(self.content)
         self._win.setIcon(icon)
         self._win.setStandardButtons(buttons)
-    def set_icon(self, icon: QMessageBox.Icon) -> None:
+    def set_icon(self, icon: QMessageBox.Icon) -> Self:
         """Set the icon of the message box."""
         self._win.setIcon(icon)
-    def set_content(self, content: str) -> None:
-        return self._win.setText(content)
-    def set_info(self, info: str) -> None:
-        return self._win.setInformativeText(info)
-    def set_detail(self, detail: str) -> None:
-        return self._win.setDetailedText(detail)
+        return self
+    def set_content(self, content: str) -> Self:
+        self._win.setText(content)
+        return self
+    def set_info(self, info: str) -> Self:
+        self._win.setInformativeText(info)
+        return self
+    def set_detail(self, detail: str) -> Self:
+        self._win.setDetailedText(detail)
+        return self
     def on_click(self, event: Callable[[int], None]):
         """
         Bind callback on button clicked.
@@ -29,12 +33,13 @@ class MessageBox(BaseDialog):
         """
         event(self._win.question(None, self.title, self.get_content)) # Ask & call
 
-    def set_buttons(self, buttons: Button) -> None:
+    def set_buttons(self, buttons: Button) -> Self:
         """Set the buttons of the message box."""
         self._win.setStandardButtons(buttons)
+        return self
 class FileChooser(BaseDialog):
-    def __init__(self, title: str, content: str) -> None:
-        super().__init__(title, content)
+    def __init__(self, title: str) -> None:
+        super().__init__(title, "")
         self._win = QFileDialog()
         self._win.setWindowTitle(self.title)
     def get_selections(self) -> list[str]:
@@ -42,6 +47,9 @@ class FileChooser(BaseDialog):
         if self._win.exec():
             return self._win.selectedFiles()
         return []
+    def set_default_dir(self, dir: str) -> None:
+        """Set the default directory when opening."""
+        self._win.setDirectory(dir)
 class ColorPicker(BaseDialog):
     def __init__(self, title: str, content: str) -> None:
         super().__init__(title, content)
