@@ -1,8 +1,8 @@
 # Basic markdown viewer.
+# Only 36 lines.
 
 from ohmygui import *
 
-from ohmygui import *
 app = core.App()
 win = core.Window("Simple Markdown Viewer", (1000, 700))
 
