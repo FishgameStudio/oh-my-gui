@@ -2,9 +2,13 @@
 
 from PySide6.QtWidgets import QDialog
 from typing import Self
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class BaseDialog:
     def __init__(self, title: str, content: str):
+        info("BaseDialog enter __init__")
         self.title = title
         self.content = content
         self._win = QDialog()

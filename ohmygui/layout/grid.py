@@ -4,7 +4,9 @@ from .base import BaseLayout
 from PySide6.QtWidgets import QGridLayout
 from ..widget.base import BaseWidget
 from typing import Self, cast
+from logging import info, warning, error, critical
 
+info(f"Module {__name__} loaded")
 class GridLayout(BaseLayout):
     def __init__(self) -> None:
         super().__init__()

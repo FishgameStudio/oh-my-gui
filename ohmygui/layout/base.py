@@ -4,9 +4,13 @@ from ..widget.base import BaseWidget
 from PySide6.QtWidgets import QMainWindow
 from PySide6.QtWidgets import QLayout
 from typing import Self
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class BaseLayout:
     def __init__(self) -> None:
+        info("BaseLayout enter __init__")
         self._layout: QLayout | None = None # Native layout object
         self.stack: list[BaseWidget] = [] # UI Stack
     def add_widget(self, widget: BaseWidget) -> Self:

@@ -1,6 +1,9 @@
 # Main events class for binding button.
 
 from typing import Callable
+from logging import info, warning, error, critical
+
+info(f"Module {__name__} loaded")
 
 class Event:
     def __init__(self, func: Callable):

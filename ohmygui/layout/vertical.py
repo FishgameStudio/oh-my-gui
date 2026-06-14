@@ -1,3 +1,5 @@
+from logging import info, warning, error, critical
+info(f"Module {__name__} loaded")
 from .box import BoxLayout
 from PySide6.QtWidgets import QVBoxLayout
 from typing import Self, cast

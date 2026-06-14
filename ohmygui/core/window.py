@@ -6,6 +6,7 @@ from PySide6.QtGui import QResizeEvent, QCloseEvent
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
+from logging import info, warning, error, critical
 
 Size_Type = tuple[int, int]
 Dir = Size_Type
@@ -13,6 +14,7 @@ RelDir = tuple[Annotated[float, "0.0 ~ 1.0"], Annotated[float, "0.0 ~ 1.0"]]
 
 class Window:
     def __init__(self, title: str = "", size: Size_Type = (800, 500)) -> None:
+        info("Window enter __init__")
         self._win = QMainWindow()
         self._win.setWindowTitle(title)
         self._win.resize(*size)
@@ -21,6 +23,7 @@ class Window:
         self.stack: list[tuple[bool, BaseWidget]] = [] # is_relavtive_binded & UI Stack
         # caches of Relative positions
         self._rel_cache: dict[BaseWidget, RelDir] = {}
+        info("Window exit __init__")
 
     @property
     def x(self) -> int: return self._win.x()
@@ -33,12 +36,14 @@ class Window:
 
     def set_size(self, size: Size_Type) -> Self:
         """Set the size of the window."""
+        info(f"set Window size as {size}")
         self._win.resize(*size)
         return self
 
-    def set_position(self, x: int, y: int) -> Self:
+    def set_position(self, pos: Dir) -> Self:
         """Set the position of the window on the screen."""
-        self._win.setGeometry(x, y, self.w, self.h)
+        info(f"set pos as {pos}")
+        self._win.setGeometry(*pos, self.w, self.h)
         return self
 
     @property
@@ -48,11 +53,13 @@ class Window:
 
     def fix_size(self) -> Self:
         """Fix the size."""
+        info("Window size fixed")
         self._win.setFixedSize(self.w, self.h)
         return self
 
     def unfix_size(self) -> Self:
         """Unfix the size."""
+        info("Window size unfixed")
         # Unlock the size scope.
         self._win.setMinimumSize(0, 0)
         self._win.setMaximumSize(QSize(16777215, 16777215))
@@ -60,6 +67,7 @@ class Window:
 
     def bind_widget(self, widget: BaseWidget, dir: Dir) -> Self:
         """Bind a widget to the window."""
+        info(f"bind widget {widget}")
         # All the widgets are on the central widget.
         
         self.stack.append((False, widget))
@@ -70,6 +78,7 @@ class Window:
 
     def relative_bind(self, widget: BaseWidget, reldir: RelDir) -> Self: 
         """Bind widgets by relative position."""
+        info(f"bind widget {widget} in relative")
         self.stack.append((True, widget))
         widget._widget.setParent(self.central)
         # store relative pos
@@ -89,6 +98,7 @@ class Window:
         widget.show()
         return self
     def set_parent(self, parent: 'Window') -> Self:
+        info(f"Window parent set as {parent}")
         self._win.setParent(parent.native)
         return self
     @property
@@ -105,15 +115,19 @@ class Window:
 
     def set_layout(self, layout: BaseLayout) -> Self:
         """Set a layout on the window's central widget."""
+        info(f"set layout as {layout}")
         self.central.setLayout(layout.native)
         return self
     def load_style_from(self, path: str) -> Self:
         """Load style sheet from a QSS file."""
+        info(f"load QSS from file {path}")
         qss: str
         try:
             with open(path, "r", encoding="utf-8") as f:
                 qss = f.read()
+            info("QSS has been read")
         except FileNotFoundError as e:
+            error(f"QSS file {path} not found")
             raise FileNotFoundError(f"QSS file not found: {e.filename}")
         self._win.setStyleSheet(qss)
         return self
