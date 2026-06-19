@@ -102,4 +102,4 @@ class Application:
         
 
 # Alias
-App = Application
+App = type[Application]
