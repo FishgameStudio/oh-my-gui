@@ -45,8 +45,17 @@ class Video(BaseWidget):
     @property
     def player_object(self):
         return self.player
+    @property
+    def is_playing(self) -> bool:
+        return self.player.isPlaying()
     def set_fullscreen(self, option: bool) -> Self:
         self._widget.setFullScreen(option)
+        return self
+    def set_loop(self, option: bool) -> Self:
+        if option:
+            self.player.setLoops(QMediaPlayer.Loops.Infinite)
+        else:
+            self.player.setLoops(QMediaPlayer.Loops.Once)
         return self
     def stop(self) -> Self:
         self.player.stop()
