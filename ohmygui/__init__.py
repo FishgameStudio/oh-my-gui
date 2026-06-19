@@ -30,7 +30,7 @@ _logging.basicConfig(
 )
 
 __author__  = "Fishgame Studio"
-__version__ = "0.5.1"
+__version__ = "0.9.0"
 
 from . import core
 from . import widget
