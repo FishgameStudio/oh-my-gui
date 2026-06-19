@@ -4,6 +4,7 @@ from .base import BaseDialog
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QColorDialog
 from .enums import Icon, Button
 from typing import Callable, Self
+from logging import info, warning, error, critical
 
 class MessageBox(BaseDialog):
     def __init__(self, title: str, content: str, icon: Icon = Icon.NoIcon, buttons: Button = Button.Ok) -> None:
@@ -17,7 +18,6 @@ class MessageBox(BaseDialog):
         """Set the icon of the message box."""
         self._win.setIcon(icon)
         return self
-        from logging import info, warning, error, critical
     def set_content(self, content: str) -> Self:
         info(f"Module {__name__} loaded")
         self._win.setText(content)

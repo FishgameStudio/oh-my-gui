@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oh-my-gui"  # Project name
-version = "0.4.0"           # project ver
+version = "0.5.1"           # project ver
 authors = [
   { name="FishgameStudio", email="popxhxh@outlook.com" }
 ]
