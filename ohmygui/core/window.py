@@ -22,7 +22,7 @@ class Window:
         self._win.setCentralWidget(self.central)
         self.menubar = self._win.menuBar()
         self._menus = []
-        self.stack: list[tuple[bool, BaseWidget]] = [] # is_relavtive_binded & UI Stack
+        self.stack: list[tuple[bool, BaseWidget]] = [] # is_relative_binded & UI Stack
         # caches of Relative positions
         self._rel_cache: dict[BaseWidget, RelDir] = {}
         info("Window exit __init__")
@@ -49,7 +49,7 @@ class Window:
         return self
 
     @property
-    def get_size(self) -> Size_Type:
+    def size(self) -> Size_Type:
         """Returns the window size."""
         return (self.w, self.h)
 
@@ -111,7 +111,7 @@ class Window:
         return self._win.children()
 
     @property
-    def top_widgets(self) -> QWidget:
+    def toplevel_widget(self) -> QWidget:
         """Returns the top window & widgets."""
         return self._win.topLevelWidget()
 
