@@ -162,7 +162,7 @@ This project uses **`PySide6`** as the GUI core dependency. Please ensure **`PyS
 - [x] **v0.3.0**: Basic style control, QML support
 - [x] **v0.4.0**: Optimize layout, complex widgets
 - [x] **v0.5.0**: Fix most bugs, optimize performence, improve docs
-- [ ] **v0.9.0**\[RC Version\]: freeze API
+- [x] **v0.9.0**\[RC Version\]: freeze API
 - [ ] **v1.0.0**\[Official Stable Version\]: launch on PyPI
 
 See the [open issues](https://github.com/FishgameStudio/oh-my-gui/issues) for a full list of proposed features (and known issues).
