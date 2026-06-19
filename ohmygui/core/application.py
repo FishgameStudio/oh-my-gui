@@ -26,15 +26,19 @@ class Application:
         QApplication.setHighDpiScaleFactorRoundingPolicy(
             Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
         )
+        # Enable high API scaling & log debug plugin.
+        environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+        environ["QT_DEBUG_PLUGINS"] = "1"
+
+        # Instantiation.
         self._app: Union[QGuiApplication, QApplication] = QApplication(argv)
         self._engine: Optional[QQmlApplicationEngine] = None
         # Call init_widget_mode in default way.
         self._isqml = False
         self.init_widget_mode()
 
-        # Uniform style & enable 
+        # Uniform style
         self._app.setStyle("Fusion")
-        environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
         self._app.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
         info("Application leave __init__")
 
