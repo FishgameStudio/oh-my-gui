@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oh-my-gui"  # Project name
-version = "0.9.0"           # project ver
+version = "1.0.0"           # project ver
 authors = [
   { name="FishgameStudio", email="popxhxh@outlook.com" }
 ]
@@ -22,7 +22,6 @@ keywords = ["python", "gui", "oh-my-gui"]  # Project keyword
 dependencies = [
   "pyside6>=6.11.1",
   "pyperclip>=1.11.0", 
-  "plyer>=2.1.0", 
   "requests>=2.32.5"
 ]
 
