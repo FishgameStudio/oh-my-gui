@@ -6,8 +6,9 @@ from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
+from typing_extensions import deprecated as _deprecated
 from logging import info, warning, error, critical
-from _py_warnings import deprecated as _deprecated
+
 
 Size_Type = tuple[int, int]
 Dir = Size_Type
