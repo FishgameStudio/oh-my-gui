@@ -18,7 +18,7 @@
 ![Contributors](https://img.shields.io/github/contributors/FishgameStudio/oh-my-gui)
 ![Welcome](https://img.shields.io/badge/PRs%20%26%20Issues-welcome-bluevoilet)
 
-![Version](https://img.shields.io/badge/version-1.0.0-orange)
+![Version](https://img.shields.io/badge/version-1.1.0-orange)
 ![Qt](https://img.shields.io/badge/Framework-PySide6-52C141)
 [![Python](https://img.shields.io/badge/python-3.14-blue)](https://python.org)
 ![QtVer](https://img.shields.io/badge/Qt-6.11.0-2392DD)
@@ -158,7 +158,7 @@ This project uses **`PySide6`** as the GUI core dependency. Please ensure **`PyS
 
 ## Roadmap
 - [x] **v1.0.0**\[Official Stable Version\]: launch on PyPI
-- [ ] **v1.1.0**: Add more widget extensions & add CHANGELOG.md
+- [x] **v1.1.0**: Add more widget extensions & add CHANGELOG.md
 - [ ] **v1.2.0**: Create OML & OMS
 - [ ] **v1.3.0**: Improve animations
 - [ ] **v1.4.0**: 3D engine support
