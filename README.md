@@ -18,7 +18,7 @@
 ![Contributors](https://img.shields.io/github/contributors/FishgameStudio/oh-my-gui)
 ![Welcome](https://img.shields.io/badge/PRs%20%26%20Issues-welcome-bluevoilet)
 
-![Version](https://img.shields.io/badge/version-0.9.0-orange)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 ![Qt](https://img.shields.io/badge/Framework-PySide6-52C141)
 [![Python](https://img.shields.io/badge/python-3.14-blue)](https://python.org)
 ![QtVer](https://img.shields.io/badge/Qt-6.11.0-2392DD)
@@ -163,7 +163,7 @@ This project uses **`PySide6`** as the GUI core dependency. Please ensure **`PyS
 - [x] **v0.4.0**: Optimize layout, complex widgets
 - [x] **v0.5.0**: Fix most bugs, optimize performence, improve docs
 - [x] **v0.9.0**\[RC Version\]: freeze API
-- [ ] **v1.0.0**\[Official Stable Version\]: launch on PyPI
+- [x] **v1.0.0**\[Official Stable Version\]: launch on PyPI
 
 See the [open issues](https://github.com/FishgameStudio/oh-my-gui/issues) for a full list of proposed features (and known issues).
 
