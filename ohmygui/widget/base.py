@@ -62,6 +62,7 @@ class BaseWidget:
         1.0 -> Opaque
         """
         if val > 1 or val < 0:
+            warning(f"value not bewteen 0 and 1 (was {val})")
             raise ValueError("Value must between 0 and 1")
         self._widget.setWindowOpacity(1.0 - val)
         return self
@@ -96,6 +97,7 @@ class BaseWidget:
                 try:
                     callback(key_ascii)
                 except Exception as e:
+                    error(f"error when calling callback '{callback}' with exception {e} ")
                     raise RuntimeError(f"Error when executing callback: {e}")
             original_key_press(evt)
 
