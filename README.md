@@ -158,9 +158,9 @@ This project uses **`PySide6`** as the GUI core dependency. Please ensure **`PyS
 
 ## Roadmap
 - [x] **v1.0.0**\[Official Stable Version\]: launch on PyPI
-- [ ] **v1.1.0**: Improve widgets & windows, add CHANGELOG.md
-- [ ] **v1.2.0**: Add more widget extensions
-- [ ] **v1.3.0**: Create OML & OMS, improve animations
+- [ ] **v1.1.0**: Add more widget extensions & add CHANGELOG.md
+- [ ] **v1.2.0**: Create OML & OMS
+- [ ] **v1.3.0**: Improve animations
 - [ ] **v1.4.0**: 3D engine support
 - [ ] **v1.5.0**: Improve docs, FAQ, examples
 - [ ] **v1.9.0**\[Release Candidate\]: Freeze APIs, fix most bugs
