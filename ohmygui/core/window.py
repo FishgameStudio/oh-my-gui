@@ -1,7 +1,7 @@
 # Main window class
 
 from PySide6.QtWidgets import QMainWindow, QWidget
-from PySide6.QtCore import QSize, QObject
+from PySide6.QtCore import QSize, QObject, QRect as _QRect
 from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
@@ -10,11 +10,21 @@ from typing_extensions import deprecated as _deprecated
 from logging import info, warning, error, critical
 from ..widget.page import Interface as _Interface
 from weakref import finalize as _finalize
+from enum import Enum as _Enum
 
 
 Size_Type = tuple[int, int]
 Dir = Size_Type
 RelDir = tuple[Annotated[float, "0.0 ~ 1.0"], Annotated[float, "0.0 ~ 1.0"]]
+
+class WinSize(_Enum):
+    Maximum       = 0
+    Minimum       = 1
+    Regular       = 2
+    Left          = 3
+    Right         = 4
+    Top           = 5
+    Bottom        = 6
 
 class Window:
     def __init__(self, title: str = "", size: Size_Type = (800, 500)) -> None:
@@ -22,6 +32,7 @@ class Window:
         self._win = QMainWindow()
         self._win.setWindowTitle(title)
         self._win.resize(*size)
+        self._win.setDockNestingEnabled(True) 
         self.central = QWidget() # Central Widget for binding UI.
         self._win.setCentralWidget(self.central)
         self.menubar = self._win.menuBar()
@@ -251,6 +262,57 @@ class Window:
         self._win.destroy()
         return self
     
+    def snap(self, layout: WinSize) -> Self:
+        """Set snaping mode"""
+        screen_rect = self._win.screen().availableGeometry()
+        target_rect: _QRect = _QRect()
+        match layout:
+            case WinSize.Maximum:
+                target_rect = _QRect(
+                    screen_rect.left(),
+                    screen_rect.top(),
+                    screen_rect.width(), 
+                    screen_rect.height()
+                )
+            case WinSize.Minimum:
+                target_rect = _QRect(
+                    0, 0, 0, 0
+                )
+            case WinSize.Left:
+                half_w = screen_rect.width() // 2
+                target_rect = _QRect(
+                    screen_rect.left(),
+                    screen_rect.top(),
+                    half_w,
+                    screen_rect.height()
+                )
+            case WinSize.Right:
+                half_w = screen_rect.width() // 2
+                target_rect = _QRect(
+                    half_w, 
+                    screen_rect.top(),
+                    half_w,
+                    screen_rect.height()
+                )
+            case WinSize.Top:
+                half_h = screen_rect.height() // 2
+                target_rect = _QRect(
+                    screen_rect.left(),  
+                    screen_rect.top(),
+                    screen_rect.width(),
+                    half_h
+                )
+            case WinSize.Bottom:
+                half_h = screen_rect.height() // 2
+                target_rect = _QRect(
+                    screen_rect.left(),  
+                    half_h,
+                    screen_rect.width(),
+                    half_h
+                )
+        self._win.setGeometry(target_rect)
+        return self
+
     @property
     def menus(self) -> list:
         return self._menus
