@@ -6,7 +6,8 @@ from PySide6.QtMultimediaWidgets import QVideoWidget
 from typing import Self, Any, Callable
 from logging import info as _info
 from PySide6.QtWidgets import (
-    QSplashScreen, QSpinBox, QDoubleSpinBox, QDial
+    QSplashScreen, QSpinBox, QDoubleSpinBox, QDial, 
+    QTreeWidget, QTreeWidgetItem
 )
 from PySide6.QtGui import QPixmap, QPalette, QColor
 
@@ -382,4 +383,116 @@ class Dial(BaseWidget):
         _info(f"Dial font family {font}")
         self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")
         return self
+    
+class Tree(BaseWidget):
+    def __init__(self, fg: str = "#ffffff", bg: str = "#000000"):
+        super().__init__()
+        _info("Initialize TreeWidget component")
+        self._widget = QTreeWidget()
+        self._widget.setColumnCount(1)
+        self.set_color(fg, bg)
+        _info("TreeWidget instance created, single column enabled by default")
+
+    @property
+    def fg(self) -> str:
+        """Get tree item foreground text color."""
+        return self._widget.palette().color(QPalette.ColorRole.Text).name()
+
+    @property
+    def bg(self) -> str:
+        """Get tree view background color."""
+        return self._widget.palette().color(QPalette.ColorRole.Base).name()
+
+    @property
+    def current_text(self) -> str:
+        """Get text of currently selected tree item (first column)."""
+        item = self._widget.currentItem()
+        return item.text(0) if item else ""
+
+    @property
+    def current_item(self) -> QTreeWidgetItem | None:
+        """Get raw selected QTreeWidgetItem object."""
+        return self._widget.currentItem()
+
+    def set_column_count(self, count: int) -> Self:
+        """Set number of tree columns."""
+        _info(f"TreeWidget set column count = {count}")
+        self._widget.setColumnCount(count)
+        return self
+
+    def set_header_labels(self, labels: list[str]) -> Self:
+        """Set horizontal header text for each column."""
+        _info(f"TreeWidget set header labels: {labels}")
+        self._widget.setHeaderLabels(labels)
+        return self
+
+    def add_root_item(self, text: str) -> Self:
+        """Add top-level root tree node."""
+        _info(f"TreeWidget add root item: {text}")
+        item = QTreeWidgetItem([text])
+        self._widget.addTopLevelItem(item)
+        return self
+
+    def add_child_item(self, parent_item: QTreeWidgetItem, text: str) -> Self:
+        """Add child node under specified parent item."""
+        _info(f"TreeWidget add child item '{text}' to parent node")
+        child = QTreeWidgetItem([text])
+        parent_item.addChild(child)
+        return self
+
+    def clear_all(self) -> Self:
+        """Remove all tree items completely."""
+        _info("TreeWidget clear all nodes")
+        self._widget.clear()
+        return self
+
+    def expand_all(self) -> Self:
+        """Expand every collapsible tree node."""
+        _info("TreeWidget expand all items")
+        self._widget.expandAll()
+        return self
+
+    def collapse_all(self) -> Self:
+        """Collapse every tree node."""
+        _info("TreeWidget collapse all items")
+        self._widget.collapseAll()
+        return self
+
+    def set_foreground(self, fg: str) -> Self:
+        """Override item text color."""
+        self.set_color(fg, self.bg)
+        _info(f"TreeWidget update foreground color {fg}")
+        return self
+
+    def set_background(self, bg: str) -> Self:
+        """Override tree background color."""
+        self.set_color(self.fg, bg)
+        _info(f"TreeWidget update background color {bg}")
+        return self
+
+    def set_color(self, fg: str, bg: str) -> Self:
+        """Set both foreground text and background color."""
+        self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
+        _info(f"TreeWidget set color fg={fg}, bg={bg}")
+        return self
+
+    def on_item_click(self, event: Callable[[QTreeWidgetItem, int], None]) -> Self:
+        """Bind callback for single click on tree item, passes (item, column)."""
+        _info("TreeWidget bind itemClicked event callback")
+        self._widget.itemClicked.connect(event)
+        return self
+
+    def on_item_double_click(self, event: Callable[[QTreeWidgetItem, int], None]) -> Self:
+        """Bind callback for double click on tree item."""
+        _info("TreeWidget bind itemDoubleClicked event callback")
+        self._widget.itemDoubleClicked.connect(event)
+        return self
+
+    def set_font(self, font: str) -> Self:
+        """Set global font family for all tree items."""
+        _info(f"TreeWidget set font family = {font}")
+        self._widget.setStyleSheet(f"font-family: {font}; color: {self.fg}; background-color: {self.bg};")
+        return self
+    
+
     
