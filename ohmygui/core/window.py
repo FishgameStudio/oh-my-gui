@@ -8,6 +8,8 @@ from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
 from typing_extensions import deprecated as _deprecated
 from logging import info, warning, error, critical
+from ..widget.page import Interface as _Interface
+from weakref import finalize as _finalize
 
 
 Size_Type = tuple[int, int]
@@ -27,6 +29,9 @@ class Window:
         self.stack: list[tuple[bool, BaseWidget]] = [] # is_relative_binded & UI Stack
         # caches of Relative positions
         self._rel_cache: dict[BaseWidget, RelDir] = {}
+        self._interface: _Interface | None = None
+        # destructor
+        self._dtor = _finalize(self, self.__destruct__)
         info("Window exit __init__")
 
     @property
@@ -125,6 +130,15 @@ class Window:
         """Set a layout on the window's central widget."""
         info(f"set layout as {layout}")
         self.central.setLayout(layout.native)
+        # Clear interface
+        self._interface = None
+        return self
+    def set_interface(self, interface: _Interface) -> Self:
+        """Set self._interface"""
+        info(f"set interface as {interface}")
+        self._interface = interface
+        # Detach layout
+        self.central.setLayout(None) # type: ignore
         return self
     def load_style_from(self, path: str) -> Self:
         """Load style sheet from a QSS file."""
@@ -231,6 +245,11 @@ class Window:
                 menu.addSeparator()
         self._menus.append(menu)    
         return self
+
+    def destroy(self) -> Self:
+        """Destory this window."""
+        self._win.destroy()
+        return self
     
     @property
     def menus(self) -> list:
@@ -251,3 +270,11 @@ class Window:
     def native(self):
         """Native escape port: Get the underlying PySide6 control"""
         return self._win
+    
+    def __destruct__(self) -> None:
+        self._interface = None
+        self._win.setLayout(None) # type: ignore
+        self._rel_cache.clear()
+        self._menus.clear()
+        self.stack.clear()
+        self._win.deleteLater()
