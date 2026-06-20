@@ -76,6 +76,7 @@ class Application:
         if self._app is not None: 
             self._app.aboutToQuit.connect(event.get_func)
         else:
+            critical("self._app does not initialize QML or widget mode (is None)")
             raise RuntimeError("Please call init_widget_mode() or init_qml_mode() first")
     
     @property

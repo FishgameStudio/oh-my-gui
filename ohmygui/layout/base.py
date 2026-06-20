@@ -24,6 +24,7 @@ class BaseLayout:
             self.stack.remove(widget)
             self._layout.removeWidget(widget._widget) # type: ignore
         else:
+            warning(f"no widget found {widget} in stack")
             raise ValueError("Widget not found in the layout.")
         return self
     def clear(self) -> Self:
