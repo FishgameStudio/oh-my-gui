@@ -6,7 +6,9 @@ from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
+from typing_extensions import deprecated as _deprecated
 from logging import info, warning, error, critical
+
 
 Size_Type = tuple[int, int]
 Dir = Size_Type
@@ -109,6 +111,10 @@ class Window:
     @property
     def children(self) -> list[QObject]:
         return self._win.children()
+    
+    @property
+    @_deprecated("`top_widgets` is deprecated. Use toplevel_widget instead.")
+    def top_widgets(self) -> Self: ...
 
     @property
     def toplevel_widget(self) -> QWidget:
