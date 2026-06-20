@@ -2,7 +2,7 @@
 
 from PySide6.QtWidgets import QMainWindow, QWidget
 from PySide6.QtCore import QSize, QObject, QRect as _QRect
-from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction
+from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction, QPixmap
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
@@ -65,7 +65,18 @@ class Window:
         info(f"set pos as {pos}")
         self._win.setGeometry(*pos, self.w, self.h)
         return self
-
+    
+    def set_icon(self, ico_path: str) -> Self:
+        """Set the icon of the window."""
+        try:
+            self._win.setWindowIcon(QPixmap(ico_path))
+        except FileNotFoundError:
+            error(f"Icon file not found: {ico_path}")
+        except PermissionError:
+            error(f"Icon file permission denied: {ico_path}")
+        except Exception as e:
+            error(f"Except when setting window icon: {e}")
+        return self
     @property
     def size(self) -> Size_Type:
         """Returns the window size."""
@@ -162,7 +173,11 @@ class Window:
         except FileNotFoundError as e:
             error(f"QSS file {path} not found")
             raise FileNotFoundError(f"QSS file not found: {e.filename}")
+        except PermissionError as e:
+            error("QSS file permission denied")
+            raise PermissionError(f"QSS file permission denied: {e.filename}")
         self._win.setStyleSheet(qss)
+        
         return self
     def load_style_string(self, qss: str) -> Self:
         """Load style sheet from a string."""
