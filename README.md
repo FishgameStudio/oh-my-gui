@@ -157,13 +157,14 @@ app.run()
 This project uses **`PySide6`** as the GUI core dependency. Please ensure **`PySide6` is installed** in your Python environment before running or building the project.
 
 ## Roadmap
-- [x] **v0.1.0**: Core framework, basic widget, 1 exmaple
-- [x] **v0.2.0**: Basic layout, 3~5 examples, dialog module
-- [x] **v0.3.0**: Basic style control, QML support
-- [x] **v0.4.0**: Optimize layout, complex widgets
-- [x] **v0.5.0**: Fix most bugs, optimize performence, improve docs
-- [x] **v0.9.0**\[RC Version\]: freeze API
 - [x] **v1.0.0**\[Official Stable Version\]: launch on PyPI
+- [ ] **v1.1.0**: Improve widgets & windows, add CHANGELOG.md
+- [ ] **v1.2.0**: Add more widget extensions
+- [ ] **v1.3.0**: Create OML & OMS, improve animations
+- [ ] **v1.4.0**: 3D engine support
+- [ ] **v1.5.0**: Improve docs, FAQ, examples
+- [ ] **v1.9.0**\[Release Candidate\]: Freeze APIs, fix most bugs
+- [ ] **v2.0.0**\[Official Stable Version\]: launch on PyPI
 
 See the [open issues](https://github.com/FishgameStudio/oh-my-gui/issues) for a full list of proposed features (and known issues).
 
