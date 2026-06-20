@@ -228,3 +228,6 @@ ui_*.py
 # Qt temp file while running
 *.qmlc
 *.jsc
+
+# Playground
+playground

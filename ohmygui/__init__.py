@@ -22,7 +22,7 @@
 
 import logging as _logging
 log_format = "[%(asctime)s] [%(levelname)s] in [%(funcName)s] : %(message)s"
-date_format = "%Y-%m-%d-%H-%M-%S"
+date_format = "%Y-%m-%d-%H:%M:%S"
 _logging.basicConfig(
     level=_logging.DEBUG,
     format=log_format,
@@ -30,7 +30,7 @@ _logging.basicConfig(
 )
 
 __author__  = "Fishgame Studio"
-__version__ = "0.4.0"
+__version__ = "0.9.0"
 
 from . import core
 from . import widget

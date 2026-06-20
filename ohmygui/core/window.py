@@ -2,7 +2,7 @@
 
 from PySide6.QtWidgets import QMainWindow, QWidget
 from PySide6.QtCore import QSize, QObject
-from PySide6.QtGui import QResizeEvent, QCloseEvent
+from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
@@ -20,7 +20,9 @@ class Window:
         self._win.resize(*size)
         self.central = QWidget() # Central Widget for binding UI.
         self._win.setCentralWidget(self.central)
-        self.stack: list[tuple[bool, BaseWidget]] = [] # is_relavtive_binded & UI Stack
+        self.menubar = self._win.menuBar()
+        self._menus = []
+        self.stack: list[tuple[bool, BaseWidget]] = [] # is_relative_binded & UI Stack
         # caches of Relative positions
         self._rel_cache: dict[BaseWidget, RelDir] = {}
         info("Window exit __init__")
@@ -47,7 +49,7 @@ class Window:
         return self
 
     @property
-    def get_size(self) -> Size_Type:
+    def size(self) -> Size_Type:
         """Returns the window size."""
         return (self.w, self.h)
 
@@ -109,7 +111,7 @@ class Window:
         return self._win.children()
 
     @property
-    def top_widgets(self) -> QWidget:
+    def toplevel_widget(self) -> QWidget:
         """Returns the top window & widgets."""
         return self._win.topLevelWidget()
 
@@ -202,7 +204,32 @@ class Window:
         """Set the background color of the window."""
         self._win.setStyleSheet(f"background-color: {color};")
         return self
+    
+    def add_menu(
+            self, name: str, shortcut: str, 
+            actions: list[tuple[str, Callable] | None]
+        ) -> Self:
+        """
+        Add a top menu.
 
+        `None` in actions means a separator. 
+        `tuple[str, Callable]` is the name and the callback.
+        """
+        menu = self.menubar.addMenu(f"{name}(&{shortcut})")
+        for action in actions:
+            if action is not None:
+                a = QAction(action[0], self._win)
+                a.triggered.connect(action[1])
+                menu.addAction(a)
+            else:
+                menu.addSeparator()
+        self._menus.append(menu)    
+        return self
+    
+    @property
+    def menus(self) -> list:
+        return self._menus
+        
     @property
     def bg_color(self) -> str:
         """Get the background color of the window."""
