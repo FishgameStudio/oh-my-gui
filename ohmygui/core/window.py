@@ -1,7 +1,7 @@
 # Main window class
 
 from PySide6.QtWidgets import QMainWindow, QWidget
-from PySide6.QtCore import QSize, QObject, QRect as _QRect
+from PySide6.QtCore import QSize, QObject, QRect as _QRect, Qt as _Qt
 from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction, QPixmap
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
@@ -303,6 +303,10 @@ class Window:
         self._win.destroy()
         return self
     
+    def set_frameless(self, option: bool) -> Self:
+        """Set the window frameless."""
+        self._win.setWindowFlags(_Qt.WindowType.FramelessWindowHint)
+        return self
     def snap(self, layout: WinSize) -> Self:
         """Set snaping mode"""
         screen_rect = self._win.screen().availableGeometry()
