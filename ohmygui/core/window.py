@@ -6,7 +6,7 @@ from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction, QPixmap
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
-from typing_extensions import deprecated as _deprecated
+from warnings import deprecated as _deprecated
 from logging import info, warning, error, critical
 from ..widget.page import Interface as _Interface
 from weakref import finalize as _finalize
