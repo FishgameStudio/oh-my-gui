@@ -38,10 +38,11 @@ from . import dialog
 from . import utils
 from . import layout
 from . import terminal
+from . import oml
 
 
 __all__ = [
-    "core", "widget", "dialog", "utils", "layout", "terminal"
+    "core", "widget", "dialog", "utils", "layout", "terminal", "oml"
 ]
 
 # Check version & auto upgrade
