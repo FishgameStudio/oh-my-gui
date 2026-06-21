@@ -1,16 +1,17 @@
 # Main window class
 
 from PySide6.QtWidgets import QMainWindow, QWidget
-from PySide6.QtCore import QSize, QObject, QRect as _QRect
+from PySide6.QtCore import QSize, QObject, QRect as _QRect, Qt as _Qt
 from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction, QPixmap
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
-from warnings import deprecated as _deprecated
+from warnings import warn as _warn
 from logging import info, warning, error, critical
 from ..widget.page import Interface as _Interface
 from weakref import finalize as _finalize
 from enum import Enum as _Enum
+from .oms import convert_oms_to_qss as _convert
 
 
 Size_Type = tuple[int, int]
@@ -140,8 +141,9 @@ class Window:
         return self._win.children()
     
     @property
-    @_deprecated("`top_widgets` is deprecated. Use toplevel_widget instead.")
-    def top_widgets(self) -> Self: ...
+    def top_widgets(self) -> QWidget: 
+        _warn("`top_widgets` is deprecated. Use toplevel_widget instead.", DeprecationWarning, 2)
+        return self.toplevel_widget
 
     @property
     def toplevel_widget(self) -> QWidget:
@@ -165,6 +167,8 @@ class Window:
     def load_style_from(self, path: str) -> Self:
         """Load style sheet from a QSS file."""
         info(f"load QSS from file {path}")
+        if not path.endswith(".qss"):
+            warning(f"Perhaps not qss file: {path}")
         qss: str
         try:
             with open(path, "r", encoding="utf-8") as f:
@@ -183,6 +187,28 @@ class Window:
         """Load style sheet from a string."""
         self._win.setStyleSheet(qss)
         return self
+    def load_oms_string(self, oms: str) -> Self:
+        """Load a OMS (Oh My Stylesheet) string"""
+        self.load_style_string(_convert(oms))
+        return self
+    def load_oms_from(self, path: str) -> Self:
+        """Load a OMS (Oh My Stylesheet) file"""
+        if not path.endswith(".oms"):
+            warning(f"Perhaps not qss file: {path}")
+        oms: str
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                oms = f.read()
+            info("OMS has been read")
+        except FileNotFoundError as e:
+            error(f"OMS file {path} not found")
+            raise FileNotFoundError(f"OMS file not found: {e.filename}")
+        except PermissionError as e:
+            error("OMS file permission denied")
+            raise PermissionError(f"OMS file permission denied: {e.filename}")
+        self.load_oms_string(oms)
+        return self
+
     @property
     def export_QSS(self) -> str:
         """Export the current QStyleSheet."""
@@ -277,6 +303,10 @@ class Window:
         self._win.destroy()
         return self
     
+    def set_frameless(self, option: bool) -> Self:
+        """Set the window frameless."""
+        self._win.setWindowFlags(_Qt.WindowType.FramelessWindowHint)
+        return self
     def snap(self, layout: WinSize) -> Self:
         """Set snaping mode"""
         screen_rect = self._win.screen().availableGeometry()
