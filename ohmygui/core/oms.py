@@ -11,6 +11,7 @@ OMS Unique Features (Different from raw QSS):
 7. Built-in true/false/None constant literals
 8. Fixed @import preprocess file read bug
 Syntax example:
+```
 # Global constant
 $BG_COLOR = "#f0f0f0";
 # Global reusable style
@@ -28,6 +29,7 @@ Button submitBtn :hover:pressed {
 }
 # Wildcard support
 any { opacity = 255; }
+```
 """
 from typing import TypeAlias as _TypeAlias
 from enum import Enum as _Enum
