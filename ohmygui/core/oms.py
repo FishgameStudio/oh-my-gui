@@ -9,6 +9,12 @@ XXXWidget {
     attribute3 = None;
 }
 
+# Also support status
+XXXWidget: hover { ... }
+
+# Also support wildcard
+any { ... }
+
 ```
 """
 
@@ -76,6 +82,9 @@ CONSTANTS = {
     'None': None, 
 }
 WIDGET = {
+    "Window":        "QMainWindow",
+    "Application":   "QApplication", 
+    "App":           "QApplication", 
     "Text":          "QLabel",
     "Button":        "QPushButton",
     "InputEntry":    "QLineEdit",
