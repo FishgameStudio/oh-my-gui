@@ -5,7 +5,6 @@ from typing import Annotated, Callable, cast, Self
 from PySide6.QtCore import QObject, QEvent
 from PySide6.QtGui import QKeyEvent, QColor
 from logging import info, warning, error, critical
-from ..core.oms import convert_oms_to_qss as _convert
 
 info(f"Module {__name__} loaded")
 
@@ -77,6 +76,7 @@ class BaseWidget:
         return self
     def load_omstylesheet(self, oms: str) -> Self:
         """Load a OMS (Oh My Stylesheet) string"""
+        from ..core import convert_oms_to_qss as _convert
         self.load_stylesheet(_convert(oms))
         return self
     def lock(self) -> Self:

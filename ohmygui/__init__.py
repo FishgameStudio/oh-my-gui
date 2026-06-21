@@ -20,6 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from sys import path as _sys_path
+from os.path import dirname as _dirname
+_current_folder = _dirname(__file__)
+if _current_folder not in _sys_path:
+    _sys_path.insert(0, _current_folder)
+
 import logging as _logging
 log_format = "[%(asctime)s] [%(levelname)s] in [%(funcName)s] : %(message)s"
 date_format = "%Y-%m-%d-%H:%M:%S"
@@ -38,10 +44,11 @@ from . import dialog
 from . import utils
 from . import layout
 from . import terminal
+from . import oml
 
 
 __all__ = [
-    "core", "widget", "dialog", "utils", "layout", "terminal"
+    "core", "widget", "dialog", "utils", "layout", "terminal", "oml"
 ]
 
 # Check version & auto upgrade
