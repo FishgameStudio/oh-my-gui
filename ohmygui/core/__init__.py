@@ -2,9 +2,9 @@ from .application import *
 from .window import *
 from .mouse import *
 from .bind import *
-import oms as _OmsParser
+from .oms import *
 
-__all__ = ['application', 'window', 'mouse', 'bind']
+__all__ = ['application', 'window', 'mouse', 'bind', 'oms']
 from logging import info, warning, error, critical
 
 info(f"Module {__name__} loaded")
