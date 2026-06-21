@@ -15,6 +15,7 @@ XXXWidget {
 from typing import TypeAlias as _TypeAlias
 from enum import Enum as _Enum
 from logging import info as _info, warning as _warning, error as _error
+from os.path import exists as _exists
 
 _info(f"module {__name__} loaded")
  
@@ -36,6 +37,7 @@ class TokenType(_Enum):
     Comma          = 12
     At             = 13  # @
     Eq             = 14
+    Star           = 15
     Invalid        = 999
 class Token:
     def __init__(self, type: TokenType, val: str) -> None:
@@ -93,13 +95,24 @@ WIDGET = {
     # Picture mixes two types of internal objects(QSvgWidget, QPixmap)
     "Picture":       "QLabel",     
     "Video":         "QVideoWidget",
-    "SplashScreen":  "QSplashScreen"
+    "SplashScreen":  "QSplashScreen", 
+    "any":           "*"
 }
 def _isoperator(c: str) -> bool:
     return c in OP
 
 def lexer(oms: str) -> list[Token]:
     """The lexer."""
+
+    # Preprocess.
+    for idx, line in enumerate(oms.splitlines()):
+        if line.startswith("@import "):
+            path = line[8:]
+            if _exists(path):
+                line = open(path).read() # replace
+                _info(f"Preprocess: line {idx + 1} replaced as file {path}")
+            else:
+                _warning(f"Preprocess: file {path} not found")
     res = []
     idx = 0
     while idx < len(oms):
@@ -286,9 +299,9 @@ def convert(ast: AST_Type) -> QssString:
             curr_attr_string = f"{attr}: {val_str}; \n"
             attrs.append(curr_attr_string)
         obj_name   = WIDGET[obj[0]] if obj[0] in WIDGET else obj[0]
-        obj_status = obj[1]
+        obj_status = f":{obj[1]}" if obj[1] is not "default" else ""
         curr_object_string = f"""
-{obj_name}:{obj_status} {{\n
+{obj_name}{obj_status} {{\n
 {'    '.join(attrs)}\n
 }}\n
 """
