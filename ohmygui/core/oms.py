@@ -1,3 +1,17 @@
+"""
+#### Welcome to module `Oh My Stylesheet`!
+Here is an example to use OMS:
+```
+# Comments start with '#'
+XXXWidget {
+    attribute1 = 123456;
+    attribute2 = "hello world";
+    attribute3 = None;
+}
+
+```
+"""
+
 from typing import TypeAlias as _TypeAlias
 from enum import Enum as _Enum
 from logging import info as _info, warning as _warning, error as _error
@@ -21,6 +35,7 @@ class TokenType(_Enum):
     Dot            = 11
     Comma          = 12
     At             = 13  # @
+    Eq             = 14
     Invalid        = 999
 class Token:
     def __init__(self, type: TokenType, val: str) -> None:
@@ -57,6 +72,28 @@ OP = {
 }
 CONSTANTS = {
     'None': None, 
+}
+WIDGET = {
+    "Text":          "QLabel",
+    "Button":        "QPushButton",
+    "InputEntry":    "QLineEdit",
+    "PasswordEntry": "QLineEdit",
+    "RadioButton":   "QRadioButton",
+    "ComboBox":      "QComboBox",
+    "ListWidget":    "QListWidget",
+    "Table":         "QTableWidget",
+    "Tree":          "QTreeWidget",
+    "Slider":        "QSlider",
+    "Progress":      "QProgressBar",
+    "Dial":          "QDial",
+    "IntegerEntry":  "QSpinBox",
+    "DoubleEntry":   "QDoubleSpinBox",
+    "TextEdit":      "QTextEdit",
+    "Canvas":        "QGraphicsView",
+    # Picture mixes two types of internal objects(QSvgWidget, QPixmap)
+    "Picture":       "QLabel",     
+    "Video":         "QVideoWidget",
+    "SplashScreen":  "QSplashScreen"
 }
 def _isoperator(c: str) -> bool:
     return c in OP
@@ -126,7 +163,8 @@ def lexer(oms: str) -> list[Token]:
             continue
     return res
 
-AST_Type: _TypeAlias = dict[str, dict[str, str | int | None]]
+# This means: dict[tuple[object_name, object_status], dict[attr_name, value]]
+AST_Type: _TypeAlias = dict[tuple[str, str], dict[str, str | int | None]]
 
 def ast(tokens: list[Token]) -> AST_Type:
     """Build AST"""
@@ -164,10 +202,26 @@ def ast(tokens: list[Token]) -> AST_Type:
             # `xxx { ... }`
             #  ^^^~~~~~~~~
             curr_object = tok.val
+            curr_status = "default" # The current status of the object
             curr_attributes = {}
+            if curr_object not in WIDGET:
+                _error(f"Parser: unknown object '{curr_object}'")
+                continue
             if curr_object in ast:
                 _warning(f"Parser: object '{curr_object}' duplicated")
             next_t = next_tok()
+            if next_t.type == tt.Colon:
+                # current:
+                # xxx: status { ... }
+                # ~~~^~~~~~~~~~~~~~~~
+                status_tok = next_tok()
+                if status_tok.type != tt.Identifier:
+                    _error(f"Parser: Expect identifier at idx {idx}")
+                    idx += 1
+                    continue
+                curr_status = status_tok.val
+                next_t = next_tok()
+
             if next_t.type != tt.Lbrace:
                 _error(f"Parser: Expect '{{' at idx {idx}")
                 idx += 1
@@ -178,12 +232,12 @@ def ast(tokens: list[Token]) -> AST_Type:
                     attr_name = curr_tok.val
                     if attr_name in curr_attributes:
                         _warning(f"Parser: Attribute '{attr_name}' duplicated at idx {idx}")
-                    # Enter `xxx_attr: xxx_value;`
+                    # Enter `xxx_attr = xxx_value;`
                     colon_t = next_tok()
-                    if colon_t.type != tt.Colon:
-                        _error(f"Parser: Expect ':' at idx {idx}")
+                    if colon_t.type != tt.Eq:
+                        _error(f"Parser: Expect '=' at idx {idx}")
                     # Now the next() will return: 
-                    # `xxx_attr: xxx_value;`
+                    # `xxx_attr = xxx_value;`
                     # ~~~~~~~~~~~^^^^^^^^^~
                     n = next_tok()
                     val: str | int | None = None
@@ -200,7 +254,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                         else:
                             val = CONSTANTS[n.val]
                     # Now the next() will return: 
-                    # `xxx_attr: xxx_value;`
+                    # `xxx_attr = xxx_value;`
                     # ~~~~~~~~~~~~~~~~~~~~^
                     semi_t = next_tok()
                     if semi_t.type != tt.Semi:
@@ -210,15 +264,15 @@ def ast(tokens: list[Token]) -> AST_Type:
                 else:
                     _error(f"Parser: Expect attribute identifier at idx {idx}")
                 idx += 1
-            _info(f"Parser: attribute of object '{curr_object}' has been set")
-            ast[curr_object] = curr_attributes
+            _info(f"Parser: attribute of object '{curr_object}' with status '{curr_status}' has been set")
+            ast[curr_object, curr_status] = curr_attributes
             in_decl = False
         idx += 1
     return ast
 
 def convert(ast: AST_Type) -> QssString:
     """Convert ast to QSS"""
-    res   = "// @generated by OMS Converter\n"
+    res = "// @generated by OMS Converter, oh-my-gui\n// Lincense: MIT\n"
     objects: list[str] = []
     for obj, attributes in ast.items():
         attrs: list[str]   = []
@@ -231,8 +285,10 @@ def convert(ast: AST_Type) -> QssString:
                 val_str = f'"{val}"'
             curr_attr_string = f"{attr}: {val_str}; \n"
             attrs.append(curr_attr_string)
+        obj_name   = WIDGET[obj[0]] if obj[0] in WIDGET else obj[0]
+        obj_status = obj[1]
         curr_object_string = f"""
-{obj} {{\n
+{obj_name}:{obj_status} {{\n
 {'    '.join(attrs)}\n
 }}\n
 """
