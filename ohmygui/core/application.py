@@ -11,6 +11,7 @@ from os import environ
 from typing import Optional, Union, Self
 from logging import info, warning, error, critical
 from .oms import convert_oms_to_qss as _convert
+from ..oml import convert_oml_to_qml as _convert_oml
 
 def singleton(cls):
     instances = {}
@@ -130,6 +131,28 @@ class Application:
             raise PermissionError(f"OMS file permission denied: {e.filename}")
         self.load_oms_string(oms)
         return self
+    def load_oml_from(self, path: str) -> Self:
+        """Load an OML file."""
+        oml: str
+        if not path.endswith(".oml"):
+            warning(f"Perhaps not OML file: {path}")
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                oml = f.read()
+            info("OML has been read")
+        except FileNotFoundError as e:
+            error(f"OML file {path} not found")
+            raise FileNotFoundError(f"OML file not found: {e.filename}")
+        except PermissionError as e:
+            error("OML file permission denied")
+            raise PermissionError(f"OML file permission denied: {e.filename}")
+        self.load_qml_from(_convert_oml(oml))
+        return self
+    def load_oml_string(self, oml: str) -> Self:
+        """Load an OML string."""
+        self.load_qml_from(_convert_oml(oml))
+        return self
+
     @property
     def is_qml_mode(self) -> bool:
         info("access attribute _isqml")
