@@ -8,7 +8,7 @@ from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, QQmlComponent
 from os.path import exists
 from os import environ
-from typing import Optional, Union, Self
+from typing import Optional, Union, Self, TypeAlias
 from logging import info, warning, error, critical
 from .oms import convert_oms_to_qss as _convert
 from ..oml import convert_oml_to_qml as _convert_oml
@@ -180,9 +180,19 @@ class Application:
         self._engine = QQmlApplicationEngine()
         comp = QQmlComponent(self._engine)
         comp.setData(qml.encode("utf-8"), "")
-        comp.create()
+        info(f"Start compiling QQmlComponent object {comp}")
+        # Wait for async compiling of component
+        def on_ready():
+            if comp.status() == QQmlComponent.Status.Ready:
+                comp.create()
+            else:
+                # Print compiling errors.
+                for e in comp.errors():
+                    error(e.toString())
+
+        comp.statusChanged.connect(on_ready)
         return self
-        
+      
 
 # Alias
-App = Application
+App: TypeAlias = Application
