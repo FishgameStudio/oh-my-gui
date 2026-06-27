@@ -5,10 +5,10 @@ from PySide6.QtWidgets import QApplication
 from ..widget.event import Event
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication
-from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtQml import QQmlApplicationEngine, QQmlComponent
 from os.path import exists
 from os import environ
-from typing import Optional, Union, Self
+from typing import Optional, Union, Self, TypeAlias
 from logging import info, warning, error, critical
 from .oms import convert_oms_to_qss as _convert
 from ..oml import convert_oml_to_qml as _convert_oml
@@ -146,11 +146,11 @@ class Application:
         except PermissionError as e:
             error("OML file permission denied")
             raise PermissionError(f"OML file permission denied: {e.filename}")
-        self.load_qml_from(_convert_oml(oml))
+        self.load_qml_string(_convert_oml(oml))
         return self
     def load_oml_string(self, oml: str) -> Self:
         """Load an OML string."""
-        self.load_qml_from(_convert_oml(oml))
+        self.load_qml_string(_convert_oml(oml))
         return self
 
     @property
@@ -174,7 +174,25 @@ class Application:
             error(f"Failed to load from QML: {path}")
             raise RuntimeError("Failed to load QML")
         return self
-        
+    def load_qml_string(self, qml: str) -> Self:
+        """Load a string of QML."""
+        info(f"Application begin loading QML string {qml[0:30]}...")
+        self._engine = QQmlApplicationEngine()
+        comp = QQmlComponent(self._engine)
+        comp.setData(qml.encode("utf-8"), "")
+        info(f"Start compiling QQmlComponent object {comp}")
+        # Wait for async compiling of component
+        def on_ready():
+            if comp.status() == QQmlComponent.Status.Ready:
+                comp.create()
+            else:
+                # Print compiling errors.
+                for e in comp.errors():
+                    error(e.toString())
+
+        comp.statusChanged.connect(on_ready)
+        return self
+      
 
 # Alias
-App = Application
+App: TypeAlias = Application

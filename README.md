@@ -148,8 +148,8 @@ app.run()
 ```
 Run:
 ```bash
-# Run in module mode
-python -m path.to.your.script.py
+# Run in module mode (Don't include the .py suffix)
+python -m path.to.your.script
 # Instead of:
 # python path/to/your/script.py
 ```

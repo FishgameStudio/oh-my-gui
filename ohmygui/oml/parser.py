@@ -53,7 +53,7 @@ any Item { opacity = 255; }
 """
 from typing import TypeAlias as _TypeAlias
 from enum import Enum as _Enum
-from logging import info as _info, warning as _warning, error as _error
+from logging import info as _info, warning as _warning, error as _error, critical as _critical
 from os.path import exists as _exists
 
 _info(f"module {__name__} loaded")
@@ -160,7 +160,8 @@ COMPONENT_MAP = {
     "SplashScreen":  "SplashScreen",
     "Item":          "Item",
     "Rectangle":     "Rectangle",
-    "any":           "*"
+    "any":           "*", 
+    "all":           "*"
 }
 
 # OML keyword exclusive
@@ -178,9 +179,26 @@ UNIT_LIST = ("px", "em", "vw", "vh")
 def _isoperator(c: str) -> bool:
     return c in OP
 
+ERROR_LIMIT = 15
+
+class ErrorLimitExceededError(Exception):
+    """Error limit exceeded."""
+    pass
+class _Error:
+    def __init__(self) -> None:
+        self._cnt = 0
+    def __iadd__(self, other: int) -> int:
+        self._cnt += other
+        if self._cnt > ERROR_LIMIT:
+            _critical(f"FATAL: Error limit exceeded during parsing OMS")
+            raise ErrorLimitExceededError()
+        return self._cnt
+ERRORS = _Error()
+
 # ==== Lexer (Enhanced with OML unique token parse) ====
 def lexer(oml: str) -> list[Token]:
     """OML Lexer, preprocess @import, tokenize raw text + OML exclusive syntax"""
+    global ERRORS
     # Preprocess @import line replace file content
     line_buffer = []
     for line in oml.splitlines():
@@ -195,6 +213,7 @@ def lexer(oml: str) -> list[Token]:
                     _info(f"OML Lexer Preprocess: import file {path} loaded")
                 except Exception as e:
                     _error(f"OML Lexer Preprocess: read {path} failed: {str(e)}")
+                    ERRORS += 1
                     line_buffer.append("")
             else:
                 _warning(f"OML Lexer Preprocess: import file {path} not found")
@@ -225,6 +244,12 @@ def lexer(oml: str) -> list[Token]:
                 color_buf += raw_src[idx]
                 idx += 1
             token_list.append(Token(tt.HashColor, color_buf))
+            continue
+        # Comments start with //
+        elif c == "/" and idx+1 < src_len and raw_src[idx+1] == "/":
+            idx += 2
+            while idx < src_len and raw_src[idx] != "\n":
+                idx += 1
             continue
         # Identifier / Component / attr name / keyword
         if _is_identifier_start(c):
@@ -263,6 +288,7 @@ def lexer(oml: str) -> list[Token]:
             idx += 1
             if idx >= src_len:
                 _error("OML Lexer unclosed string literal at EOF")
+                ERRORS += 1
                 continue
             c = raw_src[idx]
             while idx < src_len and c != quote_mark:
@@ -306,6 +332,7 @@ def lexer(oml: str) -> list[Token]:
         # unknown char
         else:
             _error(f"OML Lexer unknown char '{c}' index {idx}")
+            ERRORS += 1
             idx += 1
             continue
     return token_list
@@ -366,6 +393,7 @@ AST_Type: _TypeAlias = FullAST
 
 # ==== Recursive Parser (Fully support OML exclusive grammar) ====
 def ast(tokens: list[Token]) -> AST_Type:
+    global ERRORS
     """Recursive descent parser build full OML AST with style/template/meta"""
     token_ptr: int = 0
     token_count = len(tokens)
@@ -373,23 +401,29 @@ def ast(tokens: list[Token]) -> AST_Type:
 
     # Helper cursor functions same as your OMS parser
     def curr() -> Token:
+        global ERRORS
         nonlocal token_ptr
         if token_ptr >= token_count:
             _error("OML Parser curr() out of token range")
+            ERRORS += 1
             return Token(tt.Invalid, "")
         return tokens[token_ptr]
     def next_tok() -> Token:
+        global ERRORS
         nonlocal token_ptr
         token_ptr += 1
         if token_ptr >= token_count:
             _error("OML Parser next_tok() EOF")
+            ERRORS += 1
             return Token(tt.Invalid, "")
         return tokens[token_ptr]
     def prev_tok() -> Token:
+        global ERRORS
         nonlocal token_ptr
         token_ptr -= 1
         return tokens[token_ptr]
     def peek_next() -> Token:
+        global ERRORS
         nonlocal token_ptr
         if token_ptr + 1 >= token_count:
             return Token(tt.Invalid, "")
@@ -397,41 +431,56 @@ def ast(tokens: list[Token]) -> AST_Type:
 
     def parse_attr_value() -> OMLAttrValue:
         """Parse all value type: num, str, color, dollar var, const, func::slot"""
+        global ERRORS
         nonlocal token_ptr
         val_t = curr()
         val: OMLAttrValue = None
+
         if val_t.type == tt.Number:
-            val = val_t.digitval
-            # skip unit suffix token
-            if peek_next().type == tt.UnitSuffix:
-                next_tok()
+            num_str = val_t.val
+            token_ptr += 1
+            # 拼接后面的单位后缀
+            if curr().type == tt.UnitSuffix:
+                unit_str = curr().val
+                token_ptr += 1
+                val = num_str + unit_str
+            else:
+                val = num_str
         elif val_t.type == tt.String:
             val = val_t.val
+            token_ptr += 1
         elif val_t.type == tt.HashColor:
             val = val_t.val
+            token_ptr += 1
         elif val_t.type == tt.DollarVar:
             var_name = val_t.val
+            token_ptr += 1
             val = full_ast.global_vars.get(var_name, f"${var_name}")
         elif val_t.type == tt.Identifier:
             if val_t.val in CONSTANTS:
                 val = CONSTANTS[val_t.val]
+                token_ptr += 1
             else:
                 # function reference func::slot
                 if peek_next().type == tt.DoubleColon:
                     func_id = val_t.val
                     token_ptr += 1
-                    token_ptr += 1 # skip ::
+                    token_ptr += 1  # skip ::
                     slot_name = curr().val
+                    token_ptr += 1
                     val = f"{func_id}::{slot_name}"
                 else:
                     val = val_t.val
+                    token_ptr += 1
         else:
             _error(f"OML Parser invalid value token {val_t.type}")
-        token_ptr += 1
+            ERRORS += 1
+            token_ptr += 1
         return val
 
     def parse_attr_block() -> tuple[OMLAttrDict, OMLAttrDict, list[str]]:
         """Parse inside {}: attr, use style, rect group"""
+        global ERRORS
         nonlocal token_ptr
         attrs: OMLAttrDict = {}
         rect_attrs: OMLAttrDict = {}
@@ -452,6 +501,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                 token_ptr += 1
                 if curr().type != tt.Lbrace:
                     _error("rect must follow {")
+                    ERRORS += 1
                     token_ptr += 1
                     continue
                 token_ptr += 1
@@ -460,6 +510,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                     token_ptr += 1
                     if curr().type != tt.Eq:
                         _error("rect attr missing =")
+                        ERRORS += 1
                         token_ptr += 1
                         continue
                     token_ptr += 1
@@ -491,11 +542,13 @@ def ast(tokens: list[Token]) -> AST_Type:
                 _info(f"OML Parser set attr [{attr_key}] = {val}")
                 continue
             _error(f"Unexpected token {ct.val} inside block")
+            ERRORS += 1
             token_ptr += 1
         return attrs, rect_attrs, use_list
 
     # Recursive parse component block: CompName [Id][:state1:state2] { attrs; children... }
     def parse_component() -> OmlNode:
+        global ERRORS
         nonlocal token_ptr
         # Step 1: read component short identifier
         comp_tok = curr()
@@ -515,6 +568,7 @@ def ast(tokens: list[Token]) -> AST_Type:
             state_tok = curr()
             if state_tok.type != tt.Identifier:
                 _error(f"OML Parser expect state identifier after colon")
+                ERRORS += 1
                 break
             states.append(state_tok.val)
             token_ptr += 1
@@ -522,6 +576,7 @@ def ast(tokens: list[Token]) -> AST_Type:
         # Step4: expect opening { Lbrace
         if curr().type != tt.Lbrace:
             _error(f"OML Parser expect '{{' after component declaration")
+            ERRORS += 1
             raise SyntaxError("Missing opening brace {")
         token_ptr += 1
 
@@ -531,11 +586,34 @@ def ast(tokens: list[Token]) -> AST_Type:
         # Re-scan block for child components
         while token_ptr < token_count and curr().type != tt.Rbrace:
             current_t = curr()
+            # Branch1: template macro call TemplateName(arg1,arg2)
+            if current_t.type == tt.Identifier and current_t.val in full_ast.template_macros and peek_next().type == tt.Lpar:
+                tpl = full_ast.template_macros[current_t.val]
+                token_ptr += 1  # skip template name
+                token_ptr += 1  # skip '('
+                arg_vals = []
+                while curr().type != tt.Rpar:
+                    arg = parse_attr_value()
+                    arg_vals.append(arg)
+                    if curr().type == tt.Comma:
+                        token_ptr += 1
+                token_ptr += 1  # skip ')'
+                # Skip ';'
+                if curr().type == tt.Semi:
+                    token_ptr += 1
+                # Shallow copy root node & inject args (Simplely expand)
+                root_copy = tpl.root_node
+                children.append(root_copy)
+                continue
+            # Branch2: normal widget
             if current_t.type == tt.Identifier and current_t.val in COMPONENT_MAP:
                 child_node = parse_component()
                 children.append(child_node)
-            else:
-                token_ptr += 1
+                continue
+            # Skip other char
+            token_ptr += 1
+        if curr().type == tt.Semi:
+            token_ptr += 1
         # consume closing }
         if curr().type == tt.Rbrace:
             token_ptr += 1
@@ -545,11 +623,13 @@ def ast(tokens: list[Token]) -> AST_Type:
 
     # Parse top level global $Var = val;
     def parse_global_var():
+        global ERRORS
         nonlocal token_ptr
         var_name = curr().val
         token_ptr += 1
         if curr().type != tt.Eq:
             _error("Global var missing =")
+            ERRORS += 1
             return
         token_ptr += 1
         val = parse_attr_value()
@@ -560,6 +640,7 @@ def ast(tokens: list[Token]) -> AST_Type:
 
     # Parse @style Name { ... }
     def parse_style_block():
+        global ERRORS
         nonlocal token_ptr
         token_ptr += 1 # skip @
         token_ptr += 1 # skip style
@@ -567,6 +648,7 @@ def ast(tokens: list[Token]) -> AST_Type:
         token_ptr += 1
         if curr().type != tt.Lbrace:
             _error("@style must follow {")
+            ERRORS += 1
             return
         token_ptr += 1
         attrs, _, _ = parse_attr_block()
@@ -576,6 +658,7 @@ def ast(tokens: list[Token]) -> AST_Type:
 
     # Parse @template Name(p1,p2) { ... }
     def parse_template_macro():
+        global ERRORS
         nonlocal token_ptr
         token_ptr += 1 # skip @
         token_ptr += 1 # skip template
@@ -593,6 +676,7 @@ def ast(tokens: list[Token]) -> AST_Type:
             token_ptr += 1
         if curr().type != tt.Lbrace:
             _error("@template must follow {")
+            ERRORS += 1
             return
         token_ptr += 1
         root_node = parse_component()
@@ -601,11 +685,13 @@ def ast(tokens: list[Token]) -> AST_Type:
 
     # Parse @meta { ... }
     def parse_meta_block():
+        global ERRORS
         nonlocal token_ptr
         token_ptr += 1 # skip @
         token_ptr += 1 # skip meta
         if curr().type != tt.Lbrace:
             _error("@meta must follow {")
+            ERRORS += 1
             return
         token_ptr += 1
         meta_attrs, _, _ = parse_attr_block()
@@ -661,6 +747,7 @@ def ast(tokens: list[Token]) -> AST_Type:
 # ==== AST -> QML Converter (Support all OML exclusive features) ====
 def convert(ast: AST_Type) -> QmlString:
     """Recursively traverse full OML AST and output standard QML source text"""
+    global ERRORS
     qml_header = [
         "// @generated by OML Converter (Oh My Modeling Language)",
         "// OML Exclusive Syntax: unit, color, @style, @template, $var, multi-state",
@@ -691,6 +778,7 @@ def convert(ast: AST_Type) -> QmlString:
 
     def merge_style_attrs(node: OmlNode) -> OMLAttrDict:
         """Merge component local attr + all imported @style attrs"""
+        global ERRORS
         merged = {}
         # Apply style blocks first
         for style_name in node.use_styles:
@@ -712,6 +800,7 @@ def convert(ast: AST_Type) -> QmlString:
         return merged
 
     def render_value(val) -> str:
+        global ERRORS
         if val is None:
             return "null"
         elif isinstance(val, bool):
@@ -727,6 +816,7 @@ def convert(ast: AST_Type) -> QmlString:
         return str(val)
 
     def render_node(node: OmlNode, indent: int = 0) -> list[str]:
+        global ERRORS
         lines: list[str] = []
         indent_str = "    " * indent
         # resolve real QML component type
@@ -777,6 +867,7 @@ def convert(ast: AST_Type) -> QmlString:
 # Top level entry function same naming style as convert_oms_to_qss
 def convert_oml_to_qml(oml_source: str) -> QmlString:
     """Main entry: raw OML string -> compiled QML source string"""
+    global ERRORS
     token_stream = lexer(oml_source)
     full_ast_tree = ast(token_stream)
     qml_output = convert(full_ast_tree)

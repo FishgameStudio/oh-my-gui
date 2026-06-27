@@ -1,5 +1,5 @@
 """
-#### Welcome to module `Oh My Stylesheet`! OMS Upgraded V2
+#### Welcome to module `Oh My Stylesheet`!
 Convert OMS markup language to standard Qt QSS source code
 OMS Unique Features (Different from raw QSS):
 1. Unit suffix: px/em/pt, e.g width = 800px;
@@ -33,8 +33,9 @@ any { opacity = 255; }
 """
 from typing import TypeAlias as _TypeAlias
 from enum import Enum as _Enum
-from logging import info as _info, warning as _warning, error as _error
+from logging import info as _info, warning as _warning, error as _error, critical as _critical
 from os.path import exists as _exists
+from sys import exit as _exit
 
 _info(f"module {__name__} loaded")
 
@@ -100,7 +101,7 @@ OP = {
     '@': tt.At
 }
 
-# Upgraded constant literals
+# constant literals
 CONSTANTS = {
     'None': None,
     'true': True,
@@ -131,7 +132,8 @@ WIDGET = {
     "Picture":       "QLabel",
     "Video":         "QVideoWidget",
     "SplashScreen":  "QSplashScreen",
-    "any":           "*"
+    "any":           "*", 
+    "all":           "*"
 }
 
 # Unit suffix support list
@@ -140,11 +142,28 @@ UNIT_LIST = ("px", "em", "pt")
 def _isoperator(c: str) -> bool:
     return c in OP
 
-# ==== Lexer Upgraded (Fix import bug + new token support) ====
+# Limit of errors.
+ERROR_LIMIT = 15
+
+class ErrorLimitExceededError(Exception):
+    """Error limit exceeded."""
+    pass
+class _Error:
+    def __init__(self) -> None:
+        self._cnt = 0
+    def __iadd__(self, other: int) -> int:
+        self._cnt += other
+        if self._cnt > ERROR_LIMIT:
+            _critical(f"FATAL: Error limit exceeded during parsing OMS")
+            raise ErrorLimitExceededError()
+        return self._cnt
+ERRORS = _Error()
+
+# ==== Lexer ====
 def lexer(oms: str) -> list[Token]:
-    """Upgraded OMS Lexer, fixed @import merge bug, support color/unit/$var"""
+    global ERRORS
+    """Lexer, support color/unit/$var"""
     line_buffer = []
-    # Fix original import bug: append imported content instead of single line replace
     for raw_line in oms.splitlines():
         stripped_line = raw_line.strip()
         if stripped_line.startswith("@import "):
@@ -154,11 +173,12 @@ def lexer(oms: str) -> list[Token]:
                     with open(path, "r", encoding="utf-8") as f:
                         import_text = f.read()
                     line_buffer.append(import_text)
-                    _info(f"OMS Lexer Preprocess: loaded import file {path}")
+                    _info(f"Lexer Preprocess: loaded import file {path}")
                 except Exception as e:
-                    _error(f"OMS Lexer Preprocess: read {path} failed: {str(e)}")
+                    _error(f"Lexer Preprocess: read {path} failed: {str(e)}")
+                    ERRORS += 1
             else:
-                _warning(f"OMS Lexer Preprocess: import file {path} not found")
+                _warning(f"Lexer Preprocess: import file {path} not found")
         else:
             line_buffer.append(raw_line)
     full_src = "\n".join(line_buffer)
@@ -186,9 +206,15 @@ def lexer(oms: str) -> list[Token]:
                 idx += 1
             token_list.append(Token(tt.HashColor, color_buf))
             continue
+        # Comments start with //
+        elif c == "/" and idx+1 < src_len and full_src[idx+1] == "/":
+            idx += 2
+            while idx < src_len and full_src[idx] != "\n":
+                idx += 1
+            continue
         # Identifier / Widget / attr name
         if _is_identifier_start(c):
-            _info(f"OMS Lexer char '{c}' matched Identifier")
+            _info(f"Lexer char '{c}' matched Identifier")
             id_buf = ""
             while idx < src_len and _is_identifier_name(c):
                 id_buf += c
@@ -199,7 +225,7 @@ def lexer(oms: str) -> list[Token]:
             continue
         # Number + unit suffix like 200px
         elif _isdigit(c):
-            _info(f"OMS Lexer char '{c}' matched Number")
+            _info(f"Lexer char '{c}' matched Number")
             num_buf = ""
             while idx < src_len and _isdigit(c):
                 num_buf += c
@@ -217,12 +243,13 @@ def lexer(oms: str) -> list[Token]:
             continue
         # Single/Double quote string
         elif c in ('"', "'"):
-            _info(f"OMS Lexer quote '{c}' matched String")
+            _info(f"Lexer quote '{c}' matched String")
             str_buf = ""
             quote_mark = c
             idx += 1
             if idx >= src_len:
-                _error("OMS Lexer unclosed string at EOF")
+                _error("Lexer unclosed string at EOF")
+                ERRORS += 1
                 continue
             c = full_src[idx]
             while idx < src_len and c != quote_mark:
@@ -236,7 +263,7 @@ def lexer(oms: str) -> list[Token]:
             continue
         # Single char operator
         elif _isoperator(c):
-            _info(f"OMS Lexer char '{c}' matched Operator")
+            _info(f"Lexer char '{c}' matched Operator")
             token_list.append(Token(OP[c], c))
             idx += 1
             continue
@@ -251,12 +278,13 @@ def lexer(oms: str) -> list[Token]:
             continue
         # Unknown character
         else:
-            _error(f"OMS Lexer unknown char '{c}' at index {idx}")
+            _error(f"Lexer unknown char '{c}' at index {idx}")
+            ERRORS += 1
             idx += 1
             continue
     return token_list
 
-# ==== Upgraded AST Type Definition ====
+# ==== AST Type Definition ====
 OMSAttrValue: _TypeAlias = str | int | None | bool
 OMSAttrDict: _TypeAlias = dict[str, OMSAttrValue]
 
@@ -291,26 +319,30 @@ class FullAST:
 
 AST_Type: _TypeAlias = FullAST
 
-# ==== Upgraded Recursive Parser (Fix Pylance unbound warning + new syntax) ====
+# ==== Recursive Parser ====
 def ast(tokens: list[Token]) -> AST_Type:
-    """Upgraded OMS Parser, full support new syntax, fix Pylance unbound variable"""
-    # Explicit type annotation eliminate Pylance possiblyUnboundVariable warning
+    """Parser"""
+    global ERRORS
     idx: int = 0
     token_count = len(tokens)
     full_ast = FullAST()
 
-    # Cursor helper functions (nonlocal idx preserved, type fixed)
+    # Cursor helper functions
     def curr() -> Token:
         nonlocal idx
+        global ERRORS
         if idx >= token_count:
-            _error("OMS Parser curr() out of token range")
+            _error("Parser curr() out of token range")
+            ERRORS += 1
             return Token(tt.Invalid, "")
         return tokens[idx]
     def next_tok() -> Token:
         nonlocal idx
+        global ERRORS
         idx += 1
         if idx >= token_count:
-            _error("OMS Parser next_tok() EOF")
+            _error("Parser next_tok() EOF")
+            ERRORS += 1
             return Token(tt.Invalid, "")
         return tokens[idx]
     def prev() -> Token:
@@ -324,6 +356,7 @@ def ast(tokens: list[Token]) -> AST_Type:
         return tokens[idx + 1]
 
     def parse_value() -> OMSAttrValue:
+        global ERRORS
         """Parse all supported value types"""
         val_t = curr()
         val: OMSAttrValue = None
@@ -345,11 +378,13 @@ def ast(tokens: list[Token]) -> AST_Type:
             else:
                 val = val_t.val
         else:
-            _error(f"OMS Parser invalid value token type {val_t.type}")
+            _error(f"Parser invalid value token type {val_t.type}")
+            ERRORS += 1
         next_tok()
         return val
 
     def parse_block_inner() -> tuple[OMSAttrDict, OMSAttrDict, list[str]]:
+        global ERRORS
         """Parse content inside {}: attr, use style, rect group shorthand"""
         nonlocal idx
         attrs: OMSAttrDict = {}
@@ -371,6 +406,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                 next_tok()
                 if curr().type != tt.Lbrace:
                     _error("rect shorthand must follow {")
+                    ERRORS += 1
                     idx += 1
                     continue
                 next_tok()
@@ -379,6 +415,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                     next_tok()
                     if curr().type != tt.Eq:
                         _error(f"rect attr {r_key} missing =")
+                        ERRORS += 1
                         idx += 1
                         continue
                     next_tok()
@@ -397,30 +434,34 @@ def ast(tokens: list[Token]) -> AST_Type:
                 if curr().type == tt.Semi:
                     next_tok()
                 if attr_key in attrs:
-                    _warning(f"OMS Parser duplicate attr '{attr_key}'")
+                    _warning(f"Parser duplicate attr '{attr_key}'")
                 attrs[attr_key] = attr_val
-                _info(f"OMS Parser set attr [{attr_key}] = {attr_val}")
+                _info(f"Parser set attr [{attr_key}] = {attr_val}")
                 continue
             # Unknown token inside block
-            _error(f"OMS Parser unexpected token '{ct.val}' inside block")
+            _error(f"Parser unexpected token '{ct.val}' inside block")
+            ERRORS += 1
             idx += 1
         return attrs, rect_attrs, use_list
 
     def parse_global_var():
         """Parse $VAR_NAME = value;"""
+        global ERRORS
         var_name = curr().val
         next_tok()
         if curr().type != tt.Eq:
             _error(f"Global var ${var_name} missing = assignment")
+            ERRORS += 1
             return
         next_tok()
         var_val = parse_value()
         if curr().type == tt.Semi:
             next_tok()
         full_ast.global_vars[var_name] = var_val
-        _info(f"OMS Parser register global constant ${var_name} = {var_val}")
+        _info(f"Parser register global constant ${var_name} = {var_val}")
 
     def parse_style_def():
+        global ERRORS
         """Parse @style Name { ... }"""
         next_tok() # skip @
         next_tok() # skip style identifier
@@ -428,14 +469,16 @@ def ast(tokens: list[Token]) -> AST_Type:
         next_tok()
         if curr().type != tt.Lbrace:
             _error(f"@style {style_name} missing opening {{")
+            ERRORS += 1
             return
         next_tok()
         style_attrs, _, _ = parse_block_inner()
         next_tok()
         full_ast.style_blocks[style_name] = OmsStyleBlock(style_name, style_attrs)
-        _info(f"OMS Parser register global style [{style_name}]")
+        _info(f"Parser register global style [{style_name}]")
 
     def parse_rule():
+        global ERRORS
         """Parse WidgetName[:state1:state2] { ... } style rule"""
         widget_short = curr().val
         next_tok()
@@ -445,20 +488,22 @@ def ast(tokens: list[Token]) -> AST_Type:
             next_tok()
             state_tok = curr()
             if state_tok.type != tt.Identifier:
-                _error("OMS Parser invalid state identifier after colon")
+                _error("Parser invalid state identifier after colon")
+                ERRORS += 1
                 break
             states.append(state_tok.val)
             next_tok()
         # Expect opening brace
         if curr().type != tt.Lbrace:
-            _error(f"OMS Parser widget {widget_short} missing {{")
+            _error(f"Parser widget {widget_short} missing {{")
+            ERRORS += 1
             return
         next_tok()
         rule_attrs, rect_groups, use_styles = parse_block_inner()
         next_tok()
         rule = OmsRule(widget_short, states, rule_attrs, use_styles, rect_groups)
         full_ast.rules.append(rule)
-        _info(f"OMS Parser finish rule {widget_short} states={states}")
+        _info(f"Parser finish rule {widget_short} states={states}")
 
     # Top level main loop
     while idx < token_count:
@@ -478,11 +523,11 @@ def ast(tokens: list[Token]) -> AST_Type:
         idx += 1
     return full_ast
 
-# ==== Upgraded AST -> QSS Converter ====
+# ==== AST -> QSS Converter ====
 def convert(ast: AST_Type) -> QssString:
-    """Convert upgraded FullAST to standard Qt QSS text"""
+    """Convert Full AST to standard Qt QSS text"""
     qss_header = [
-        "// @generated by OMS Upgraded V2 Converter, oh-my-gui",
+        "// @generated by OMS Converter, oh-my-gui",
         "// License: MIT",
         ""
     ]
@@ -554,9 +599,9 @@ def convert(ast: AST_Type) -> QssString:
         output_lines.append("")
     return "\n".join(output_lines)
 
-# Main entry function (API unchanged, fully compatible with old code)
+# Main entry function
 def convert_oms_to_qss(oms: str) -> QssString:
-    """Parse upgraded OMS source and output standard QSS string"""
+    """Parse OMS source and output standard QSS string"""
     token_stream = lexer(oms)
     full_ast_tree = ast(token_stream)
     qss_result = convert(full_ast_tree)
