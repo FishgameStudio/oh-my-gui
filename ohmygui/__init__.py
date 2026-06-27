@@ -67,9 +67,7 @@ from . import layout
 from . import terminal
 from . import oml
 
-
-from sys import modules as _modules
-__all__ = [k for k in _modules[__name__].__dict__ if not k.startswith("_")]
+__all__ = ['core', 'widget', 'dialog', 'utils', 'layout', 'terminal', 'oml']
 from logging import warning as _warning, info as _info
 
 
