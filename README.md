@@ -18,7 +18,7 @@
 ![Contributors](https://img.shields.io/github/contributors/FishgameStudio/oh-my-gui)
 ![Welcome](https://img.shields.io/badge/PRs%20%26%20Issues-welcome-bluevoilet)
 
-![Version](https://img.shields.io/badge/version-1.0.0-orange)
+![Version](https://img.shields.io/badge/version-1.2.0-orange)
 ![Qt](https://img.shields.io/badge/Framework-PySide6-52C141)
 [![Python](https://img.shields.io/badge/python-3.14-blue)](https://python.org)
 ![QtVer](https://img.shields.io/badge/Qt-6.11.0-2392DD)
@@ -157,13 +157,14 @@ app.run()
 This project uses **`PySide6`** as the GUI core dependency. Please ensure **`PySide6` is installed** in your Python environment before running or building the project.
 
 ## Roadmap
-- [x] **v0.1.0**: Core framework, basic widget, 1 exmaple
-- [x] **v0.2.0**: Basic layout, 3~5 examples, dialog module
-- [x] **v0.3.0**: Basic style control, QML support
-- [x] **v0.4.0**: Optimize layout, complex widgets
-- [x] **v0.5.0**: Fix most bugs, optimize performence, improve docs
-- [x] **v0.9.0**\[RC Version\]: freeze API
 - [x] **v1.0.0**\[Official Stable Version\]: launch on PyPI
+- [x] **v1.1.0**: Add more widget extensions & add CHANGELOG.md
+- [x] **v1.2.0**: Create OML & OMS
+- [ ] **v1.3.0**: 3D engine support
+- [ ] **v1.4.0**: Improve animations
+- [ ] **v1.5.0**: Improve docs, FAQ, examples
+- [ ] **v1.9.0**\[Release Candidate\]: Freeze APIs, fix most bugs
+- [ ] **v2.0.0**\[Official Stable Version\]: launch on PyPI
 
 See the [open issues](https://github.com/FishgameStudio/oh-my-gui/issues) for a full list of proposed features (and known issues).
 

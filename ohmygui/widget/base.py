@@ -74,6 +74,11 @@ class BaseWidget:
     def load_stylesheet(self, qss: str) -> Self:
         self._widget.setStyleSheet(qss)
         return self
+    def load_omstylesheet(self, oms: str) -> Self:
+        """Load a OMS (Oh My Stylesheet) string"""
+        from ..core import convert_oms_to_qss as _convert
+        self.load_stylesheet(_convert(oms))
+        return self
     def lock(self) -> Self:
         self._widget.setEnabled(False)
         return self

@@ -1,16 +1,31 @@
 # Main window class
 
 from PySide6.QtWidgets import QMainWindow, QWidget
-from PySide6.QtCore import QSize, QObject
-from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction
+from PySide6.QtCore import QSize, QObject, QRect as _QRect, Qt as _Qt
+from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction, QPixmap
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self
+from warnings import warn as _warn
 from logging import info, warning, error, critical
+from ..widget.page import Interface as _Interface
+from weakref import finalize as _finalize
+from enum import Enum as _Enum
+from .oms import convert_oms_to_qss as _convert
+
 
 Size_Type = tuple[int, int]
 Dir = Size_Type
 RelDir = tuple[Annotated[float, "0.0 ~ 1.0"], Annotated[float, "0.0 ~ 1.0"]]
+
+class WinSize(_Enum):
+    Maximum       = 0
+    Minimum       = 1
+    Regular       = 2
+    Left          = 3
+    Right         = 4
+    Top           = 5
+    Bottom        = 6
 
 class Window:
     def __init__(self, title: str = "", size: Size_Type = (800, 500)) -> None:
@@ -18,6 +33,7 @@ class Window:
         self._win = QMainWindow()
         self._win.setWindowTitle(title)
         self._win.resize(*size)
+        self._win.setDockNestingEnabled(True) 
         self.central = QWidget() # Central Widget for binding UI.
         self._win.setCentralWidget(self.central)
         self.menubar = self._win.menuBar()
@@ -25,6 +41,9 @@ class Window:
         self.stack: list[tuple[bool, BaseWidget]] = [] # is_relative_binded & UI Stack
         # caches of Relative positions
         self._rel_cache: dict[BaseWidget, RelDir] = {}
+        self._interface: _Interface | None = None
+        # destructor
+        self._dtor = _finalize(self, self.__destruct__)
         info("Window exit __init__")
 
     @property
@@ -47,7 +66,18 @@ class Window:
         info(f"set pos as {pos}")
         self._win.setGeometry(*pos, self.w, self.h)
         return self
-
+    
+    def set_icon(self, ico_path: str) -> Self:
+        """Set the icon of the window."""
+        try:
+            self._win.setWindowIcon(QPixmap(ico_path))
+        except FileNotFoundError:
+            error(f"Icon file not found: {ico_path}")
+        except PermissionError:
+            error(f"Icon file permission denied: {ico_path}")
+        except Exception as e:
+            error(f"Except when setting window icon: {e}")
+        return self
     @property
     def size(self) -> Size_Type:
         """Returns the window size."""
@@ -109,6 +139,11 @@ class Window:
     @property
     def children(self) -> list[QObject]:
         return self._win.children()
+    
+    @property
+    def top_widgets(self) -> QWidget: 
+        _warn("`top_widgets` is deprecated. Use toplevel_widget instead.", DeprecationWarning, 2)
+        return self.toplevel_widget
 
     @property
     def toplevel_widget(self) -> QWidget:
@@ -119,10 +154,21 @@ class Window:
         """Set a layout on the window's central widget."""
         info(f"set layout as {layout}")
         self.central.setLayout(layout.native)
+        # Clear interface
+        self._interface = None
+        return self
+    def set_interface(self, interface: _Interface) -> Self:
+        """Set self._interface"""
+        info(f"set interface as {interface}")
+        self._interface = interface
+        # Detach layout
+        self.central.setLayout(None) # type: ignore
         return self
     def load_style_from(self, path: str) -> Self:
         """Load style sheet from a QSS file."""
         info(f"load QSS from file {path}")
+        if not path.endswith(".qss"):
+            warning(f"Perhaps not qss file: {path}")
         qss: str
         try:
             with open(path, "r", encoding="utf-8") as f:
@@ -131,12 +177,38 @@ class Window:
         except FileNotFoundError as e:
             error(f"QSS file {path} not found")
             raise FileNotFoundError(f"QSS file not found: {e.filename}")
+        except PermissionError as e:
+            error("QSS file permission denied")
+            raise PermissionError(f"QSS file permission denied: {e.filename}")
         self._win.setStyleSheet(qss)
+        
         return self
     def load_style_string(self, qss: str) -> Self:
         """Load style sheet from a string."""
         self._win.setStyleSheet(qss)
         return self
+    def load_oms_string(self, oms: str) -> Self:
+        """Load a OMS (Oh My Stylesheet) string"""
+        self.load_style_string(_convert(oms))
+        return self
+    def load_oms_from(self, path: str) -> Self:
+        """Load a OMS (Oh My Stylesheet) file"""
+        if not path.endswith(".oms"):
+            warning(f"Perhaps not qss file: {path}")
+        oms: str
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                oms = f.read()
+            info("OMS has been read")
+        except FileNotFoundError as e:
+            error(f"OMS file {path} not found")
+            raise FileNotFoundError(f"OMS file not found: {e.filename}")
+        except PermissionError as e:
+            error("OMS file permission denied")
+            raise PermissionError(f"OMS file permission denied: {e.filename}")
+        self.load_oms_string(oms)
+        return self
+
     @property
     def export_QSS(self) -> str:
         """Export the current QStyleSheet."""
@@ -225,7 +297,67 @@ class Window:
                 menu.addSeparator()
         self._menus.append(menu)    
         return self
+
+    def destroy(self) -> Self:
+        """Destory this window."""
+        self._win.destroy()
+        return self
     
+    def set_frameless(self, option: bool) -> Self:
+        """Set the window frameless."""
+        self._win.setWindowFlags(_Qt.WindowType.FramelessWindowHint)
+        return self
+    def snap(self, layout: WinSize) -> Self:
+        """Set snaping mode"""
+        screen_rect = self._win.screen().availableGeometry()
+        target_rect: _QRect = _QRect()
+        match layout:
+            case WinSize.Maximum:
+                target_rect = _QRect(
+                    screen_rect.left(),
+                    screen_rect.top(),
+                    screen_rect.width(), 
+                    screen_rect.height()
+                )
+            case WinSize.Minimum:
+                target_rect = _QRect(
+                    0, 0, 0, 0
+                )
+            case WinSize.Left:
+                half_w = screen_rect.width() // 2
+                target_rect = _QRect(
+                    screen_rect.left(),
+                    screen_rect.top(),
+                    half_w,
+                    screen_rect.height()
+                )
+            case WinSize.Right:
+                half_w = screen_rect.width() // 2
+                target_rect = _QRect(
+                    half_w, 
+                    screen_rect.top(),
+                    half_w,
+                    screen_rect.height()
+                )
+            case WinSize.Top:
+                half_h = screen_rect.height() // 2
+                target_rect = _QRect(
+                    screen_rect.left(),  
+                    screen_rect.top(),
+                    screen_rect.width(),
+                    half_h
+                )
+            case WinSize.Bottom:
+                half_h = screen_rect.height() // 2
+                target_rect = _QRect(
+                    screen_rect.left(),  
+                    half_h,
+                    screen_rect.width(),
+                    half_h
+                )
+        self._win.setGeometry(target_rect)
+        return self
+
     @property
     def menus(self) -> list:
         return self._menus
@@ -245,3 +377,11 @@ class Window:
     def native(self):
         """Native escape port: Get the underlying PySide6 control"""
         return self._win
+    
+    def __destruct__(self) -> None:
+        self._interface = None
+        self._win.setLayout(None) # type: ignore
+        self._rel_cache.clear()
+        self._menus.clear()
+        self.stack.clear()
+        self._win.deleteLater()

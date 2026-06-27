@@ -7,7 +7,7 @@ from logging import info, warning, error, critical
 
 info(f"Module {__name__} loaded")
 
-class HorizentalLayout(BoxLayout):
+class HorizontalLayout(BoxLayout):
     def __init__(self) -> None:
         super().__init__()
         self._layout: QHBoxLayout = QHBoxLayout() # type: ignore
