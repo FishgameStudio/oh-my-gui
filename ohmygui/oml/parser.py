@@ -245,6 +245,12 @@ def lexer(oml: str) -> list[Token]:
                 idx += 1
             token_list.append(Token(tt.HashColor, color_buf))
             continue
+        # Comments start with //
+        elif c == "/" and idx+1 < src_len and raw_src[idx+1] == "/":
+            idx += 2
+            while idx < src_len and raw_src[idx] != "\n":
+                idx += 1
+            continue
         # Identifier / Component / attr name / keyword
         if _is_identifier_start(c):
             _info(f"OML Lexer char '{c}' matched Identifier")

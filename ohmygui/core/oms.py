@@ -206,6 +206,12 @@ def lexer(oms: str) -> list[Token]:
                 idx += 1
             token_list.append(Token(tt.HashColor, color_buf))
             continue
+        # Comments start with //
+        elif c == "/" and idx+1 < src_len and full_src[idx+1] == "/":
+            idx += 2
+            while idx < src_len and full_src[idx] != "\n":
+                idx += 1
+            continue
         # Identifier / Widget / attr name
         if _is_identifier_start(c):
             _info(f"Lexer char '{c}' matched Identifier")
