@@ -47,7 +47,7 @@ class _ColorFormatter(_logging.Formatter):
         return f"{c}{s}{_Color.RESET}"
 _logging.basicConfig(
     level=_logging.DEBUG,
-    format="[%(asctime)s] [%(levelname)s] in [%(funcName)s] : %(message)s",
+    format="[%(asctime)s] [%(levelname)s] in [%(module)s, %(funcName)s] : %(message)s",
     datefmt="%Y-%m-%d-%H:%M:%S",
     handlers=[_logging.StreamHandler(_stdout)]
 )
