@@ -18,4 +18,23 @@ _info(f"Module {__name__} loaded")
 
 
 from sys import modules as _modules
-__all__ = [k for k in _modules[__name__].__dict__ if not k.startswith("_")]
+
+__all__ = [
+    *dir(constants),
+    "play_audio",
+    "get_environment_variable",
+    "set_clip",
+    "get_clip",
+    "get_user_root_dir",
+    "send_system_notification",
+    "PKG_NAME",
+    "PYPI_API_URL",
+    "REQUEST_TIMEOUT",
+    "get_latest_ver",
+    "get_local_version",
+    "compare_ver",
+    "is_latest_version",
+    "upgrade_ohmygui",
+    "sleep",
+    "sleep_ms",
+]

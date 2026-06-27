@@ -57,7 +57,7 @@ _root_handler.setFormatter(_ColorFormatter(_cast(_logging.Formatter, _root_handl
 
 
 __author__  = "Fishgame Studio"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 from . import core
 from . import widget
@@ -67,9 +67,7 @@ from . import layout
 from . import terminal
 from . import oml
 
-
-from sys import modules as _modules
-__all__ = [k for k in _modules[__name__].__dict__ if not k.startswith("_")]
+__all__ = ['core', 'widget', 'dialog', 'utils', 'layout', 'terminal', 'oml']
 from logging import warning as _warning, info as _info
 
 
