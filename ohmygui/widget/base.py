@@ -144,6 +144,17 @@ class BaseWidget:
         self._widget.setGraphicsEffect(cast(QGraphicsEffect, None))
         return self
 
+    def focus(self) -> Self:
+        """Focus the widget."""
+        info(f"{self} focus")
+        self._widget.setFocus()
+        return self
+    def defocus(self) -> Self:
+        """Defocus the widget."""
+        info(f"{self} defocus")
+        self._widget.clearFocus()
+        return self
+
     @property
     def is_locked(self) -> bool:
         return not self._widget.isEnabled()
