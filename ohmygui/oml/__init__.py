@@ -1,7 +1,7 @@
 from .parser import (
     CONSTANTS, COMPONENT_MAP, 
     OML_KEYWORDS, UNIT_LIST, 
-    convert_oml_to_qml
+    convert_oml_to_qml, ErrorLimitExceededError
     
 )
 
