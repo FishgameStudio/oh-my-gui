@@ -47,4 +47,7 @@ def play_audio(file_path: str, *, sync: bool = False) -> None:
 # Test
 
 if __name__ == '__main__':
-    play_audio("C:\\Windows\\Media\\Alarm06.wav", sync=True)
+    if sys.platform.startswith('win'):
+        play_audio("C:\\Windows\\Media\\Alarm06.wav", sync=True)
+    else:
+        pass
