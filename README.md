@@ -14,6 +14,7 @@
 ![PRs](https://img.shields.io/github/issues-pr/FishgameStudio/oh-my-gui)
 
 ![LastCommit](https://img.shields.io/github/last-commit/FishgameStudio/oh-my-gui)
+[![PyPI](https://img.shields.io/pypi/v/oh-my-gui?style=color=orange)](https://pypi.com/project/oh-my-gui)
 ![Size](https://img.shields.io/github/repo-size/FishgameStudio/oh-my-gui)
 ![Contributors](https://img.shields.io/github/contributors/FishgameStudio/oh-my-gui)
 ![Welcome](https://img.shields.io/badge/PRs%20%26%20Issues-welcome-bluevoilet)
