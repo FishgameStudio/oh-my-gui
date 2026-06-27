@@ -20,23 +20,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from sys import path as _sys_path
+from sys import path as _sys_path, stdout as _stdout
 from os.path import dirname as _dirname
 _current_folder = _dirname(__file__)
 if _current_folder not in _sys_path:
     _sys_path.insert(0, _current_folder)
 
 import logging as _logging
-log_format = "[%(asctime)s] [%(levelname)s] in [%(funcName)s] : %(message)s"
-date_format = "%Y-%m-%d-%H:%M:%S"
+class _Color:
+    BLUE = "\033[34m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    RED = "\033[31m"
+    RESET = "\033[0m"
+class _ColorFormatter(_logging.Formatter):
+    def format(self, record):
+        if record.levelno == _logging.DEBUG:
+            c = _Color.BLUE
+        elif record.levelno == _logging.INFO:
+            c = _Color.GREEN
+        elif record.levelno == _logging.WARNING:
+            c = _Color.YELLOW
+        else:
+            c = _Color.RED
+        s = super().format(record)
+        return f"{c}{s}{_Color.RESET}"
 _logging.basicConfig(
     level=_logging.DEBUG,
-    format=log_format,
-    datefmt=date_format
+    format="[%(asctime)s] %(levelname)s: %(message)s",
+    handlers=[_logging.StreamHandler(_stdout)]
 )
+_root_handler = _logging.getLogger().handlers[0]
+from typing import cast as _cast
+_root_handler.setFormatter(_ColorFormatter(_cast(_logging.Formatter, _root_handler.formatter)._fmt))
+
 
 __author__  = "Fishgame Studio"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 
 from . import core
 from . import widget
