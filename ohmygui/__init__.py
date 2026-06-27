@@ -57,7 +57,7 @@ _root_handler.setFormatter(_ColorFormatter(_cast(_logging.Formatter, _root_handl
 
 
 __author__  = "Fishgame Studio"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 from . import core
 from . import widget
