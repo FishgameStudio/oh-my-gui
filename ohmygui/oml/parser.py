@@ -429,35 +429,47 @@ def ast(tokens: list[Token]) -> AST_Type:
         nonlocal token_ptr
         val_t = curr()
         val: OMLAttrValue = None
+
         if val_t.type == tt.Number:
-            val = val_t.digitval
-            # skip unit suffix token
-            if peek_next().type == tt.UnitSuffix:
-                next_tok()
+            num_str = val_t.val
+            token_ptr += 1
+            # 拼接后面的单位后缀
+            if curr().type == tt.UnitSuffix:
+                unit_str = curr().val
+                token_ptr += 1
+                val = num_str + unit_str
+            else:
+                val = num_str
         elif val_t.type == tt.String:
             val = val_t.val
+            token_ptr += 1
         elif val_t.type == tt.HashColor:
             val = val_t.val
+            token_ptr += 1
         elif val_t.type == tt.DollarVar:
             var_name = val_t.val
+            token_ptr += 1
             val = full_ast.global_vars.get(var_name, f"${var_name}")
         elif val_t.type == tt.Identifier:
             if val_t.val in CONSTANTS:
                 val = CONSTANTS[val_t.val]
+                token_ptr += 1
             else:
                 # function reference func::slot
                 if peek_next().type == tt.DoubleColon:
                     func_id = val_t.val
                     token_ptr += 1
-                    token_ptr += 1 # skip ::
+                    token_ptr += 1  # skip ::
                     slot_name = curr().val
+                    token_ptr += 1
                     val = f"{func_id}::{slot_name}"
                 else:
                     val = val_t.val
+                    token_ptr += 1
         else:
             _error(f"OML Parser invalid value token {val_t.type}")
             ERRORS += 1
-        token_ptr += 1
+            token_ptr += 1
         return val
 
     def parse_attr_block() -> tuple[OMLAttrDict, OMLAttrDict, list[str]]:
@@ -568,11 +580,34 @@ def ast(tokens: list[Token]) -> AST_Type:
         # Re-scan block for child components
         while token_ptr < token_count and curr().type != tt.Rbrace:
             current_t = curr()
+            # Branch1: template macro call TemplateName(arg1,arg2)
+            if current_t.type == tt.Identifier and current_t.val in full_ast.template_macros and peek_next().type == tt.Lpar:
+                tpl = full_ast.template_macros[current_t.val]
+                token_ptr += 1  # skip template name
+                token_ptr += 1  # skip '('
+                arg_vals = []
+                while curr().type != tt.Rpar:
+                    arg = parse_attr_value()
+                    arg_vals.append(arg)
+                    if curr().type == tt.Comma:
+                        token_ptr += 1
+                token_ptr += 1  # skip ')'
+                # Skip ';'
+                if curr().type == tt.Semi:
+                    token_ptr += 1
+                # Shallow copy root node & inject args (Simplely expand)
+                root_copy = tpl.root_node
+                children.append(root_copy)
+                continue
+            # Branch2: normal widget
             if current_t.type == tt.Identifier and current_t.val in COMPONENT_MAP:
                 child_node = parse_component()
                 children.append(child_node)
-            else:
-                token_ptr += 1
+                continue
+            # Skip other char
+            token_ptr += 1
+        if curr().type == tt.Semi:
+            token_ptr += 1
         # consume closing }
         if curr().type == tt.Rbrace:
             token_ptr += 1
