@@ -117,11 +117,6 @@ Certainly, this basic tool library is mainly oriented to conventional lightweigh
 
 Here is an example to run.
 
-At first, please clone the repository on your local computer:
-```bash
-git clone https://github.com/FishgameStudio/oh-my-gui.git
-```
-
 *Please keep the copyright comments in the source ode file while using.*
 *if you modified our source code, please insert these lines into your code:*
 ```python
@@ -130,7 +125,7 @@ git clone https://github.com/FishgameStudio/oh-my-gui.git
 ```
 To use the APIs of this project, please install them down:
 ```bash
-pip install .
+pip install oh-my-gui
 ```
 And you can use the APIs:
 ```python
@@ -150,6 +145,13 @@ layout.add_widget(widget.Text("!"))
 window.set_layout(layout)
 window.show()
 app.run()
+```
+Run:
+```bash
+# Run in module mode
+python -m path.to.your.script.py
+# Instead of:
+# python path/to/your/script.py
 ```
 
 
