@@ -47,9 +47,10 @@ from . import terminal
 from . import oml
 
 
-__all__ = [
-    "core", "widget", "dialog", "utils", "layout", "terminal", "oml"
-]
+from sys import modules as _modules
+__all__ = [k for k in _modules[__name__].__dict__ if not k.startswith("_")]
+from logging import warning as _warning, info as _info
+
 
 # Check version & auto upgrade
 
@@ -59,14 +60,14 @@ if "OMGUI_NO_AUTO_UPGRADE" not in _environ:
     try:
         latest_ok = utils.is_latest_version()
     except Exception as err:
-        utils.warning(f"Remote version check failed, skip upgrade prompt. Error: {err}")
+        _warning(f"Remote version check failed, skip upgrade prompt. Error: {err}")
     else:
         if not latest_ok:
-            utils.info("New version of oh-my-gui detected.")
+            _info("New version of oh-my-gui detected.")
             if _stdout is not None and getattr(_stdout, "isatty", lambda: False)():
                 user_choice = input("Upgrade to latest version? (y/n): ").strip().lower()
                 if user_choice == "y":
                     success = utils.upgrade_ohmygui()
                     if success:
-                        utils.info("Upgrade complete, restart application to take effect.")
-            utils.info("Set environment variable OMGUI_NO_AUTO_UPGRADE=1 to turn off upgrade reminder.")
+                        _info("Upgrade complete, restart application to take effect.")
+            _info("Set environment variable OMGUI_NO_AUTO_UPGRADE=1 to turn off upgrade reminder.")

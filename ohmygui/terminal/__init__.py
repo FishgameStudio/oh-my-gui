@@ -1,5 +1,7 @@
-from logging import info, warning, error, critical
+from logging import info as _info
 
-info(f"Module {__name__} loaded")
-from .conio import *
-__all__ = ["conio"]
+_info(f"Module {__name__} loaded")
+from .conio import ConsoleIO
+
+from sys import modules as _modules
+__all__ = [k for k in _modules[__name__].__dict__ if not k.startswith("_")]
