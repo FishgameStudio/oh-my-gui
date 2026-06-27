@@ -51,8 +51,16 @@ def gui_demo():
 def oml_demo():
     # Simple OML string demo (renders QML via internal converter)
     simple = '''
+    @template TextLabel(txt, font_sz) {
+        Text {
+            text = txt;
+            font_size = font_sz;
+        }
+    }
+    TextLabel("OML Demo", 20);
+
     Window {
-        TextLabel("OML Demo", 20em);
+    
     }
     '''
     app = core.App()
