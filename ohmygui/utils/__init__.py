@@ -17,10 +17,46 @@ from logging import info as _info
 _info(f"Module {__name__} loaded")
 
 
-from sys import modules as _modules
-
 __all__ = [
-    *dir(constants),
+    "WHITE",
+    "BLACK",
+    "GRAY",
+    "RED",
+    "ORANGE",
+    "YELLOW",
+    "GREEN",
+    "CYAN",
+    "BLUE",
+    "PURPLE",
+    "PINK",
+    "LIGHT_GRAY",
+    "LIGHT_RED",
+    "LIGHT_ORANGE",
+    "LIGHT_YELLOW",
+    "LIGHT_GREEN",
+    "LIGHT_CYAN",
+    "LIGHT_BLUE",
+    "LIGHT_PURPLE",
+    "LIGHT_PINK",
+    "DARK_GRAY",
+    "DARK_RED",
+    "DARK_ORANGE",
+    "DARK_YELLOW",
+    "DARK_GREEN",
+    "DARK_CYAN",
+    "DARK_BLUE",
+    "DARK_PURPLE",
+    "DARK_PINK",
+    "ASSERTION",
+    "ERROR",
+    "WARNING",
+    "SAVE_FILE",
+    "CANT_OPEN_FILE",
+    "FILE_NOT_FOUND",
+    "OVERWRITE_FILE",
+    "INFO",
+    "CONFIRM_EXIT",
+    "PERMISSION_DENIED",
     "play_audio",
     "get_environment_variable",
     "set_clip",
@@ -38,3 +74,5 @@ __all__ = [
     "sleep",
     "sleep_ms",
 ]
+
+del _info

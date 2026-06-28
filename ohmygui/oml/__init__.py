@@ -8,7 +8,6 @@ from .parser import (
 from logging import info as _info
 _info(f"Module {__name__} loaded")
 
-from sys import modules as _modules
 __all__ = [
     "CONSTANTS",
     "COMPONENT_MAP",
@@ -17,3 +16,5 @@ __all__ = [
     "convert_oml_to_qml",
     "ErrorLimitExceededError",
 ]
+
+del _info

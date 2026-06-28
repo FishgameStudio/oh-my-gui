@@ -8,3 +8,5 @@ from .basic import (
 from .enums import Icon, Button
 
 __all__ = ['BaseDialog', 'MessageBox', 'FileChooser', 'ColorPicker', 'Icon', "Button"]
+
+del _info

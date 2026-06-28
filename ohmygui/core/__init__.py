@@ -25,6 +25,8 @@ __all__ = [
     "ErrorLimitExceededError",
 ]
 
-from logging import info, warning, error, critical
+from logging import info
 
 info(f"Module {__name__} loaded")
+
+del info
