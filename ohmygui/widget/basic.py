@@ -1,12 +1,11 @@
 # Basic Widgets
 
-from PySide6.QtWidgets import QLabel, QWidget, QPushButton, QLineEdit
+from PySide6.QtWidgets import QLabel, QPushButton, QLineEdit
 from PySide6.QtGui import QPalette, QKeyEvent, QFont
 from PySide6.QtCore import QObject, QEvent
 from .base import BaseWidget
-from .event import Event
 from typing import Callable, Any, Optional, cast, Self
-from logging import info, warning, error, critical
+from logging import info
 
 info(f"Module {__name__} loaded")
 
@@ -144,7 +143,7 @@ class InputEntry(BaseWidget):
             def eventFilter(self, obj: QObject, e: QEvent) -> bool:
                 if e.type() == QEvent.Type.KeyPress:
                     if isinstance(e, QKeyEvent):
-                        ke: QKeyEvent = cast(QKeyEvent, e)
+                        ke: QKeyEvent = e
                         key_text: str = ke.text()
                         if key_text:
                             self.callback(key_text)

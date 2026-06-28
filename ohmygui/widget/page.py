@@ -1,5 +1,6 @@
 # Page manager.
 
+from ohmygui.layout.base import BaseLayout
 from ..layout.base import BaseLayout as _BaseLayout
 from typing import Self
 from PySide6.QtWidgets import QWidget
@@ -7,8 +8,8 @@ from PySide6.QtWidgets import QWidget
 class Page:
     """Make group for some widgets."""
     def __init__(self, layout: _BaseLayout) -> None:
-        self.page = QWidget()
-        self.layout = layout
+        self.page: QWidget = QWidget()
+        self.layout: BaseLayout = layout
         self.layout.native.setParent(self.page)
     def set_layout(self, layout: _BaseLayout) -> Self:
         """Bind a layout to set the current binding group"""

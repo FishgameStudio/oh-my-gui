@@ -34,7 +34,7 @@ class _Color:
     RED = "\033[31m"
     RESET = "\033[0m"
 class _ColorFormatter(_logging.Formatter):
-    def format(self, record) -> str:
+    def format(self, record: LogRecord) -> str:
         if record.levelno == _logging.DEBUG:
             c = _Color.BLUE
         elif record.levelno == _logging.INFO:
@@ -68,13 +68,12 @@ from . import terminal
 from . import oml
 
 __all__ = ['core', 'widget', 'dialog', 'utils', 'layout', 'terminal', 'oml', '__version__', '__author__']
-from logging import Handler, warning as _warning, info as _info
+from logging import Handler, LogRecord, warning as _warning, info as _info
 
 
 # Check version & auto upgrade
 
 from os import environ as _environ
-from sys import stdout as _stdout
 if "OMGUI_NO_AUTO_UPGRADE" not in _environ:
     try:
         latest_ok: bool = utils.is_latest_version()
