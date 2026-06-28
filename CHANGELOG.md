@@ -1,6 +1,6 @@
 # THE CHANGELOG
 
-## Changelog of \[v1.1.0\]
+## Changelog of \[v1\.1\.0\]
 
 ### Added
 - **Core System**
@@ -37,11 +37,11 @@
 ### Deprecated
 - `Window.top_widgets` property is marked as deprecated. Use `toplevel_widget` instead.
 
-# Changelog of \[v1.2.0]
+# Changelog of \[v1\.2\.0\]
 
 ### Added
 
-#### Core Engine \& Custom Syntax System
+#### Core Engine & Custom Syntax System
 
 * **Full OMS (Oh My Stylesheet) V2 Engine**
 * Added brand new `core.oms` module, implements OMS markup to standard QSS compilation
@@ -56,11 +56,11 @@
 * Compatible with OMS core syntax features (variables, style inheritance, rect shorthand)
 * Exposed top-level API: `convert\_oml\_to\_qml` for manual syntax conversion
 
-#### Application \& Window Core API Expansion
+#### Application & Window Core API Expansion
 
 * Extended `core.Application` singleton with full style/OML loading capabilities
 * Added `load\_style\_from()` / `load\_style\_string()` for standard QSS loading
-* Added `load\_oms\_from()` / `load\_oms\_string()` for direct OMS stylesheet parsing \& loading
+* Added `load\_oms\_from()` / `load\_oms\_string()` for direct OMS stylesheet parsing & loading
 * Added `load\_oml\_from()` / `load\_oml\_string()` for OML markup compilation and QML engine loading
 * Added `App = Application` global alias for simpler code writing
 * Extended `core.Window` with OMS native support: `load\_oms\_from()` / `load\_oms\_string()`
@@ -86,7 +86,7 @@
 * `GridLayout`: Perfected row/span layout placement and margin configuration
 * `FormLayout`: Added label binding and global spacing/margin settings
 
-#### Dialog \& Tool Module Enhancement
+#### Dialog & Tool Module Enhancement
 
 * Completed `dialog` module API documentation and method supplementation
 * Perfect `MessageBox`, `FileChooser`, `ColorPicker` full lifecycle methods
@@ -95,12 +95,12 @@
 * Enriched `utils.color` global color constant library with light/dark gradient color sets
 * Upgraded `terminal.ConsoleIO`: Added hex-to-ANSI conversion, progress bar rendering, rich text input/output
 
-#### Demo \& Example Project Supplement
+#### Demo & Example Project Supplement
 
 * Added multiple official demo cases covering core new features
 * `full\_demo.py`: Comprehensive demo integrating core, widgets, layout, terminal and OML functions
 * `toolbox.py`: Terminal progress task demo based on ConsoleIO
-* `terminal\_demo.py`: Independent terminal rich text input/output \& progress bar demo
+* `terminal\_demo.py`: Independent terminal rich text input/output & progress bar demo
 * `oml\_demo.py`: Independent OML markup conversion and QML loading demo
 
 #### Project Environment Optimization
@@ -110,7 +110,7 @@
 
 ### Changed
 
-#### API Standardization \& Return Value Uniformity
+#### API Standardization & Return Value Uniformity
 
 * Unified return value of all widget methods to `Self`, supporting chain calls comprehensively
 * Standardized method naming and parameter specifications of `Text/Button/InputEntry/PasswordEntry` and other basic widgets
@@ -140,7 +140,7 @@
 * Fixed partial widget method no-return value specification inconsistency
 * Fixed spelling error of horizontal layout module name to eliminate import ambiguity
 
-# Changelog of [v1.2.1]
+# Changelog of \[v1\.2\.1\]
 
 ### Added
 #### Core Runtime & Logging
@@ -210,3 +210,96 @@
 
 ### Deprecated
 - No API deprecation in this patch version; all 1.2.0 public interfaces remain fully backward compatible
+
+
+## Changelog of \[v1\.2\.5\]
+
+**Version Sync**: Synchronize package version to 1\.2\.5 \(upgrade from v1\.2\.1\)
+
+### Added
+
+#### Development Environment Optimization
+
+- Enhanced VSCode Python analysis configuration, added custom `ohmygui` package depth indexing rule \(depth=5\)
+
+- Enabled Python module full indexing and extra symbol search to eliminate import and type hint missing warnings
+
+- Configured differentiated type checking rules: disabled pyright default checking, enabled standard checking for `basedpyright`
+
+- Optimized editor hint display: enabled parameter hints, set inlay hints to display only on press
+
+#### Code Specification & Type Annotation Completion
+
+- Supplemented full type annotations for **all core modules** \(core, widget, terminal, utils, oml, oms\), fixed unbound variable and type mismatch warnings
+
+- Added strict type aliases for common structures such as `Size_Type`, unified function return values and parameter type specifications
+
+- Completed return type annotation for decorators, class methods and tool functions to improve static analysis accuracy
+
+#### Project Engineering Construction
+
+- Added empty `test/__init__.py` to standardize test module import rules, support `python -m test` module running mode
+
+- Updated project logo asset resource
+
+### Changed
+
+#### Global Import System Overhaul
+
+- Completely refactored top\-level package export logic, canceled dynamic automatic `__all__` generation, adopted**manual standardized export list**
+
+- All public classes, constants, tool functions are directly exposed at the top level, support `from ohmygui import *` global quick import
+
+- Removed redundant internal module references, cleaned up leftover wildcard imports in all example demo files
+
+- Unified demo code writing specification: all basic demos use top\-level direct import instead of submodule separate import
+
+#### Module Internal Optimization
+
+- Cleaned up redundant imported modules and unused logging references in`widget`, `terminal`, `utils` submodules
+
+- Removed redundant internal variable caching and invalid symbol exposure, reduced package load overhead
+
+- Optimized singleton decorator type definition in core application to comply with latest Python type specification
+
+- Unified error counting and log output logic in OMS/OML parser, further simplified redundant prefix information
+
+#### Documentation & Badge Update
+
+- Updated README version badge to v1\.2\.5, added official PyPI version display badge
+
+- Optimized quick start documentation, consolidated installation and running specification instructions
+
+- Standardized module running specifications, uniformly recommended `python -m module.name` running mode
+
+#### Demo Code Standardization
+
+- Refactored all basic and advanced demo codes, unified object creation and widget calling syntax
+
+- Optimized layout demo variable naming, fixed historical spelling irregularity of layout instances
+
+- Removed obsolete full demo file, completed migration and sorting of demo resources
+
+### Fixed
+
+- Fixed incomplete type annotation of core decorators and widget methods, resolved all static code analysis warnings
+
+- Fixed inconsistent export symbols of individual submodules, unified global public API exposure rules
+
+- Fixed redundant log output and invalid variable retention in parser module
+
+- Fixed partial demo code import redundancy and non\-standard variable definition problems
+
+- Fixed potential circular import risk caused by inconsistent internal logger calling methods
+
+### Deprecated
+
+- No public API deprecated in this version, fully backward compatible with v1\.2\.1 all functions
+
+### Performance & Engineering Optimization
+
+- Optimized package loading speed by cleaning up invalid imports and redundant symbol traversal logic
+
+- Improved project code specification consistency, fully compliant with basedpyright standard type checking rules
+
+- Standardized all module initialization log output, unified project code style
