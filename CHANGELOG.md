@@ -139,3 +139,74 @@
 * Fixed missing exception capture for style sheet file loading
 * Fixed partial widget method no-return value specification inconsistency
 * Fixed spelling error of horizontal layout module name to eliminate import ambiguity
+
+# Changelog of [v1.2.1]
+
+### Added
+#### Core Runtime & Logging
+- Added ANSI colored logging formatter; log levels (DEBUG/INFO/WARNING/ERROR) automatically render blue/green/yellow/red text in terminal
+- Added strict parsing error limit mechanism (`ERROR_LIMIT = 15`) for both OMS and OML parsers
+- Introduced `ErrorLimitExceededError` custom exception; parsing terminates immediately once error count exceeds threshold to avoid cascading failures
+- Added `bind()` decorator callback logging, prints function registration information during event binding
+
+#### OML Parser Upgrade
+- Implemented block-internal template macro call parsing, supporting `TemplateName(arg1, arg2)` directly inside component braces
+- Enhanced value parser to automatically splice numeric values + unit suffix (`20em` becomes a complete literal instead of two separate tokens)
+- Added automatic trailing semicolon swallowing for component statements to eliminate syntax conflicts
+- Added `all` alias mapped to wildcard selector `*`, consistent with OMS syntax
+
+#### QML Loading Engine
+- Added new `load_qml_string()` method inside `Application`
+- Implemented asynchronous `QQmlComponent` compilation with `statusChanged` signal callback
+- Captured and printed QML compile errors explicitly; fixed the "Component is not ready" asynchronous loading problem
+- Added runtime log tracking for QML source loading snippet
+
+#### Widget API
+- Added `focus()` / `defocus()` chainable methods on `BaseWidget` to control keyboard focus programmatically
+
+#### Module Export Standardization
+- All submodules switched to automatic `__all__` generation via module inspection
+- Only expose public members; all private underscore-prefixed variables are hidden from external imports
+- Rewrote manual import lists for `core`, `widget`, `layout`, `dialog`, `terminal`, `oml`, `utils` modules
+- Exposed concrete classes directly instead of submodule names in package exports
+
+### Changed
+#### Syntax Lexer Breaking Adjustment
+- Changed comment syntax from `#` to `//` in both OMS and OML lexers
+- Resolved character conflict between hex color literal `#RRGGBB` and line comment symbol
+- Lexer now skips all content after `//` until line break
+
+#### OMS & OML Parser Refactoring
+- Unified log text by removing redundant `OMS / OML` prefix inside parser messages
+- Refactored import preprocessing logic and error handling for `@import` file reading
+- Rewrote cursor helper functions with unified error counting via global `ERRORS` counter
+- Simplified AST traversal code; cleaned up redundant version upgrade annotations
+- Updated header comment of generated QSS/QML files
+
+#### Core Module Refactoring
+- Rewrote `core/__init__.py`: export concrete classes (`Window`, `App`, `bind`) instead of submodules
+- Changed `App` from simple alias to formal `TypeAlias = Application` type declaration
+- Refactored auto-upgrade logic: switched internal logger from `utils.info/warning` to direct logging module functions to eliminate circular import risk
+- Cleaned up redundant `from *` wildcard imports across the entire project
+
+#### Documentation & Installation
+- Updated README installation command from `pip install .` to public PyPI package `pip install oh-my-gui`
+- Added module running instruction: recommend `python -m module.name` instead of direct script execution
+- Removed local git clone instruction from quick start section
+
+#### Project Structure
+- Deleted obsolete `example/full_demo.py` source file; demo code will be reorganized into standalone samples later
+- Bumped package version in `pyproject.toml` and `setup.py` to `1.2.1`
+- Version constant `__version__` inside `ohmygui/__init__.py` synchronized to `1.2.1`
+
+### Fixed
+1. OML issue: template calls cannot be parsed when placed inside `Window {}` child nodes
+2. OMS & OML lexer: numeric values and unit suffixes were split into two independent tokens
+3. QML loading: synchronous `create()` invoked before component asynchronous compilation finished, causing "Component not ready" warning and silent failure
+4. Parser: unclosed string, unknown character and file import failures did not accumulate error counters properly
+5. Module export: inconsistent `__all__` lists leading to inconsistent public API between different subpackages
+6. Exit risk: closing `sys.stderr` in error scenarios was avoided by strictly using logging stream handler bound to stdout
+7. Minor bugs: missing brace error capture, leftover stray semicolons breaking component parsing
+
+### Deprecated
+- No API deprecation in this patch version; all 1.2.0 public interfaces remain fully backward compatible
