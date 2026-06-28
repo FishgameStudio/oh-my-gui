@@ -7,11 +7,11 @@ from logging import info, warning, error, critical
 info(f"Module {__name__} loaded")
 
 class BaseDialog:
-    def __init__(self, title: str, content: str):
+    def __init__(self, title: str, content: str) -> None:
         info("BaseDialog enter __init__")
-        self.title = title
-        self.content = content
-        self._win = QDialog()
+        self.title: str = title
+        self.content: str = content
+        self._win: QDialog = QDialog()
         self._win.setWindowTitle(self.title)
     def show(self) -> Self:
         self._win.exec()

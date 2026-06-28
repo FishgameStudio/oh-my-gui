@@ -11,7 +11,7 @@ info(f"Module {__name__} loaded")
 class FormLayout(BaseLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._layout: QFormLayout = cast(QFormLayout, self._layout) # type: ignore
+        self._layout: QFormLayout = cast(QFormLayout, self._layout)
 
     def add_margin(self, size: int) -> None:
         """Add margin to the layout."""

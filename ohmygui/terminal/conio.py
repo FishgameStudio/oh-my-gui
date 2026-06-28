@@ -1,30 +1,30 @@
 # Console i/o module.
 
-from typing import Callable, Self
+from typing import Any, Callable, Literal, LiteralString, Self
 from logging import info, warning, error, critical
 
 info(f"Module {__name__} loaded")
 
 class ConsoleIO:
     def __init__(self, fg: int = 0xffffff, bg: int = 0x000000): 
-        self.fg = fg
-        self.bg = bg
+        self.fg: int = fg
+        self.bg: int = bg
 
     @staticmethod
     def hex2ansi(rgb: int, *, bg: bool = False, highlight: bool = False, bold: bool = False, italic: bool = False, underline: bool = False) -> str:
         """Returns the ANSI escape text from the hex digit `rgb`."""
-        r = ((rgb >> 16) & 0xFF) + (60 if highlight else 0)
-        g = ((rgb >> 8) & 0xFF) + (60 if highlight else 0)
-        b = rgb & 0xFF + 60 if highlight else 0
-        code = 48 if bg else 38
-        styles = []
+        r: int = ((rgb >> 16) & 0xFF) + (60 if highlight else 0)
+        g: int = ((rgb >> 8) & 0xFF) + (60 if highlight else 0)
+        b: int = rgb & 0xFF + 60 if highlight else 0
+        code: Literal[48, 38] = 48 if bg else 38
+        styles: list[Any] = []
         if bold:
             styles.append("1")
         if italic:
             styles.append("3")
         if underline:
             styles.append("4")
-        style_str = ";".join(styles) + ";" if styles else ""
+        style_str: LiteralString | Literal[''] = ";".join(styles) + ";" if styles else ""
 
         return f"\033[{style_str}{code};2;{r};{g};{b}m"
      
@@ -34,8 +34,8 @@ class ConsoleIO:
         """Output text."""
         self.fg = fg if fg is not None else self.fg
         self.bg = bg if bg is not None else self.bg
-        fg_ansi = self.hex2ansi(fg if isinstance(fg, int) else self.fg, highlight=highlight, bold=bold, italic=italic, underline=underline)
-        bg_ansi = self.hex2ansi(bg if isinstance(bg, int) else self.bg, bg=True, highlight=highlight, bold=bold, italic=italic, underline=underline)
+        fg_ansi: str = self.hex2ansi(fg if isinstance(fg, int) else self.fg, highlight=highlight, bold=bold, italic=italic, underline=underline)
+        bg_ansi: str = self.hex2ansi(bg if isinstance(bg, int) else self.bg, bg=True, highlight=highlight, bold=bold, italic=italic, underline=underline)
 
         print(f"{fg_ansi}{bg_ansi}{text}", end=f"{end}{self.RESET}")
         return self
@@ -55,20 +55,20 @@ class ConsoleIO:
         return res
     def make_progress(self, prompt: str, total: int, curr: int) -> Self:
         assert total > 0, "total must be greater than 0"
-        percent = curr / total
+        percent: float = curr / total
         CHAR_DONE  = "█" # Block
         CHAR_REST  = "░" # White block
         WIDTH = 30
-        bar = int(percent * WIDTH)
-        done = CHAR_DONE * bar
-        rest = CHAR_REST * (WIDTH - bar)
+        bar: int = int(percent * WIDTH)
+        done: LiteralString = CHAR_DONE * bar
+        rest: LiteralString = CHAR_REST * (WIDTH - bar)
         print(f"{prompt} [{done}{rest}]", end=f"{percent * 100:.2f}%       {'\n' if percent >= 1 else '\r'}")
         return self
 
 # Test
 if __name__ == '__main__':
     from time import sleep
-    io = ConsoleIO()
+    io: ConsoleIO = ConsoleIO()
     t = 100
     c = 0
     while c <= t:

@@ -14,7 +14,7 @@ class Text(BaseWidget):
     """Label text."""
     def __init__(self, text: str = "", fg: str = "#000000", bg: str = "#ffffff"):
         super().__init__()
-        self._widget = QLabel(text)
+        self._widget: QLabel = QLabel(text)
         self._widget.setAutoFillBackground(True)
         self.set_color(fg, bg)
         
@@ -101,7 +101,7 @@ class Button(BaseWidget):
         return self
     def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
+        font_: QFont = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
         font_.setBold(bold)
         font_.setItalic(italic)
         self._widget.setFont(font_)
@@ -113,7 +113,7 @@ class Button(BaseWidget):
 class InputEntry(BaseWidget):
     def __init__(self, default_prompt: str = "", default_value: str = "") -> None:
         super().__init__()
-        self._widget = QLineEdit()
+        self._widget: QLineEdit = QLineEdit()
         self._widget.setPlaceholderText(default_prompt)
         self._widget.setText(default_value)
     @property
@@ -140,12 +140,12 @@ class InputEntry(BaseWidget):
         class KeyWatcher(QObject):
             def __init__(self, cb: Callable[[str], None], parent: Optional[QObject]):
                 super().__init__(parent)
-                self.callback = cb
+                self.callback: Callable[[str], None] = cb
             def eventFilter(self, obj: QObject, e: QEvent) -> bool:
                 if e.type() == QEvent.Type.KeyPress:
                     if isinstance(e, QKeyEvent):
-                        ke = cast(QKeyEvent, e)
-                        key_text = ke.text()
+                        ke: QKeyEvent = cast(QKeyEvent, e)
+                        key_text: str = ke.text()
                         if key_text:
                             self.callback(key_text)
                 return False
@@ -154,7 +154,7 @@ class InputEntry(BaseWidget):
         return self
     def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
+        font_: QFont = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
         font_.setBold(bold)
         font_.setItalic(italic)
         self._widget.setFont(font_)
@@ -166,7 +166,7 @@ class InputEntry(BaseWidget):
 class PasswordEntry(BaseWidget):
     def __init__(self, default_prompt: str = "Password: ", default_value: str = "") -> None:
         super().__init__()
-        self._widget = QLineEdit()
+        self._widget: QLineEdit = QLineEdit()
         self._widget.setPlaceholderText(default_prompt)
         self._widget.setText(default_value)
         self._widget.setEchoMode(QLineEdit.EchoMode.Password) # Hide the password by default
@@ -184,7 +184,7 @@ class PasswordEntry(BaseWidget):
         return self
     def set_font(self, font: str, size: int | None = None, bold: bool = False, italic: bool = False) -> Self:
         """Set the font of the text."""
-        font_ = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
+        font_: QFont = QFont(font, pointSize=size if size is not None else self._widget.font().pointSize())
         font_.setBold(bold)
         font_.setItalic(italic)
         self._widget.setFont(font_)
