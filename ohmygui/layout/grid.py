@@ -10,7 +10,7 @@ info(f"Module {__name__} loaded")
 class GridLayout(BaseLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._layout: QGridLayout = QGridLayout() # type: ignore
+        self._layout: QGridLayout = QGridLayout()
     def add_margin(self, size: int) -> Self:
         """Add margin to the layout."""
         self._layout.setContentsMargins(size, size, size, size)

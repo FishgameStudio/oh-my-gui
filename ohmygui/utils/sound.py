@@ -1,5 +1,8 @@
 # Audio media player module.
 
+from typing import LiteralString
+
+
 import os
 import sys
 import subprocess
@@ -10,8 +13,8 @@ info(f"Module {__name__} loaded")
 
 def play_audio(file_path: str, *, sync: bool = False) -> None:
     """Play mp3 or wav"""
-    def _play():
-        system = sys.platform
+    def _play() -> None:
+        system: LiteralString = sys.platform
         
         # ========== WAV ==========
         if file_path.lower().endswith(".wav"):

@@ -19,7 +19,7 @@ from PySide6.QtGui import QPalette, QColor, QPen, QBrush
 class RadioButton(BaseWidget):
     def __init__(self, text: str, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
-        self._widget = QRadioButton(text)
+        self._widget: QRadioButton = QRadioButton(text)
         self.set_color(fg, bg)
     
     @property
@@ -81,7 +81,7 @@ class RadioButton(BaseWidget):
 class ComboBox(BaseWidget):
     def __init__(self, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
-        self._widget = QComboBox()
+        self._widget: QComboBox = QComboBox()
         self.set_color(fg, bg)
     
     @property
@@ -153,7 +153,7 @@ class ComboBox(BaseWidget):
 class ListWidget(BaseWidget):
     def __init__(self, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
-        self._widget = QListWidget()
+        self._widget: QListWidget = QListWidget()
         self.set_color(fg, bg)
     
     @property
@@ -230,7 +230,7 @@ class ListWidget(BaseWidget):
 class Table(BaseWidget):
     def __init__(self, rows: int = 0, cols: int = 0, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
-        self._widget = QTableWidget(rows, cols)
+        self._widget: QTableWidget = QTableWidget(rows, cols)
         self.set_color(fg, bg)
 
     @property
@@ -334,7 +334,7 @@ class Table(BaseWidget):
 class Slider(BaseWidget):
     def __init__(self, min_val: int = 0, max_val: int = 100, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
-        self._widget = QSlider()
+        self._widget: QSlider = QSlider()
         self._widget.setRange(min_val, max_val)
         self.set_color(fg, bg)
 
@@ -412,7 +412,7 @@ class Slider(BaseWidget):
 class Progress(BaseWidget):
     def __init__(self, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
-        self._widget = QProgressBar()
+        self._widget: QProgressBar = QProgressBar()
         self.set_color(fg, bg)
     
     @property
@@ -484,7 +484,7 @@ class Progress(BaseWidget):
 class TextEdit(BaseWidget):
     def __init__(self, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
-        self._widget = QTextEdit()
+        self._widget: QTextEdit = QTextEdit()
         self.set_color(fg, bg)
     
     @property
@@ -540,11 +540,11 @@ class TextEdit(BaseWidget):
 class Canvas(BaseWidget):
     def __init__(self, fg: str = "#ffffff", bg: str = "#222222"):
         super().__init__()
-        self.brush = QBrush(QColor(fg))
-        self.pen = QPen(QColor(fg))
+        self.brush: QBrush = QBrush(QColor(fg))
+        self.pen: QPen = QPen(QColor(fg))
         
-        self._widget = QGraphicsView()
-        self._scene = QGraphicsScene()
+        self._widget: QGraphicsView = QGraphicsView()
+        self._scene: QGraphicsScene = QGraphicsScene()
         self._widget.setScene(self._scene)
         self.set_color(fg, bg)
 

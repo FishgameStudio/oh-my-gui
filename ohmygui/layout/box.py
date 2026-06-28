@@ -10,7 +10,7 @@ info(f"Module {__name__} loaded")
 class BoxLayout(BaseLayout):
     def __init__(self) -> None:
         super().__init__()
-        self._layout: QBoxLayout | None = None # type: ignore
+        self._layout: QBoxLayout | None = None
 
     def add_stretch(self, stretch: int = 0) -> Self:
         self._layout.addStretch(stretch) # type: ignore
@@ -30,8 +30,8 @@ class BoxLayout(BaseLayout):
 
     def set_common_stretch(self, stretch: int) -> Self:
         for i in range(self._layout.count()):  # type: ignore
-            self._layout.setStretch(i, stretch)  # type: ignore
+            self._layout.setStretch(i, stretch) # type: ignore
         return self
     @property
-    def native(self):  # type: ignore
+    def native(self) -> QBoxLayout | None:  
         return self._layout

@@ -1,5 +1,8 @@
 # Basic dialog window.
 
+from PySide6.QtGui import QColor
+
+
 from .base import BaseDialog
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QColorDialog
 from .enums import Icon, Button
@@ -9,7 +12,7 @@ from logging import info, warning, error, critical
 class MessageBox(BaseDialog):
     def __init__(self, title: str, content: str, icon: Icon = Icon.NoIcon, buttons: Button = Button.Ok) -> None:
         super().__init__(title, content)
-        self._win = QMessageBox()
+        self._win: QMessageBox = QMessageBox()
         self._win.setWindowTitle(self.title)
         self._win.setText(self.content)
         self._win.setIcon(icon)
@@ -42,7 +45,7 @@ class MessageBox(BaseDialog):
 class FileChooser(BaseDialog):
     def __init__(self, title: str) -> None:
         super().__init__(title, "")
-        self._win = QFileDialog()
+        self._win: QFileDialog = QFileDialog()
         self._win.setWindowTitle(self.title)
     def get_selections(self) -> list[str]:
         """Open the file dialog and return the selected file paths."""
@@ -55,12 +58,12 @@ class FileChooser(BaseDialog):
 class ColorPicker(BaseDialog):
     def __init__(self, title: str, content: str) -> None:
         super().__init__(title, content)
-        self._win = QColorDialog()
+        self._win: QColorDialog = QColorDialog()
         self._win.setWindowTitle(self.title)
     def get_color(self) -> str:
         """Open the color dialog and return the selected color in hex format."""
         if self._win.exec():
-            color = self._win.selectedColor()
+            color: QColor = self._win.selectedColor()
             return color.name()
         return "#000000"
 
