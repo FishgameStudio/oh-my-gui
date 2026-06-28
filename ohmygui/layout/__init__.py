@@ -17,3 +17,5 @@ __all__ = [
 from logging import info as _info
 
 _info(f"Module {__name__} loaded")
+
+del _info

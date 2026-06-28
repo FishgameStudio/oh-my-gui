@@ -40,4 +40,4 @@ __all__ = [
     "Page",
     "Interface",
 ]
-
+del _info
