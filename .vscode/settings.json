@@ -10,5 +10,7 @@
     "python.analysis.indexing": true,
     "python.analysis.includeExtraPathSymbolsInSymbolSearch": true,
     "python.analysis.typeCheckingMode": "off",
-    "basedpyright.analysis.typeCheckingMode": "strict"
+    "basedpyright.analysis.typeCheckingMode": "standard", 
+    "editor.parameterHints.enabled": true, 
+    "editor.inlayHints.enabled": "offUnlessPressed",
 }

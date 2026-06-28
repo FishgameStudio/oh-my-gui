@@ -6,8 +6,8 @@ from typing import Any
 def close(_):
     print("chain demo window closed")
 
-app = core.Application()
-win = core.Window()
+app = Application()
+win = Window()
 win.set_bg("#a0a0a0a0").load_style_string(
     """
 /* Dark Mode - Base */
@@ -104,7 +104,7 @@ QTableWidget::item:selected {
 
 FONT = "Courier New"
 
-text = widget.Text("Nothing submited.", "#000000", "#00000000")
+text = Text("Nothing submited.", "#000000", "#00000000")
 text.set_font(FONT).set_size((300, 100)).set_rounded_corner(8)
 cnt = 0
 
@@ -114,7 +114,7 @@ def submit():
     cnt += 1
 
 
-entry = widget.InputEntry("Enter...", "No content.")
+entry = InputEntry("Enter...", "No content.")
 # chain invote.
 entry.set_size((300, 100)).set_font(FONT).set_shadow(20, 10, 10, "#30308080").set_rounded_corner(8).on_submit(submit)
 

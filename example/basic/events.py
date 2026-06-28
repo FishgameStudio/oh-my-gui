@@ -1,17 +1,16 @@
 # Example of using events in a custom way. 
 # This is not the recommended way to use events, but it is possible.
-import ohmygui.widget as widget
-import ohmygui.core as core
+from ohmygui import *
 
 # Create basic widgets.
-app = core.App()
-win = core.Window("Event Example", (800, 600))
+app = App()
+win = Window("Event Example", (800, 600))
 
 # Create a button.
-button = widget.Button("Click me!", "#ffffff", "#000000")
+button = Button("Click me!", "#ffffff", "#000000")
 button.set_size((100, 50))
 # Create a text widget to display the event result.
-text = widget.Text("Button not clicked yet.", "#000000", "#ffffff")
+text = Text("Button not clicked yet.", "#000000", "#ffffff")
 text.set_size((300, 50))
 
 # Simple event functions for binding.

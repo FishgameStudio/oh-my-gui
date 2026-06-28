@@ -3,20 +3,20 @@
 
 from ohmygui import *
 from random import randint
-app = core.App()
-win = core.Window("Guess Number", (1000, 700))
+app = App()
+win = Window("Guess Number", (1000, 700))
 win.set_bg("#a0efa0")
 
 target = randint(1, 100)
 cnt = 0
 
-with layout.VerticalLayout() as lay:
+with VerticalLayout() as lay:
     lay.set_common_margin(100).set_common_spacing(30)  
-    msg = widget.Text("Guess the number between 1 and 100", "#000000", "#00000000")
+    msg = Text("Guess the number between 1 and 100", "#000000", "#00000000")
 
     msg.set_font("Consolas 14", 50)  
 
-    entry = widget.InputEntry("Enter a valid number...")
+    entry = InputEntry("Enter a valid number...")
     
 
     def submit() -> None:
