@@ -1,23 +1,23 @@
 # Base widget class
 
 from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QGraphicsEffect
-from typing import Annotated, Callable, cast, Self
+from typing import Annotated, Callable, Literal, TypeAlias, cast, Self
 from PySide6.QtCore import QObject, QEvent
 from PySide6.QtGui import QKeyEvent, QColor
-from logging import info, warning, error, critical
+from logging import info, warning, error
 
 info(f"Module {__name__} loaded")
 
-Size_Type = tuple[int, int]
+Size_Type: TypeAlias = tuple[int, int]
 
 class _HoverWatcher(QObject):
-    def __init__(self, e_cb, l_cb, m_cb, parent):
+    def __init__(self, e_cb: Callable[[], None], l_cb: Callable[[], None], m_cb: Callable[[], None], parent: QObject) -> None:
         super().__init__(parent)
-        self.enter = e_cb
-        self.leave = l_cb
-        self.move = m_cb
+        self.enter: Callable[..., None] = e_cb
+        self.leave: Callable[..., None] = l_cb
+        self.move: Callable[..., None] = m_cb
 
-    def eventFilter(self, obj: QObject, evt: QEvent):
+    def eventFilter(self, obj: QObject, evt: QEvent) -> Literal[False]:
         if evt.type() == QEvent.Type.HoverEnter and self.enter is not None:
             self.enter()
         elif evt.type() == QEvent.Type.HoverLeave and self.leave is not None:
@@ -27,7 +27,7 @@ class _HoverWatcher(QObject):
         return False
 
 class BaseWidget:
-    def __init__(self):
+    def __init__(self) -> None:
         info("BaseWidget enter __init__")
         self._widget = QWidget() # Store Qt native widget. 
         self._key_callbacks: list[Callable[[int], None]] = []
@@ -69,7 +69,12 @@ class BaseWidget:
     def on_hover(self, enter: Callable[[], None], leave: Callable[[], None] | None = None, move: Callable[[], None] | None = None) -> Self:
         """Set the callback when the mouse hovers on it."""
         
-        self._widget.installEventFilter(_HoverWatcher(enter, leave, move, cast(QObject,self)))
+        self._widget.installEventFilter(_HoverWatcher(
+            e_cb    =  enter, 
+            l_cb    =  leave if leave is not None else lambda: None, 
+            m_cb    =  move if move is not None else lambda: None, 
+            parent  =  cast(QObject,self)
+        ))
         return self
     def load_stylesheet(self, qss: str) -> Self:
         self._widget.setStyleSheet(qss)

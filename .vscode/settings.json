@@ -10,5 +10,5 @@
     "python.analysis.indexing": true,
     "python.analysis.includeExtraPathSymbolsInSymbolSearch": true,
     "python.analysis.typeCheckingMode": "off",
-    "basedpyright.analysis.typeCheckingMode": "basic"
+    "basedpyright.analysis.typeCheckingMode": "strict"
 }
