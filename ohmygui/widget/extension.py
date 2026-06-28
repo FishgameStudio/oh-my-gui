@@ -9,17 +9,10 @@ from PySide6.QtWidgets import (
     QSplashScreen, QSpinBox, QDoubleSpinBox, QDial, 
     QTreeWidget, QTreeWidgetItem
 )
-from PySide6.QtGui import QPixmap, QPalette, QColor
+from PySide6.QtGui import QPalette, QColor
 
 _info(f"Module {__name__} loaded")
 # Widgets extension.
-
-from .base import BaseWidget
-from PySide6.QtGui import QPixmap
-from PySide6.QtSvgWidgets import QSvgWidget
-from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
-from PySide6.QtMultimediaWidgets import QVideoWidget
-from typing import Self
 
 class Picture(BaseWidget):
     def __init__(self, path: str) -> None:
@@ -33,7 +26,7 @@ class Picture(BaseWidget):
         return isinstance(self._widget, QSvgWidget)  
 
 class Video(BaseWidget):
-    def __init__(self, path) -> None:
+    def __init__(self, path: str) -> None:
         super().__init__()
         self._widget: QVideoWidget = QVideoWidget()
         self.player: QMediaPlayer  = QMediaPlayer()
