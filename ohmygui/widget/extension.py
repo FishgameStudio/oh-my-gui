@@ -22,7 +22,7 @@ from PySide6.QtMultimediaWidgets import QVideoWidget
 from typing import Self
 
 class Picture(BaseWidget):
-    def __init__(self, path: str):
+    def __init__(self, path: str) -> None:
         super().__init__()
         self._widget: QPixmap | QSvgWidget = QPixmap(path)
     def load_picture(self, path: str) -> Self:
@@ -33,21 +33,21 @@ class Picture(BaseWidget):
         return isinstance(self._widget, QSvgWidget)  
 
 class Video(BaseWidget):
-    def __init__(self, path):
+    def __init__(self, path) -> None:
         super().__init__()
-        self._widget = QVideoWidget()
-        self.player = QMediaPlayer()
-        self.audio = QAudioOutput()
+        self._widget: QVideoWidget = QVideoWidget()
+        self.player: QMediaPlayer  = QMediaPlayer()
+        self.audio: QAudioOutput   = QAudioOutput()
         self.player.setAudioOutput(self.audio)
         self.player.setVideoOutput(self._widget)
     def play(self) -> Self:
         self.player.play()
         return self
     @property
-    def audio_output(self):
+    def audio_output(self) -> QAudioOutput:
         return self.audio
     @property
-    def player_object(self):
+    def player_object(self) -> QMediaPlayer:
         return self.player
     @property
     def is_playing(self) -> bool:
@@ -70,8 +70,8 @@ class SplashScreen(BaseWidget):
     def __init__(self, pixmap: QPixmap, fg: str = "#ffffff", bg: str = "#000000"):
         super().__init__()
         _info("Initialize SplashScreen widget")
-        self._pix = pixmap
-        self._widget = QSplashScreen(self._pix)
+        self._pix: QPixmap = pixmap
+        self._widget: QSplashScreen = QSplashScreen(self._pix)
         self.set_color(fg, bg)
         _info("SplashScreen instance created successfully")
 
@@ -141,10 +141,10 @@ class IntegerEntry(BaseWidget):
         default: int = 0,
         fg: str = "#ffffff",
         bg: str = "#000000"
-    ):
+    ) -> None:
         super().__init__()
         _info("Initialize IntegerEntry (QSpinBox)")
-        self._widget = QSpinBox()
+        self._widget: QSpinBox = QSpinBox()
         self._widget.setRange(min_val, max_val)
         self._widget.setValue(default)
         self.set_color(fg, bg)
@@ -221,10 +221,10 @@ class DoubleEntry(BaseWidget):
         decimals: int = 2,
         fg: str = "#ffffff",
         bg: str = "#000000"
-    ):
+    ) -> None:
         super().__init__()
         _info("Initialize DoubleEntry (QDoubleSpinBox)")
-        self._widget = QDoubleSpinBox()
+        self._widget: QDoubleSpinBox = QDoubleSpinBox()
         self._widget.setDecimals(decimals)
         self._widget.setRange(min_val, max_val)
         self._widget.setValue(default)
@@ -310,10 +310,10 @@ class Dial(BaseWidget):
         default: int = 0,
         fg: str = "#ffffff",
         bg: str = "#000000"
-    ):
+    ) -> None:
         super().__init__()
         _info("Initialize Dial rotary controller")
-        self._widget = QDial()
+        self._widget: QDial = QDial()
         self._widget.setRange(min_val, max_val)
         self._widget.setValue(default)
         self.set_color(fg, bg)
@@ -385,10 +385,10 @@ class Dial(BaseWidget):
         return self
     
 class Tree(BaseWidget):
-    def __init__(self, fg: str = "#ffffff", bg: str = "#000000"):
+    def __init__(self, fg: str = "#ffffff", bg: str = "#000000") -> None:
         super().__init__()
         _info("Initialize TreeWidget component")
-        self._widget = QTreeWidget()
+        self._widget: QTreeWidget = QTreeWidget()
         self._widget.setColumnCount(1)
         self.set_color(fg, bg)
         _info("TreeWidget instance created, single column enabled by default")
@@ -406,7 +406,7 @@ class Tree(BaseWidget):
     @property
     def current_text(self) -> str:
         """Get text of currently selected tree item (first column)."""
-        item = self._widget.currentItem()
+        item: QTreeWidgetItem = self._widget.currentItem()
         return item.text(0) if item else ""
 
     @property

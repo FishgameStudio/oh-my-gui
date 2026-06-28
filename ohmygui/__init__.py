@@ -22,7 +22,7 @@
 
 from sys import path as _sys_path, stdout as _stdout
 from os.path import dirname as _dirname
-_current_folder = _dirname(__file__)
+_current_folder: str = _dirname(__file__)
 if _current_folder not in _sys_path:
     _sys_path.insert(0, _current_folder)
 
@@ -34,7 +34,7 @@ class _Color:
     RED = "\033[31m"
     RESET = "\033[0m"
 class _ColorFormatter(_logging.Formatter):
-    def format(self, record):
+    def format(self, record) -> str:
         if record.levelno == _logging.DEBUG:
             c = _Color.BLUE
         elif record.levelno == _logging.INFO:
@@ -51,7 +51,7 @@ _logging.basicConfig(
     datefmt="%Y-%m-%d-%H:%M:%S",
     handlers=[_logging.StreamHandler(_stdout)]
 )
-_root_handler = _logging.getLogger().handlers[0]
+_root_handler: Handler = _logging.getLogger().handlers[0]
 from typing import cast as _cast
 _root_handler.setFormatter(_ColorFormatter(_cast(_logging.Formatter, _root_handler.formatter)._fmt))
 
@@ -68,7 +68,7 @@ from . import terminal
 from . import oml
 
 __all__ = ['core', 'widget', 'dialog', 'utils', 'layout', 'terminal', 'oml', '__version__', '__author__']
-from logging import warning as _warning, info as _info
+from logging import Handler, warning as _warning, info as _info
 
 
 # Check version & auto upgrade
@@ -77,7 +77,7 @@ from os import environ as _environ
 from sys import stdout as _stdout
 if "OMGUI_NO_AUTO_UPGRADE" not in _environ:
     try:
-        latest_ok = utils.is_latest_version()
+        latest_ok: bool = utils.is_latest_version()
     except Exception as err:
         _warning(f"Remote version check failed, skip upgrade prompt. Error: {err}")
     else:

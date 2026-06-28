@@ -90,13 +90,13 @@ class BaseWidget:
         """Set the rounded corner radius of the widget."""
         self._widget.setStyleSheet(f"QWidget {{ border-radius: {radius}px; }}")
         return self
-    def _init_key_event_handler(self):
+    def _init_key_event_handler(self) -> None:
         """Unified hijacking button event, executed only once, all bindings go here"""
-        original_key_press = self._widget.keyPressEvent
+        original_key_press: Callable[[QKeyEvent], None] = self._widget.keyPressEvent
 
-        def wrapped(evt: QKeyEvent):
-            key_text = evt.text()
-            key_ascii = ord(key_text) if key_text else evt.key()
+        def wrapped(evt: QKeyEvent) -> None:
+            key_text: str = evt.text()
+            key_ascii: int = ord(key_text) if key_text else evt.key()
 
             for callback in self._key_callbacks:
                 try:
@@ -118,7 +118,7 @@ class BaseWidget:
 
     def on_keypress(self, ascii: int, callback: Callable[[], None]) -> Self:
         """Bind event when a specified key (ASCII code) pressed."""
-        def _key_filter(current_key: int):
+        def _key_filter(current_key: int) -> None:
             if current_key == ascii:
                 callback()
 
@@ -163,6 +163,6 @@ class BaseWidget:
         """Get the size."""
         return (self.width, self.height)
     @property
-    def native(self):
+    def native(self) -> QWidget:
         """Native escape port."""
         return self._widget

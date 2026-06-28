@@ -1,4 +1,14 @@
 {
     "python.analysis.autoImportCompletions": false,
-    "python.REPL.enableREPLSmartSend": false
+    "python.REPL.enableREPLSmartSend": false, 
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "ohmygui",
+            "depth": 5
+        }
+    ],
+    "python.analysis.indexing": true,
+    "python.analysis.includeExtraPathSymbolsInSymbolSearch": true,
+    "python.analysis.typeCheckingMode": "off",
+    "basedpyright.analysis.typeCheckingMode": "basic"
 }

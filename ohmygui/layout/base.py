@@ -1,9 +1,12 @@
 # Base layout class.
 
+from ohmygui.widget.base import BaseWidget
+
+
 from ..widget.base import BaseWidget
 from PySide6.QtWidgets import QMainWindow
 from PySide6.QtWidgets import QLayout
-from typing import Self
+from typing import Iterator, Self
 from logging import info, warning, error, critical
 
 info(f"Module {__name__} loaded")
@@ -49,7 +52,7 @@ class BaseLayout:
     def __len__(self) -> int:
         # len(xxx)
         return len(self.stack)
-    def __iter__(self):
+    def __iter__(self) -> Iterator[BaseWidget]:
         # for x in xxx
         return iter(self.stack)
     def __contains__(self, widget: BaseWidget) -> bool:

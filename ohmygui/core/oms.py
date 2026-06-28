@@ -31,7 +31,7 @@ Button submitBtn :hover:pressed {
 any { opacity = 255; }
 ```
 """
-from typing import TypeAlias as _TypeAlias
+from typing import Any, Literal, LiteralString, TypeAlias as _TypeAlias
 from enum import Enum as _Enum
 from logging import info as _info, warning as _warning, error as _error, critical as _critical
 from os.path import exists as _exists
@@ -245,7 +245,7 @@ def lexer(oms: str) -> list[Token]:
         elif c in ('"', "'"):
             _info(f"Lexer quote '{c}' matched String")
             str_buf = ""
-            quote_mark = c
+            quote_mark: Literal['"', '\''] = c
             idx += 1
             if idx >= src_len:
                 _error("Lexer unclosed string at EOF")
@@ -256,9 +256,9 @@ def lexer(oms: str) -> list[Token]:
                 str_buf += c
                 idx += 1
                 if idx < src_len:
-                    c = full_src[idx]
+                    c: LiteralString = full_src[idx]
             idx += 1
-            str_buf = str_buf.encode("unicode_escape").decode("ascii")
+            str_buf = str_buf.encode(encoding="unicode_escape").decode(encoding="ascii")
             token_list.append(Token(tt.String, str_buf))
             continue
         # Single char operator
@@ -291,8 +291,8 @@ OMSAttrDict: _TypeAlias = dict[str, OMSAttrValue]
 class OmsStyleBlock:
     """Global reusable @style block storage"""
     def __init__(self, name: str, attrs: OMSAttrDict):
-        self.name = name
-        self.attrs = attrs
+        self.name: str = name
+        self.attrs: OMSAttrDict = attrs
 
 class OmsRule:
     """Single style selector rule AST node"""
@@ -303,16 +303,16 @@ class OmsRule:
         attrs: OMSAttrDict,
         use_styles: list[str],
         rect_groups: OMSAttrDict
-    ):
-        self.widget_short = widget_short
-        self.states = states
-        self.attrs = attrs
-        self.use_styles = use_styles
-        self.rect_groups = rect_groups
+    ) -> None:
+        self.widget_short: str = widget_short
+        self.states: list[str] = states
+        self.attrs: OMSAttrDict = attrs
+        self.use_styles: list[str] = use_styles
+        self.rect_groups: OMSAttrDict = rect_groups
 
 # Full top-level AST bundle (store all global data)
 class FullAST:
-    def __init__(self):
+    def __init__(self) -> None:
         self.global_vars: dict[str, OMSAttrValue] = {}
         self.style_blocks: dict[str, OmsStyleBlock] = {}
         self.rules: list[OmsRule] = []
@@ -324,8 +324,8 @@ def ast(tokens: list[Token]) -> AST_Type:
     """Parser"""
     global ERRORS
     idx: int = 0
-    token_count = len(tokens)
-    full_ast = FullAST()
+    token_count: int = len(tokens)
+    full_ast: FullAST = FullAST()
 
     # Cursor helper functions
     def curr() -> Token:
@@ -358,7 +358,7 @@ def ast(tokens: list[Token]) -> AST_Type:
     def parse_value() -> OMSAttrValue:
         global ERRORS
         """Parse all supported value types"""
-        val_t = curr()
+        val_t: Token = curr()
         val: OMSAttrValue = None
         if val_t.type == tt.Number:
             val = val_t.digitval
@@ -391,11 +391,11 @@ def ast(tokens: list[Token]) -> AST_Type:
         rect_attrs: OMSAttrDict = {}
         use_list: list[str] = []
         while idx < token_count and curr().type != tt.Rbrace:
-            ct = curr()
+            ct: Token = curr()
             # use StyleName; syntax
             if ct.type == tt.Identifier and ct.val == "use":
                 next_tok()
-                style_name = curr().val
+                style_name: str = curr().val
                 use_list.append(style_name)
                 next_tok()
                 if curr().type == tt.Semi:
@@ -411,7 +411,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                     continue
                 next_tok()
                 while idx < token_count and curr().type != tt.Rbrace:
-                    r_key = curr().val
+                    r_key: str = curr().val
                     next_tok()
                     if curr().type != tt.Eq:
                         _error(f"rect attr {r_key} missing =")
@@ -460,7 +460,7 @@ def ast(tokens: list[Token]) -> AST_Type:
         full_ast.global_vars[var_name] = var_val
         _info(f"Parser register global constant ${var_name} = {var_val}")
 
-    def parse_style_def():
+    def parse_style_def() -> None:
         global ERRORS
         """Parse @style Name { ... }"""
         next_tok() # skip @
@@ -477,13 +477,13 @@ def ast(tokens: list[Token]) -> AST_Type:
         full_ast.style_blocks[style_name] = OmsStyleBlock(style_name, style_attrs)
         _info(f"Parser register global style [{style_name}]")
 
-    def parse_rule():
+    def parse_rule() -> None:
         global ERRORS
         """Parse WidgetName[:state1:state2] { ... } style rule"""
         widget_short = curr().val
         next_tok()
         # Parse multi state chain :hover:pressed
-        states = []
+        states: list[Any] = []
         while curr().type == tt.Colon:
             next_tok()
             state_tok = curr()
@@ -501,7 +501,7 @@ def ast(tokens: list[Token]) -> AST_Type:
         next_tok()
         rule_attrs, rect_groups, use_styles = parse_block_inner()
         next_tok()
-        rule = OmsRule(widget_short, states, rule_attrs, use_styles, rect_groups)
+        rule: OmsRule = OmsRule(widget_short, states, rule_attrs, use_styles, rect_groups)
         full_ast.rules.append(rule)
         _info(f"Parser finish rule {widget_short} states={states}")
 
@@ -526,16 +526,16 @@ def ast(tokens: list[Token]) -> AST_Type:
 # ==== AST -> QSS Converter ====
 def convert(ast: AST_Type) -> QssString:
     """Convert Full AST to standard Qt QSS text"""
-    qss_header = [
+    qss_header: list[str] = [
         "// @generated by OMS Converter, oh-my-gui",
         "// License: MIT",
         ""
     ]
-    output_lines = qss_header
+    output_lines: list[str] = qss_header
 
     def merge_rule_attrs(rule: OmsRule) -> OMSAttrDict:
         """Merge imported @style attrs + local attrs + rect shorthand"""
-        merged = {}
+        merged: dict[Any, Any] = {}
         # Apply global style first
         for style_name in rule.use_styles:
             if style_name in ast.style_blocks:
@@ -569,8 +569,8 @@ def convert(ast: AST_Type) -> QssString:
                 return val
             # Global constant reference
             if val.startswith("$"):
-                const_name = val[1:]
-                raw_val = ast.global_vars.get(const_name, "")
+                const_name: str = val[1:]
+                raw_val: OMSAttrValue = ast.global_vars.get(const_name, "")
                 if isinstance(raw_val, str) and raw_val.startswith("#"):
                     return raw_val
                 return f'"{raw_val}"'
@@ -583,14 +583,14 @@ def convert(ast: AST_Type) -> QssString:
         # Combine multi state selector
         state_suffix = ""
         if rule.states:
-            state_suffix = ":" + ":".join(rule.states)
-        merged_attrs = merge_rule_attrs(rule)
+            state_suffix: str = ":" + ":".join(rule.states)
+        merged_attrs: OMSAttrDict = merge_rule_attrs(rule)
         attr_lines: list[str] = []
         for attr_name, attr_val in merged_attrs.items():
-            formatted_val = format_value(attr_val)
+            formatted_val: str = format_value(attr_val)
             attr_lines.append(f"    {attr_name}: {formatted_val};")
         # Assemble full rule text
-        rule_text = [
+        rule_text: list[str] = [
             f"{qss_widget}{state_suffix} {{",
             *attr_lines,
             "}"
@@ -602,9 +602,9 @@ def convert(ast: AST_Type) -> QssString:
 # Main entry function
 def convert_oms_to_qss(oms: str) -> QssString:
     """Parse OMS source and output standard QSS string"""
-    token_stream = lexer(oms)
-    full_ast_tree = ast(token_stream)
-    qss_result = convert(full_ast_tree)
+    token_stream: list[Token] = lexer(oms)
+    full_ast_tree: AST_Type = ast(token_stream)
+    qss_result: QssString = convert(full_ast_tree)
     return qss_result
 
 # Demo Test Entry
@@ -634,5 +634,5 @@ any {
     opacity = 255;
 }
 """
-    generated_qss = convert_oms_to_qss(test_oms_code)
+    generated_qss: QssString = convert_oms_to_qss(test_oms_code)
     print(generated_qss)

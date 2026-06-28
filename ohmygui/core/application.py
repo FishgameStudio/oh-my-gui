@@ -8,14 +8,14 @@ from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, QQmlComponent
 from os.path import exists
 from os import environ
-from typing import Optional, Union, Self, TypeAlias
+from typing import Any, Callable, Self, TypeAlias
 from logging import info, warning, error, critical
 from .oms import convert_oms_to_qss as _convert
 from ..oml import convert_oml_to_qml as _convert_oml
 
-def singleton(cls):
-    instances = {}
-    def get_instance(*args, **kwargs):
+def singleton(cls) -> Callable[..., Any]:
+    instances: dict[Any, Any] = {}
+    def get_instance(*args, **kwargs) -> Any:
         if cls not in instances:
             instances[cls] = cls(*args, **kwargs)
         return instances[cls]
@@ -33,10 +33,10 @@ class Application:
         environ["QT_DEBUG_PLUGINS"] = "1"
 
         # Instantiation.
-        self._app: Union[QGuiApplication, QApplication] = QApplication(argv)
-        self._engine: Optional[QQmlApplicationEngine] = None
+        self._app: QGuiApplication | QApplication = QApplication(argv)
+        self._engine: QQmlApplicationEngine | None = None
         # Call init_widget_mode in default way.
-        self._isqml = False
+        self._isqml: bool = False
         self.init_widget_mode()
 
         # Uniform style
@@ -69,7 +69,7 @@ class Application:
         if self._app is None:
             critical("self._app does not initialize QML or widget mode (is None)")
             raise RuntimeError("Please call init_widget_mode() or init_qml_mode() first")
-        ec = self._app.exec()
+        ec: int = self._app.exec()
         info(f"Application exit with code {ec}")
         return ec
     def on_quit(self, event: Event) -> None:
@@ -86,10 +86,9 @@ class Application:
         info(f"load QSS from file {path}")
         if not path.endswith(".qss"):
             warning(f"Perhaps not qss file: {path}")
-        qss: str
         try:
             with open(path, "r", encoding="utf-8") as f:
-                qss = f.read()
+                qss: str = f.read()
             info("QSS has been read")
         except FileNotFoundError as e:
             error(f"QSS file {path} not found")
@@ -118,10 +117,9 @@ class Application:
         """Load a OMS (Oh My Stylesheet) file"""
         if not path.endswith(".oms"):
             warning(f"Perhaps not qss file: {path}")
-        oms: str
         try:
             with open(path, "r", encoding="utf-8") as f:
-                oms = f.read()
+                oms: str = f.read()
             info("OMS has been read")
         except FileNotFoundError as e:
             error(f"OMS file {path} not found")
@@ -133,12 +131,11 @@ class Application:
         return self
     def load_oml_from(self, path: str) -> Self:
         """Load an OML file."""
-        oml: str
         if not path.endswith(".oml"):
             warning(f"Perhaps not OML file: {path}")
         try:
             with open(path, "r", encoding="utf-8") as f:
-                oml = f.read()
+                oml: str = f.read()
             info("OML has been read")
         except FileNotFoundError as e:
             error(f"OML file {path} not found")
@@ -178,11 +175,11 @@ class Application:
         """Load a string of QML."""
         info(f"Application begin loading QML string {qml[0:30]}...")
         self._engine = QQmlApplicationEngine()
-        comp = QQmlComponent(self._engine)
+        comp: QQmlComponent = QQmlComponent(self._engine)
         comp.setData(qml.encode("utf-8"), "")
         info(f"Start compiling QQmlComponent object {comp}")
         # Wait for async compiling of component
-        def on_ready():
+        def on_ready() -> None:
             if comp.status() == QQmlComponent.Status.Ready:
                 comp.create()
             else:
@@ -195,4 +192,4 @@ class Application:
       
 
 # Alias
-App: TypeAlias = Application
+App: TypeAlias = Application # pyright: ignore

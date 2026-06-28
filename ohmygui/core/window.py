@@ -1,11 +1,13 @@
 # Main window class
 
-from PySide6.QtWidgets import QMainWindow, QWidget
+from ohmygui.widget.base import BaseWidget
+
+from PySide6.QtWidgets import QMainWindow, QMenu, QMenuBar, QWidget
 from PySide6.QtCore import QSize, QObject, QRect as _QRect, Qt as _Qt
 from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction, QPixmap
 from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
-from typing import Callable, Any, Annotated, Self
+from typing import Callable, Any, Annotated, Self, TypeAlias
 from warnings import warn as _warn
 from logging import info, warning, error, critical
 from ..widget.page import Interface as _Interface
@@ -14,9 +16,9 @@ from enum import Enum as _Enum
 from .oms import convert_oms_to_qss as _convert
 
 
-Size_Type = tuple[int, int]
-Dir = Size_Type
-RelDir = tuple[Annotated[float, "0.0 ~ 1.0"], Annotated[float, "0.0 ~ 1.0"]]
+Size_Type: TypeAlias = tuple[int, int]
+Dir: TypeAlias = Size_Type
+RelDir: TypeAlias = tuple[Annotated[float, "0.0 ~ 1.0"], Annotated[float, "0.0 ~ 1.0"]]
 
 class WinSize(_Enum):
     Maximum       = 0
@@ -30,20 +32,20 @@ class WinSize(_Enum):
 class Window:
     def __init__(self, title: str = "", size: Size_Type = (800, 500)) -> None:
         info("Window enter __init__")
-        self._win = QMainWindow()
+        self._win: QMainWindow = QMainWindow()
         self._win.setWindowTitle(title)
         self._win.resize(*size)
         self._win.setDockNestingEnabled(True) 
-        self.central = QWidget() # Central Widget for binding UI.
+        self.central: QWidget = QWidget() # Central Widget for binding UI.
         self._win.setCentralWidget(self.central)
-        self.menubar = self._win.menuBar()
-        self._menus = []
+        self.menubar: QMenuBar = self._win.menuBar()
+        self._menus: list[Any] = []
         self.stack: list[tuple[bool, BaseWidget]] = [] # is_relative_binded & UI Stack
         # caches of Relative positions
         self._rel_cache: dict[BaseWidget, RelDir] = {}
         self._interface: _Interface | None = None
         # destructor
-        self._dtor = _finalize(self, self.__destruct__)
+        self._dtor: _finalize = _finalize[[], Self](self, self.__destruct__)
         info("Window exit __init__")
 
     @property
@@ -117,14 +119,14 @@ class Window:
         self._rel_cache[widget] = reldir
         
         # Parent window w/h
-        pw = self._win.width()
-        ph = self._win.height()
+        pw: int = self._win.width()
+        ph: int = self._win.height()
         # The w/h of itself
-        w = widget.native.width()
-        h = widget.native.height()
+        w: int = widget.native.width()
+        h: int = widget.native.height()
         # Calc absolute position
-        x = (pw * reldir[0]) - (w * 0.5)
-        y = (ph * reldir[1]) - (h * 0.5)
+        x: float = (pw * reldir[0]) - (w * 0.5)
+        y: float = (ph * reldir[1]) - (h * 0.5)
 
         widget.set_pos(int(x), int(y))
         widget.show()
@@ -195,10 +197,9 @@ class Window:
         """Load a OMS (Oh My Stylesheet) file"""
         if not path.endswith(".oms"):
             warning(f"Perhaps not qss file: {path}")
-        oms: str
         try:
             with open(path, "r", encoding="utf-8") as f:
-                oms = f.read()
+                oms: str = f.read()
             info("OMS has been read")
         except FileNotFoundError as e:
             error(f"OMS file {path} not found")
@@ -222,17 +223,17 @@ class Window:
                 if tuple_[0]:
                     res.append(tuple_[1])
             return res
-        relwidgets = _get_relwidgets()
+        relwidgets: list[BaseWidget] = _get_relwidgets()
         for widget in relwidgets:
             # Read relpos from cache
             relx, rely = self._rel_cache[widget]
-            pw = self.native.width()
-            ph = self.native.height()
-            ww = widget.native.width()
-            wh = widget.native.height()
+            pw: int = self.native.width()
+            ph: int = self.native.height()
+            ww: int = widget.native.width()
+            wh: int = widget.native.height()
 
-            x = pw * relx - ww / 2
-            y = ph * rely - wh / 2
+            x: float = pw * relx - ww / 2
+            y: float = ph * rely - wh / 2
             widget.set_pos(int(x), int(y))
         
     def on_resize(self, callback: Callable[[int, int], None]) -> Self: 
@@ -240,7 +241,7 @@ class Window:
         Bind callback when resizing window.
         The `int, int` params are the width & height of the window.
         """
-        original_event = self._win.resizeEvent
+        original_event: Callable[[QResizeEvent], None] = self._win.resizeEvent
         # Wrap the event.
         def wrapped(event: QResizeEvent) -> None:
             # Execute origin event
@@ -266,8 +267,8 @@ class Window:
         return self
     def on_close(self, event: Callable[[Any], None]) -> Self:
         """Set the callback for when the window is closed."""
-        original = self._win.closeEvent
-        def wrapped(evt: QCloseEvent):
+        original: Callable[[QCloseEvent], None] = self._win.closeEvent
+        def wrapped(evt: QCloseEvent) -> None:
             event(None)
             original(evt)
         self._win.closeEvent = wrapped
@@ -287,10 +288,10 @@ class Window:
         `None` in actions means a separator. 
         `tuple[str, Callable]` is the name and the callback.
         """
-        menu = self.menubar.addMenu(f"{name}(&{shortcut})")
+        menu: QMenu = self.menubar.addMenu(f"{name}(&{shortcut})")
         for action in actions:
             if action is not None:
-                a = QAction(action[0], self._win)
+                a: QAction = QAction(action[0], self._win)
                 a.triggered.connect(action[1])
                 menu.addAction(a)
             else:
@@ -324,7 +325,7 @@ class Window:
                     0, 0, 0, 0
                 )
             case WinSize.Left:
-                half_w = screen_rect.width() // 2
+                half_w: int = screen_rect.width() // 2
                 target_rect = _QRect(
                     screen_rect.left(),
                     screen_rect.top(),
@@ -370,11 +371,11 @@ class Window:
     def top_widget(self) -> BaseWidget:
         return self.stack[-1][1]
 
-    def __getitem__(self, idx: int):
+    def __getitem__(self, idx: int) -> BaseWidget:
         return self.stack[idx][1]
 
     @property
-    def native(self):
+    def native(self) -> QMainWindow:
         """Native escape port: Get the underlying PySide6 control"""
         return self._win
     

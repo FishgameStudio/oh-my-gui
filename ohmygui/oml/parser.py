@@ -51,7 +51,7 @@ Window MainWin {
 # Wildcard
 any Item { opacity = 255; }
 """
-from typing import TypeAlias as _TypeAlias
+from typing import Any, Literal, LiteralString, TypeAlias as _TypeAlias
 from enum import Enum as _Enum
 from logging import info as _info, warning as _warning, error as _error, critical as _critical
 from os.path import exists as _exists
@@ -109,7 +109,7 @@ def _isdigit(c: str) -> bool:
     return c.isdigit()
 
 # Single char operator map, extend DoubleColon / Arrow for OML unique syntax
-OP = {
+OP: dict[str, Any] = {
     '(': tt.Lpar,
     ')': tt.Rpar,
     '[': tt.Lsqb,
@@ -128,14 +128,14 @@ OP = {
 }
 
 # OML exclusive built-in constants
-CONSTANTS = {
+CONSTANTS: dict[str, Any] = {
     'None': None,
     'true': True,
     'false': False
 }
 
 # OML short name -> QML native Qt component type
-COMPONENT_MAP = {
+COMPONENT_MAP: dict[str, str] = {
     "Window":        "Window",
     "Application":   "ApplicationWindow",
     "App":           "ApplicationWindow",
@@ -165,7 +165,7 @@ COMPONENT_MAP = {
 }
 
 # OML keyword exclusive
-OML_KEYWORDS = {
+OML_KEYWORDS: dict[str, str] = {
     "use": "use",
     "style": "style",
     "template": "template",
@@ -174,7 +174,7 @@ OML_KEYWORDS = {
 }
 
 # Unit suffix list
-UNIT_LIST = ("px", "em", "vw", "vh")
+UNIT_LIST: tuple[Literal['px'], Literal['em'], Literal['vw'], Literal['vh']] = ("px", "em", "vw", "vh")
 
 def _isoperator(c: str) -> bool:
     return c in OP
@@ -200,11 +200,11 @@ def lexer(oml: str) -> list[Token]:
     """OML Lexer, preprocess @import, tokenize raw text + OML exclusive syntax"""
     global ERRORS
     # Preprocess @import line replace file content
-    line_buffer = []
+    line_buffer: list[Any] = []
     for line in oml.splitlines():
-        stripped = line.strip()
+        stripped: str = line.strip()
         if stripped.startswith("@import "):
-            path = stripped[8:].strip()
+            path: str = stripped[8:].strip()
             if _exists(path):
                 try:
                     with open(path, "r", encoding="utf-8") as f:
@@ -220,13 +220,13 @@ def lexer(oml: str) -> list[Token]:
                 line_buffer.append("")
         else:
             line_buffer.append(line)
-    raw_src = "\n".join(line_buffer)
+    raw_src: LiteralString = "\n".join(line_buffer)
 
-    token_list = []
+    token_list: list[Any] = []
     idx = 0
-    src_len = len(raw_src)
+    src_len: int = len(raw_src)
     while idx < src_len:
-        c = raw_src[idx]
+        c: LiteralString = raw_src[idx]
         # Global variable $Identifier
         if c == "$":
             idx += 1
@@ -284,7 +284,7 @@ def lexer(oml: str) -> list[Token]:
         elif c in ('"', "'"):
             _info(f"OML Lexer quote '{c}' matched String")
             str_buf = ""
-            quote_mark = c
+            quote_mark: Literal['"', '\''] = c
             idx += 1
             if idx >= src_len:
                 _error("OML Lexer unclosed string literal at EOF")
@@ -298,7 +298,7 @@ def lexer(oml: str) -> list[Token]:
                     c = raw_src[idx]
             idx += 1
             # escape unicode same as OMS
-            str_buf = str_buf.encode("unicode_escape").decode("ascii")
+            str_buf: str = str_buf.encode("unicode_escape").decode("ascii")
             token_list.append(Token(tt.String, str_buf))
             continue
         # Double colon :: func separator special handle
@@ -344,21 +344,21 @@ OMLAttrDict: _TypeAlias = dict[str, OMLAttrValue]
 
 class OmlStyleBlock:
     """Global reusable @style block AST"""
-    def __init__(self, name: str, attrs: OMLAttrDict):
-        self.name = name
-        self.attrs = attrs
+    def __init__(self, name: str, attrs: OMLAttrDict) -> None:
+        self.name: str = name
+        self.attrs: OMLAttrDict = attrs
 
 class OmlTemplateMacro:
     """Parametric @template macro AST"""
-    def __init__(self, name: str, params: list[str], root_node: "OmlNode"):
-        self.name = name
-        self.params = params
-        self.root_node = root_node
+    def __init__(self, name: str, params: list[str], root_node: "OmlNode") -> None:
+        self.name: str = name
+        self.params: list[str] = params
+        self.root_node: OmlNode = root_node
 
 class OmlMetaInfo:
     """@meta global metadata"""
-    def __init__(self, data: OMLAttrDict):
-        self.data = data
+    def __init__(self, data: OMLAttrDict) -> None:
+        self.data: OMLAttrDict = data
 
 class OmlNode:
     """Recursive AST Node for OML component tree"""
@@ -372,17 +372,17 @@ class OmlNode:
         use_styles: list[str], # imported @style names
         rect_groups: OMLAttrDict # rect{} grouped attr
     ) -> None:
-        self.comp_short = comp_short
-        self.inst_name  = inst_name
-        self.states     = states
-        self.attrs      = attrs
-        self.children   = children
-        self.use_styles = use_styles
-        self.rect_groups = rect_groups
+        self.comp_short: str            = comp_short
+        self.inst_name: str             = inst_name
+        self.states: list[str]          = states
+        self.attrs: OMLAttrDict         = attrs
+        self.children: list[OmlNode]    = children
+        self.use_styles: list[str]      = use_styles
+        self.rect_groups: OMLAttrDict   = rect_groups
 
 # Root full AST bundle (store all global OML unique blocks)
 class FullAST:
-    def __init__(self):
+    def __init__(self) -> None:
         self.meta: OmlMetaInfo | None = None
         self.global_vars: dict[str, OMLAttrValue] = {}
         self.style_blocks: dict[str, OmlStyleBlock] = {}
@@ -396,8 +396,8 @@ def ast(tokens: list[Token]) -> AST_Type:
     global ERRORS
     """Recursive descent parser build full OML AST with style/template/meta"""
     token_ptr: int = 0
-    token_count = len(tokens)
-    full_ast = FullAST()
+    token_count: int = len(tokens)
+    full_ast: FullAST = FullAST()
 
     # Helper cursor functions same as your OMS parser
     def curr() -> Token:
@@ -463,10 +463,10 @@ def ast(tokens: list[Token]) -> AST_Type:
             else:
                 # function reference func::slot
                 if peek_next().type == tt.DoubleColon:
-                    func_id = val_t.val
+                    func_id: str = val_t.val
                     token_ptr += 1
                     token_ptr += 1  # skip ::
-                    slot_name = curr().val
+                    slot_name: str = curr().val
                     token_ptr += 1
                     val = f"{func_id}::{slot_name}"
                 else:
@@ -486,11 +486,11 @@ def ast(tokens: list[Token]) -> AST_Type:
         rect_attrs: OMLAttrDict = {}
         use_list: list[str] = []
         while token_ptr < token_count and curr().type != tt.Rbrace:
-            ct = curr()
+            ct: Token = curr()
             # use StyleName;
             if ct.type == tt.Identifier and ct.val == "use":
                 token_ptr += 1
-                style_name = curr().val
+                style_name: str = curr().val
                 use_list.append(style_name)
                 token_ptr += 1
                 if curr().type == tt.Semi:
@@ -506,7 +506,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                     continue
                 token_ptr += 1
                 while token_ptr < token_count and curr().type != tt.Rbrace:
-                    ra = curr().val
+                    ra: str = curr().val
                     token_ptr += 1
                     if curr().type != tt.Eq:
                         _error("rect attr missing =")
@@ -522,10 +522,10 @@ def ast(tokens: list[Token]) -> AST_Type:
                 continue
             # signal bind attr onClick -> func::slot;
             if ct.type == tt.Identifier and peek_next().type == tt.Arrow:
-                attr_key = ct.val
+                attr_key: str = ct.val
                 token_ptr += 1
                 token_ptr += 1 # skip ->
-                val = parse_attr_value()
+                val: OMLAttrValue = parse_attr_value()
                 if curr().type == tt.Semi:
                     token_ptr += 1
                 attrs[attr_key] = val
@@ -551,21 +551,21 @@ def ast(tokens: list[Token]) -> AST_Type:
         global ERRORS
         nonlocal token_ptr
         # Step 1: read component short identifier
-        comp_tok = curr()
-        comp_short = comp_tok.val
+        comp_tok: Token = curr()
+        comp_short: str = comp_tok.val
         token_ptr += 1
 
         # Step 2: read instance name (optional identifier after component)
         inst_name = ""
         if curr().type == tt.Identifier and curr().val not in COMPONENT_MAP and curr().val not in OML_KEYWORDS:
-            inst_name = curr().val
+            inst_name: str = curr().val
             token_ptr += 1
 
         # Step3: parse multi state chain :hover:pressed
-        states = []
+        states: list[Any] = []
         while curr().type == tt.Colon:
             token_ptr += 1
-            state_tok = curr()
+            state_tok: Token = curr()
             if state_tok.type != tt.Identifier:
                 _error(f"OML Parser expect state identifier after colon")
                 ERRORS += 1
@@ -585,15 +585,15 @@ def ast(tokens: list[Token]) -> AST_Type:
 
         # Re-scan block for child components
         while token_ptr < token_count and curr().type != tt.Rbrace:
-            current_t = curr()
+            current_t: Token = curr()
             # Branch1: template macro call TemplateName(arg1,arg2)
             if current_t.type == tt.Identifier and current_t.val in full_ast.template_macros and peek_next().type == tt.Lpar:
-                tpl = full_ast.template_macros[current_t.val]
+                tpl: OmlTemplateMacro = full_ast.template_macros[current_t.val]
                 token_ptr += 1  # skip template name
                 token_ptr += 1  # skip '('
-                arg_vals = []
+                arg_vals: list[Any] = []
                 while curr().type != tt.Rpar:
-                    arg = parse_attr_value()
+                    arg: OMLAttrValue = parse_attr_value()
                     arg_vals.append(arg)
                     if curr().type == tt.Comma:
                         token_ptr += 1
@@ -602,7 +602,7 @@ def ast(tokens: list[Token]) -> AST_Type:
                 if curr().type == tt.Semi:
                     token_ptr += 1
                 # Shallow copy root node & inject args (Simplely expand)
-                root_copy = tpl.root_node
+                root_copy: OmlNode = tpl.root_node
                 children.append(root_copy)
                 continue
             # Branch2: normal widget
@@ -617,12 +617,12 @@ def ast(tokens: list[Token]) -> AST_Type:
         # consume closing }
         if curr().type == tt.Rbrace:
             token_ptr += 1
-        node = OmlNode(comp_short, inst_name, states, attrs, children, use_styles, rect_groups)
+        node: OmlNode = OmlNode(comp_short, inst_name, states, attrs, children, use_styles, rect_groups)
         _info(f"OML Parser finish component node {comp_short} id={inst_name} states={states}")
         return node
 
     # Parse top level global $Var = val;
-    def parse_global_var():
+    def parse_global_var() -> None:
         global ERRORS
         nonlocal token_ptr
         var_name = curr().val
@@ -632,7 +632,7 @@ def ast(tokens: list[Token]) -> AST_Type:
             ERRORS += 1
             return
         token_ptr += 1
-        val = parse_attr_value()
+        val: OMLAttrValue = parse_attr_value()
         if curr().type == tt.Semi:
             token_ptr += 1
         full_ast.global_vars[var_name] = val
@@ -657,18 +657,18 @@ def ast(tokens: list[Token]) -> AST_Type:
         _info(f"Registered global style [{style_name}]")
 
     # Parse @template Name(p1,p2) { ... }
-    def parse_template_macro():
+    def parse_template_macro() -> None:
         global ERRORS
         nonlocal token_ptr
         token_ptr += 1 # skip @
         token_ptr += 1 # skip template
-        tpl_name = curr().val
+        tpl_name: str = curr().val
         token_ptr += 1
-        params = []
+        params: list[Any] = []
         if curr().type == tt.Lpar:
             token_ptr += 1
             while curr().type != tt.Rpar:
-                p = curr().val
+                p: str = curr().val
                 params.append(p)
                 token_ptr += 1
                 if curr().type == tt.Comma:
@@ -684,7 +684,7 @@ def ast(tokens: list[Token]) -> AST_Type:
         _info(f"Registered template macro [{tpl_name}] params={params}")
 
     # Parse @meta { ... }
-    def parse_meta_block():
+    def parse_meta_block() -> None:
         global ERRORS
         nonlocal token_ptr
         token_ptr += 1 # skip @
@@ -701,7 +701,7 @@ def ast(tokens: list[Token]) -> AST_Type:
 
     # Main top level loop
     while token_ptr < token_count:
-        ct = curr()
+        ct: Token = curr()
         # Global variable $NAME
         if ct.type == tt.DollarVar:
             parse_global_var()
@@ -722,23 +722,23 @@ def ast(tokens: list[Token]) -> AST_Type:
         if ct.type == tt.Identifier:
             # Template macro invoke
             if ct.val in full_ast.template_macros and peek_next().type == tt.Lpar:
-                tpl = full_ast.template_macros[ct.val]
+                tpl: OmlTemplateMacro = full_ast.template_macros[ct.val]
                 token_ptr += 1
                 token_ptr += 1
-                arg_vals = []
+                arg_vals: list[Any] = []
                 while curr().type != tt.Rpar:
-                    arg = parse_attr_value()
+                    arg: OMLAttrValue = parse_attr_value()
                     arg_vals.append(arg)
                     if curr().type == tt.Comma:
                         token_ptr += 1
                 token_ptr += 1
                 # Inject args into template root node, shallow copy logic simplified
-                root_copy = tpl.root_node
+                root_copy: OmlNode = tpl.root_node
                 full_ast.top_nodes.append(root_copy)
                 continue
             # Normal component
             if ct.val in COMPONENT_MAP:
-                node = parse_component()
+                node: OmlNode = parse_component()
                 full_ast.top_nodes.append(node)
                 continue
         token_ptr += 1
@@ -748,7 +748,7 @@ def ast(tokens: list[Token]) -> AST_Type:
 def convert(ast: AST_Type) -> QmlString:
     """Recursively traverse full OML AST and output standard QML source text"""
     global ERRORS
-    qml_header = [
+    qml_header: list[str] = [
         "// @generated by OML Converter (Oh My Modeling Language)",
         "// OML Exclusive Syntax: unit, color, @style, @template, $var, multi-state",
         "// License: MIT",
@@ -763,10 +763,10 @@ def convert(ast: AST_Type) -> QmlString:
             qml_header.append(f"// {k}: {v}")
         qml_header.append("")
     # Inject global var const in QML root
-    global_var_lines = []
+    global_var_lines: list[Any] = []
     if ast.global_vars:
         global_var_lines.append("property var OML_GLOBAL: {")
-        g_vars = []
+        g_vars: list[Any] = []
         for name, val in ast.global_vars.items():
             if isinstance(val, str):
                 g_vars.append(f'    "{name}": "{val}"')
@@ -779,7 +779,7 @@ def convert(ast: AST_Type) -> QmlString:
     def merge_style_attrs(node: OmlNode) -> OMLAttrDict:
         """Merge component local attr + all imported @style attrs"""
         global ERRORS
-        merged = {}
+        merged: dict[Any, Any] = {}
         # Apply style blocks first
         for style_name in node.use_styles:
             if style_name in ast.style_blocks:
@@ -818,20 +818,20 @@ def convert(ast: AST_Type) -> QmlString:
     def render_node(node: OmlNode, indent: int = 0) -> list[str]:
         global ERRORS
         lines: list[str] = []
-        indent_str = "    " * indent
+        indent_str: LiteralString = "    " * indent
         # resolve real QML component type
-        qml_type = COMPONENT_MAP.get(node.comp_short, node.comp_short)
+        qml_type: str = COMPONENT_MAP.get(node.comp_short, node.comp_short)
         # multi state join
         state_suffix = ""
         if node.states:
-            state_suffix = ":" + ":".join(node.states)
+            state_suffix: str = ":" + ":".join(node.states)
         # instance id
-        id_decl = f"id: {node.inst_name};" if node.inst_name else ""
+        id_decl: str = f"id: {node.inst_name};" if node.inst_name else ""
 
         # open component line
         lines.append(f"{indent_str}{qml_type}{state_suffix} {{")
-        child_indent = indent + 1
-        child_indent_str = "    " * child_indent
+        child_indent: int = indent + 1
+        child_indent_str: LiteralString = "    " * child_indent
 
         # write id first if exists
         if id_decl:
@@ -842,7 +842,7 @@ def convert(ast: AST_Type) -> QmlString:
                 lines.append(f"{child_indent_str}{gl}")
 
         # render merged attributes
-        all_attrs = merge_style_attrs(node)
+        all_attrs: OMLAttrDict = merge_style_attrs(node)
         for attr_name, attr_val in all_attrs.items():
             val_text = render_value(attr_val)
             lines.append(f"{child_indent_str}{attr_name}: {val_text};")
@@ -857,9 +857,9 @@ def convert(ast: AST_Type) -> QmlString:
         return lines
 
     # render all top level nodes
-    all_lines = qml_header
+    all_lines: list[str] = qml_header
     for top_node in ast.top_nodes:
-        node_text = render_node(top_node, indent=0)
+        node_text: list[str] = render_node(top_node, indent=0)
         all_lines.extend(node_text)
         all_lines.append("")
     return "\n".join(all_lines)
@@ -868,7 +868,7 @@ def convert(ast: AST_Type) -> QmlString:
 def convert_oml_to_qml(oml_source: str) -> QmlString:
     """Main entry: raw OML string -> compiled QML source string"""
     global ERRORS
-    token_stream = lexer(oml_source)
-    full_ast_tree = ast(token_stream)
-    qml_output = convert(full_ast_tree)
+    token_stream: list[Token] = lexer(oml_source)
+    full_ast_tree: AST_Type = ast(token_stream)
+    qml_output: QmlString = convert(full_ast_tree)
     return qml_output

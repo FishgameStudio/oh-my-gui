@@ -3,7 +3,7 @@
 from typing import Callable as _Callable, Any as _Any
 from logging import info
 
-def bind(register_method: _Callable[[_Callable[..., _Any]], _Any]):
+def bind(register_method: _Callable[[_Callable[..., _Any]], _Any]) -> _Callable[..., _Callable[..., _Any]]:
     """
     Decorator for register function in register methods.
 
