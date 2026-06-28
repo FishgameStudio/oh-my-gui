@@ -2,11 +2,11 @@
 
 from ohmygui import *
 
-app = core.Application()
-win = core.Window()
+app = Application()
+win = Window()
 
-with layout.HorizentalLayout() as lay:
-    lay.add_widget(widget.Button("click me!")).add_widget(widget.Text("Wow!")).add_widget(widget.Text("Oh My GUI!"))
+with HorizontalLayout() as lay:
+    lay.add_widget(Button("click me!")).add_widget(Text("Wow!")).add_widget(Text("Oh My GUI!"))
 win.set_layout(lay).show()
 app.run()
 

@@ -94,7 +94,7 @@ class Button(BaseWidget):
         # Set together
         self._widget.setStyleSheet(f"color: {fg}; background-color: {bg};")
         return self
-    def on_click(self, event: Callable[[Any], None]) -> Self:
+    def on_click(self, event: Callable[[Any], Any]) -> Self:
         """Set the callback for when the button is clicked."""
         self._widget.clicked.connect(event)
         return self

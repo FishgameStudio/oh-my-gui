@@ -1,8 +1,7 @@
 """
 OML demo: Demonstrate how to convert an OML string to QML and load it through an Application (if QML is supported).
 """
-from ohmygui.oml.parser import convert_oml_to_qml
-from ohmygui.core.application import App
+from ohmygui import *
 
 SAMPLE_OML = '''
 $WIN_TITLE = "OML Demo";

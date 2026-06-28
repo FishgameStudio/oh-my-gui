@@ -5,8 +5,8 @@ from .base import BaseDialog
 from .basic import (
     MessageBox, FileChooser, ColorPicker
 )
-from .enums import Icon, Button
+from .enums import Icons, Buttons
 
-__all__ = ['BaseDialog', 'MessageBox', 'FileChooser', 'ColorPicker', 'Icon', "Button"]
+__all__ = ['BaseDialog', 'MessageBox', 'FileChooser', 'ColorPicker', 'Icons', "Buttons"]
 
 del _info

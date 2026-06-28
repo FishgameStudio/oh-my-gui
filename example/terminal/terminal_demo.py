@@ -1,7 +1,7 @@
 """
 Terminal demo: Show output, input & progress bar from ConsoleIO.
 """
-from ohmygui.terminal.conio import ConsoleIO
+from ohmygui import *
 from time import sleep
 
 def main():

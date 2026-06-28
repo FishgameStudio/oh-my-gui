@@ -4,8 +4,8 @@
 from ohmygui import *
 from random import randint
 
-app = core.App()
-win = core.Window("Line chart demo")    
+app = App()
+win = Window("Line chart demo")    
 win.set_size((800, 400))
 
 DATA: list[int] = []
@@ -15,8 +15,8 @@ for _ in range(0, 100):
 PADDING = 20
 data_len = len(DATA)
 
-with layout.VerticalLayout() as lay:
-    cvs = widget.Canvas(utils.WHITE, utils.BLACK)
+with VerticalLayout() as lay:
+    cvs = Canvas(WHITE, BLACK)
     cvs.set_size((win.w, win.h))
 
     canvas_w = cvs.width - PADDING * 2
