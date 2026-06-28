@@ -57,7 +57,7 @@ _root_handler.setFormatter(_ColorFormatter(_cast(_logging.Formatter, _root_handl
 
 
 __author__  = "Fishgame Studio"
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 
 from . import core
 from . import widget
@@ -67,7 +67,7 @@ from . import layout
 from . import terminal
 from . import oml
 
-__all__ = ['core', 'widget', 'dialog', 'utils', 'layout', 'terminal', 'oml']
+__all__ = ['core', 'widget', 'dialog', 'utils', 'layout', 'terminal', 'oml', '__version__', '__author__']
 from logging import warning as _warning, info as _info
 
 
@@ -92,4 +92,4 @@ if "OMGUI_NO_AUTO_UPGRADE" not in _environ:
             _info("Set environment variable OMGUI_NO_AUTO_UPGRADE=1 to turn off upgrade reminder.")
 
 # Delete other symbols
-del _sys_path, _stdout, _dirname, _logging, _cast, _Color, _ColorFormatter, _root_handler, _warning, _info, _environ, _current_folder
+del _sys_path, _stdout, _dirname, _cast, _root_handler, _warning, _info, _environ, _current_folder
