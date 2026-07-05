@@ -1,9 +1,13 @@
+<!-- 
+It's best not to submit PRs modifying this file. Instead, open an issue to share your ideas.
+-->
+
 <div align="center">
 
 ![Logo](assets/logo.png)
 
 
-# OhMyGUI
+# Oh My GUI
 > A lightweight GUI library wrapping PySide6 for Python!
 
 
@@ -14,6 +18,7 @@
 ![PRs](https://img.shields.io/github/issues-pr/FishgameStudio/oh-my-gui)
 
 ![LastCommit](https://img.shields.io/github/last-commit/FishgameStudio/oh-my-gui)
+[![CommitCount](https://badgen.net/github/commits/FishgameStudio/oh-my-gui/main)](https://github.com/FishgameStudio/oh-my-gui/commits/main)
 [![PyPI](https://img.shields.io/pypi/v/oh-my-gui?style=color=orange)](https://pypi.com/project/oh-my-gui)
 ![Size](https://img.shields.io/github/repo-size/FishgameStudio/oh-my-gui)
 ![Contributors](https://img.shields.io/github/contributors/FishgameStudio/oh-my-gui)
@@ -188,6 +193,11 @@ Don't forget to give the project a star! Thanks again!
 
 <a href="https://github.com/FishgameStudio/oh-my-gui/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=FishgameStudio/oh-my-gui" alt="contrib.rocks image" />
+</a>
+
+### History of Stars
+<a href="https://github.com/FishgameStudio/oh-my-gui/stargazers">
+  <img src="https://api.star-history.com/svg?repos=FishgameStudio/oh-my-gui&type=Date" alt="Star History" />
 </a>
 
 ## License
