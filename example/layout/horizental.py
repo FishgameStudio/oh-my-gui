@@ -1,18 +1,16 @@
 # Example of horizontal layout
 
-import ohmygui.core as core
-import ohmygui.widget as widget
-import ohmygui.layout as layout
+from ohmygui import *
 
-app = core.App()
-window = core.Window("Horizontal Layout Example", (400, 200))
-layout = layout.HorizentalLayout()
+app = App()
+window = Window("Horizontal Layout Example", (400, 200))
+lay = HorizontalLayout()
 
-layout.add_widget(widget.Text("Hello"))
-layout.add_spacing(20)
-layout.add_widget(widget.Text("World"))
-layout.add_stretch()
-layout.add_widget(widget.Text("!"))
-window.set_layout(layout)
+lay.add_widget(Text("Hello"))
+lay.add_spacing(20)
+lay.add_widget(Text("World"))
+lay.add_stretch()
+lay.add_widget(Text("!"))
+window.set_layout(lay)
 window.show()
 app.run()

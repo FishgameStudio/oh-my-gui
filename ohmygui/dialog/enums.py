@@ -7,6 +7,6 @@ from logging import info, warning, error, critical
 
 info(msg=f"Module {__name__} loaded")
 
-Icon: TypeAlias = QMessageBox.Icon
-Button: TypeAlias = QMessageBox.StandardButton
+Icons: TypeAlias = QMessageBox.Icon
+Buttons: TypeAlias = QMessageBox.StandardButton
 
