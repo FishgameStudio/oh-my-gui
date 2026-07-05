@@ -1,15 +1,13 @@
 # Main window class
 
-from ohmygui.widget.base import BaseWidget
-
+from ..widget.base import BaseWidget
 from PySide6.QtWidgets import QMainWindow, QMenu, QMenuBar, QWidget
 from PySide6.QtCore import QSize, QObject, QRect as _QRect, Qt as _Qt
 from PySide6.QtGui import QResizeEvent, QCloseEvent, QAction, QPixmap
-from ..widget.base import BaseWidget
 from ..layout.base import BaseLayout
 from typing import Callable, Any, Annotated, Self, TypeAlias
 from warnings import warn as _warn
-from logging import info, warning, error, critical
+from logging import info, warning, error
 from ..widget.page import Interface as _Interface
 from weakref import finalize as _finalize
 from enum import Enum as _Enum
@@ -45,7 +43,7 @@ class Window:
         self._rel_cache: dict[BaseWidget, RelDir] = {}
         self._interface: _Interface | None = None
         # destructor
-        self._dtor: _finalize = _finalize[[], Self](self, self.__destruct__)
+        self._dtor = _finalize(self, self.__destruct__)
         info("Window exit __init__")
 
     @property
@@ -164,7 +162,7 @@ class Window:
         info(f"set interface as {interface}")
         self._interface = interface
         # Detach layout
-        self.central.setLayout(None) # type: ignore
+        self.central.setLayout(None) # pyright: ignore[reportArgumentType]
         return self
     def load_style_from(self, path: str) -> Self:
         """Load style sheet from a QSS file."""
@@ -381,7 +379,7 @@ class Window:
     
     def __destruct__(self) -> None:
         self._interface = None
-        self._win.setLayout(None) # type: ignore
+        self._win.setLayout(None) # pyright: ignore[reportArgumentType]
         self._rel_cache.clear()
         self._menus.clear()
         self.stack.clear()
