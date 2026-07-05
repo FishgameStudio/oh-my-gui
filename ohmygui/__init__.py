@@ -67,9 +67,10 @@ from .utils import *
 from .layout import *
 from .terminal import *
 from .oml import *
+from . import gui3d as OhMy3D
 
 __all__ = [
-     "BaseWidget",
+    "BaseWidget",
     "Text",
     "Button",
     "InputEntry",
@@ -181,6 +182,7 @@ __all__ = [
     "UNIT_LIST",
     "convert_oms_to_qss",
     "ErrorLimitExceededError",
+    'OhMy3D'
 ]
 
 
