@@ -2,7 +2,7 @@ from typing import Final as _Final
 from logging import info as _info
 
 _info(f"Module {__name__} loaded")
-from ..dialog.enums import Icon as _i, Button as _b
+from ..dialog.enums import Icons as _i, Buttons as _b
 
 # Color constants
 WHITE: _Final = "#ffffff"
