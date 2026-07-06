@@ -2,6 +2,7 @@ from .base_entity import BaseEntity
 from .view        import Window3D, LinearSpeed, Direction
 from .types       import xyz as XYZ, lwh as LWH
 from .block       import CubeBlock, SIDE_LENGTH
+from .world       import World
 
 __all__ = [
     'XYZ',
@@ -11,7 +12,8 @@ __all__ = [
     'CubeBlock', 
     'SIDE_LENGTH', 
     'LinearSpeed', 
-    'Direction'
+    'Direction',
+    'World'
 ]
 
 from logging import info as _info
