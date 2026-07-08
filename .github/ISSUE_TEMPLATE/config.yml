@@ -1,0 +1,20 @@
+# Disable blank issues to force contributors to use templates
+blank_issues_enabled: false
+
+# External links shown on template picker page
+contact_links:
+  - name: "❓ Q&A Discussions"
+    url: "https://github.com/FishgameStudio/oh-my-gui/discussions"
+    about: "General questions, usage tips and discussions go here instead of issues."
+
+  - name: "🤝 Support Guide"
+    url: https://github.com/FishgameStudio/oh-my-gui/tree/main/.github/SUPPORT.md
+    about: "Check how to get proper help from maintainers."
+  
+  - name: "📖 Project Documentation"
+    url: "https://github.com/FishgameStudio/oh-my-gui/tree/main/docs"
+    about: "Check official docs before opening a bug or feature request."
+
+  - name: "🛡️ Security Vulnerability Report"
+    url: "https://github.com/FishgameStudio/oh-my-gui/security/policy"
+    about: "DO NOT report security flaws in public issues, use this page."

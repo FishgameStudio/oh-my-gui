@@ -1,0 +1,16 @@
+name: General Chat
+description: Off-topic conversations, usage experience and casual community talk.
+labels: ["general"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 💬 General Discussion
+        This category is for casual chats, experience sharing and non-technical talks.
+        For technical help, please post under Q&A.
+  - type: textarea
+    id: content
+    attributes:
+      label: Your message
+    validations:
+      required: true
