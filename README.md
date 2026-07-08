@@ -74,16 +74,6 @@ It's best not to submit PRs modifying this file. Instead, open an issue to share
 # Introduction
 🚀 **Oh My GUI** is a lightweight, neatly structured, cross-platform utility library built on **PySide6 & Python**. It provides **window management**, **widget encapsulation**, **style control**, and a **basic component toolkit**—so you can build desktop GUIs faster with less boilerplate.
 
-In daily PySide6 development, developers often repeat common tasks like window setup, widget binding, layout positioning, and style sheet handling. This project aims to standardize those fundamentals with a clean, low-coupling design that improves code consistency, reduces adaptation cost, and keeps the implementation easy to extend.
-
-It focuses on practical lightweight GUI scenarios (not heavy frameworks): fewer redundant features, clear APIs, and stable behavior across platforms—helping beginners learn more naturally and helping experienced developers prototype quickly.
-
-This project is suitable for:
-- Rapid GUI tool / small desktop app development
-- Secondary development of custom components
-- Standardizing repeated PySide6 boilerplate
-- Learning-friendly, easy-to-debug GUI foundations
-
 In daily PySide6 GUI development, developers often repeatedly write window creation, widget binding, position adjustment and color style code in different projects. Scattered custom components lack unified encapsulation, inconsistent calling styles lead to high adaptation costs, and most ready-made component frameworks are overly bloated or have strong coupling, which is not friendly for lightweight projects and beginners. There are few concise, decoupled and easy-to-expand basic GUI tool suites that integrate window control and common widgets. To solve these pain points, I developed this project, aiming to build a set of standardized, low-coupling and long-term maintainable basic GUI underlying tool library.
 
 This project is highly suitable for being integrated into various PySide6 GUI development projects for the following reasons:
@@ -229,7 +219,7 @@ Project Link: [https://github.com/FishgameStudio/oh-my-gui](https://github.com/F
 
 
 ## Conclusion
-Hope this lightweight UtilitiesLibrary can assist you in daily C++ development, simplify repetitive basic logic writing, and speed up your project construction efficiency.
+Hope this lightweight GUI library can help in your daily Python development, and hope you can like it.
 
 Every star, fork and sincere feedback means a lot to me. You are warmly welcome to submit issues for bugs feedback and function suggestions, or send pull requests to participate in code optimization and function iteration, so as to polish and improve this utility library together.
 
