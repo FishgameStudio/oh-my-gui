@@ -1,9 +1,13 @@
+<!-- 
+It's best not to submit PRs modifying this file. Instead, open an issue to share your ideas.
+-->
+
 <div align="center">
 
 ![Logo](assets/logo.png)
 
 
-# OhMyGUI
+# Oh My GUI
 > A lightweight GUI library wrapping PySide6 for Python!
 
 
@@ -14,6 +18,7 @@
 ![PRs](https://img.shields.io/github/issues-pr/FishgameStudio/oh-my-gui)
 
 ![LastCommit](https://img.shields.io/github/last-commit/FishgameStudio/oh-my-gui)
+[![CommitCount](https://badgen.net/github/commits/FishgameStudio/oh-my-gui/main)](https://github.com/FishgameStudio/oh-my-gui/commits/main)
 [![PyPI](https://img.shields.io/pypi/v/oh-my-gui?style=color=orange)](https://pypi.com/project/oh-my-gui)
 ![Size](https://img.shields.io/github/repo-size/FishgameStudio/oh-my-gui)
 ![Contributors](https://img.shields.io/github/contributors/FishgameStudio/oh-my-gui)
@@ -67,7 +72,7 @@
 
 
 # Introduction
-🚀 A lightweight, neatly structured cross-platform general utility library developed based on PySide6 & Python, bundling **window management, widget encapsulation, style control and basic component toolkit**. It is built for GUI rapid development, lightweight desktop application building and personalized component secondary development scenarios.
+🚀 **Oh My GUI** is a lightweight, neatly structured, cross-platform utility library built on **PySide6 & Python**. It provides **window management**, **widget encapsulation**, **style control**, and a **basic component toolkit**—so you can build desktop GUIs faster with less boilerplate.
 
 In daily PySide6 GUI development, developers often repeatedly write window creation, widget binding, position adjustment and color style code in different projects. Scattered custom components lack unified encapsulation, inconsistent calling styles lead to high adaptation costs, and most ready-made component frameworks are overly bloated or have strong coupling, which is not friendly for lightweight projects and beginners. There are few concise, decoupled and easy-to-expand basic GUI tool suites that integrate window control and common widgets. To solve these pain points, I developed this project, aiming to build a set of standardized, low-coupling and long-term maintainable basic GUI underlying tool library.
 
@@ -190,6 +195,11 @@ Don't forget to give the project a star! Thanks again!
   <img src="https://contrib.rocks/image?repo=FishgameStudio/oh-my-gui" alt="contrib.rocks image" />
 </a>
 
+### History of Stars
+<a href="https://github.com/FishgameStudio/oh-my-gui/stargazers">
+  <img src="https://api.star-history.com/svg?repos=FishgameStudio/oh-my-gui&type=Date" alt="Star History" />
+</a>
+
 ## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
@@ -209,7 +219,7 @@ Project Link: [https://github.com/FishgameStudio/oh-my-gui](https://github.com/F
 
 
 ## Conclusion
-Hope this lightweight UtilitiesLibrary can assist you in daily C++ development, simplify repetitive basic logic writing, and speed up your project construction efficiency.
+Hope this lightweight GUI library can help in your daily Python development, and hope you can like it.
 
 Every star, fork and sincere feedback means a lot to me. You are warmly welcome to submit issues for bugs feedback and function suggestions, or send pull requests to participate in code optimization and function iteration, so as to polish and improve this utility library together.
 

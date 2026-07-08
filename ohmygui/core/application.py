@@ -1,6 +1,7 @@
 # Main application class.
 
 from sys import argv
+import sys
 from PySide6.QtWidgets import QApplication
 from ..widget.event import Event
 from PySide6.QtCore import Qt
@@ -8,7 +9,7 @@ from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, QQmlComponent
 from os.path import exists
 from os import environ
-from typing import Any, Callable, Self, TypeAlias
+from typing import Any, Callable, Self, TypeAlias, Never
 from logging import info, warning, error, critical
 from .oms import convert_oms_to_qss as _convert
 from ..oml import convert_oml_to_qml as _convert_oml
@@ -72,6 +73,15 @@ class Application:
         ec: int = self._app.exec()
         info(f"Application exit with code {ec}")
         return ec
+    def run_quit(self) -> Never:
+        """Run the application & return error code."""
+        info("Application begin running")
+        if self._app is None:
+            critical("self._app does not initialize QML or widget mode (is None)")
+            raise RuntimeError("Please call init_widget_mode() or init_qml_mode() first")
+        ec: int = self._app.exec()
+        info(f"Application exit with code {ec}")
+        sys.exit(ec)
     def on_quit(self, event: Event) -> None:
         """Set the callback for when the application is quitting."""
         info("bind event on_quit")
