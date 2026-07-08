@@ -1,0 +1,36 @@
+name: Feature Ideas & Improvements
+description: Submit new feature requests, optimizations or workflow improvements here.
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: | 
+        ## 💡 Before submitting
+        1. Search existing discussions & issues to avoid duplicate requests
+        2. This space is for brainstorming; confirmed plans will be moved to GitHub Issues
+  - type: input
+    id: related
+    attributes:
+      label: Related issue/discussion (if any)
+      placeholder: "#123"
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this idea solve?
+      placeholder: I am frustrated when...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe your ideal solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you have considered
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context, screenshots or examples

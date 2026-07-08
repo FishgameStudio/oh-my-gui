@@ -1,0 +1,19 @@
+name: ❓ Q&A Help
+description: Ask usage, configuration and tutorial questions here
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: "## 🤝 Before asking\nSearch existing discussions & README first."
+  - type: input
+    id: version
+    attributes:
+      label: Project Version
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Your question & operation steps
+    validations:
+      required: true
