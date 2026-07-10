@@ -1,0 +1,29 @@
+name: Show & Tell
+description: Share projects, plugins, tools or demos built with this repository.
+labels: ["show-and-tell"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎨 Showcase your work
+        Share anything you built based on this project: plugins, demos, integrations, mods, tutorials etc.
+  - type: input
+    id: project-name
+    attributes:
+      label: Name of your project / work
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Repository / demo / website link
+  - type: textarea
+    id: description
+    attributes:
+      label: What does your creation do? How do you use our project in it?
+    validations:
+      required: true
+  - type: textarea
+    id: media
+    attributes:
+      label: Screenshots, videos or previews (paste image links here)

@@ -1,0 +1,31 @@
+name: Official Announcement
+description: Maintainers only — release notes, breaking changes, project updates.
+labels: ["announcement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📣 Maintainer Notice Template
+        This template is only for repository maintainers to publish official news.
+        Regular users please use Q&A / Ideas / General instead.
+  - type: input
+    id: version
+    attributes:
+      label: Related version / release tag
+      placeholder: v1.5.0
+  - type: textarea
+    id: headline
+    attributes:
+      label: Short announcement headline
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Full announcement content (changelog, migration tips, timeline)
+    validations:
+      required: true
+  - type: textarea
+    id: links
+    attributes:
+      label: Related links (docs, PRs, issues)
