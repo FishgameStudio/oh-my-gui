@@ -3,8 +3,8 @@
 
 from ohmygui import *
 
-app = core.App()
-win = core.Window("Simple Markdown Viewer", (1000, 700))
+app = App()
+win = Window("Simple Markdown Viewer", (1000, 700))
 
 MARKDOWN = """
 # Title
@@ -15,11 +15,11 @@ text text text text text
 *italic text*
 """
 
-with layout.VerticalLayout() as lay:
-    store: list[widget.Text] = []
+with VerticalLayout() as lay:
+    store: list[Text] = []
     for line in MARKDOWN.splitlines():
-        obj = widget.Text()
-        obj.set_color(utils.WHITE, utils.BLACK).set_font(obj.font, 15)
+        obj = Text()
+        obj.set_color(WHITE, BLACK).set_font(obj.font, 15)
         if line.startswith("# "):
             obj.set_font(obj.font, 50).set_text(line[2:])
         elif line.startswith("## "):
@@ -31,7 +31,7 @@ with layout.VerticalLayout() as lay:
             obj.native.font().setItalic(True)
             obj.set_text(line[1:-1])
         elif line.startswith("`") and line.endswith("`"):
-            obj.set_font("JetBrains Mono").set_color(utils.WHITE, "#404040").set_text(line[1:-1])
+            obj.set_font("JetBrains Mono").set_color(WHITE, "#404040").set_text(line[1:-1])
         else:
             obj.set_text(line[:])
             

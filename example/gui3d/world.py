@@ -32,9 +32,9 @@ for x in range(SIZE_X):
         blocks.append(b)
 
 # Bind blocks to the 3D scene.
-view.add_entities(blocks)
+view.add_entities(blocks)   # pyright: ignore[reportArgumentType]
 
-# Keep a manager instance (optional but requested by你：om3d.World 管理器）
+# Keep a manager instance
 world = om3d.World(blocks_3d)
 
 # Set the light so the cube is visible.
@@ -134,8 +134,8 @@ def _apply_controls(dt: float) -> None:
         pitch -= PITCH_SPEED * dt
 
     # Position up/down:
-    # - SPACE：位置向上（抬相机）
-    # - SHIFT：位置向下（放相机）
+    # - SPACE：up
+    # - SHIFT：down
     if _is_down("SPACE"):
         cam_pos = (cam_pos[0], cam_pos[1] + MOVE_SPEED * dt, cam_pos[2])
     if _is_down("SHIFT"):
